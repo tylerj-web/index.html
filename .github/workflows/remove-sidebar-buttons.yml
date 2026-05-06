@@ -1,0 +1,96 @@
+name: Remove sidebar mass merge and export buttons
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/remove-sidebar-buttons.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Patch index.html
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          html = path.read_text(encoding='utf-8')
+
+          marker = 'ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT'
+          cleanup = r'''
+<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT">
+(function(){
+  function isSidebarControl(el){
+    return !!(el && el.closest && el.closest('aside, #sidebar, .sidebar, .side-bar, .sidepanel, .side-panel, .side-nav, .sidenav, .left-nav, .nav-rail, .app-sidebar'));
+  }
+  function shouldRemove(el){
+    var text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+    var attr = [
+      el.getAttribute('aria-label') || '',
+      el.getAttribute('title') || '',
+      el.getAttribute('data-action') || '',
+      el.getAttribute('onclick') || '',
+      el.id || '',
+      el.className || ''
+    ].join(' ');
+    var haystack = (text + ' ' + attr).toLowerCase();
+    return /mass\s*merge/.test(haystack) || /\bexport\b/.test(haystack);
+  }
+  function cleanSidebarButtons(){
+    var controls = document.querySelectorAll('button, a, [role="button"]');
+    controls.forEach(function(el){
+      if(isSidebarControl(el) && shouldRemove(el)) el.remove();
+    });
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', cleanSidebarButtons);
+  } else {
+    cleanSidebarButtons();
+  }
+  setTimeout(cleanSidebarButtons, 0);
+  setTimeout(cleanSidebarButtons, 250);
+  setTimeout(cleanSidebarButtons, 1000);
+  try {
+    new MutationObserver(cleanSidebarButtons).observe(document.documentElement, { childList: true, subtree: true });
+  } catch(e) {}
+})();
+</script>
+'''
+
+          if marker not in html:
+            if '</body>' in html:
+              html = html.replace('</body>', cleanup + '\n</body>', 1)
+            else:
+              html += '\n' + cleanup + '\n'
+            path.write_text(html, encoding='utf-8')
+            print('Inserted sidebar cleanup block.')
+          else:
+            print('Cleanup block already present.')
+          PY
+
+          rm -f .github/workflows/remove-sidebar-buttons.yml
+
+      - name: Commit patched index.html
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add index.html .github/workflows/remove-sidebar-buttons.yml
+            git commit -m "Remove sidebar mass merge and export buttons"
+            git push
+          else
+            echo "No changes to commit."
+          fi
