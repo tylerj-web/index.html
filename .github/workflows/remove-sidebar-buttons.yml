@@ -30,65 +30,109 @@ jobs:
 
           path = Path('index.html')
           html = path.read_text(encoding='utf-8')
-          marker = 'ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V3'
+          marker = 'ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V4'
 
-          cleanup = '''
-<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V3">
+          cleanup = r'''
+<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V4">
 (function(){
-  function compactText(value){
-    return String(value || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  function toText(value){
+    value = value == null ? '' : String(value);
+    return value.replace(/[ \t\r\n]+/g, ' ').toLowerCase();
   }
-  function classText(el){
-    try { return typeof el.className === 'string' ? el.className : ''; }
-    catch(e) { return ''; }
+  function getClass(node){
+    try {
+      return typeof node.className === 'string' ? node.className : '';
+    } catch(e) {
+      return '';
+    }
   }
-  function matchesTarget(el){
-    var haystack = compactText([
-      el.textContent,
-      el.getAttribute && el.getAttribute('aria-label'),
-      el.getAttribute && el.getAttribute('title'),
-      el.getAttribute && el.getAttribute('data-action'),
-      el.getAttribute && el.getAttribute('onclick'),
-      el.id,
-      classText(el)
+  function getAttr(node, name){
+    try {
+      return node.getAttribute ? node.getAttribute(name) : '';
+    } catch(e) {
+      return '';
+    }
+  }
+  function controlText(node){
+    return toText([
+      node.textContent,
+      getAttr(node, 'aria-label'),
+      getAttr(node, 'title'),
+      getAttr(node, 'data-action'),
+      getAttr(node, 'onclick'),
+      node.id,
+      getClass(node)
     ].join(' '));
-    return /mass\s*merge/.test(haystack) || /\bexport\b/.test(haystack);
+  }
+  function isTargetControl(node){
+    var text = controlText(node);
+    return text.indexOf('mass merge') !== -1 ||
+           text.indexOf('massmerge') !== -1 ||
+           text.indexOf('export') !== -1;
   }
   function isSidebarNode(node){
     while(node && node !== document.documentElement){
-      var tag = compactText(node.tagName);
-      var id = compactText(node.id);
-      var cls = compactText(classText(node));
+      var tag = toText(node.tagName);
+      var id = toText(node.id);
+      var cls = toText(getClass(node));
       if(tag === 'aside' || tag === 'nav') return true;
       if(id.indexOf('side') !== -1 || id.indexOf('sidebar') !== -1 || id.indexOf('rail') !== -1) return true;
       if(cls.indexOf('side') !== -1 || cls.indexOf('sidebar') !== -1 || cls.indexOf('rail') !== -1 || cls.indexOf('nav') !== -1) return true;
-      node = node.parentElement;
+      node = node.parentNode;
     }
     return false;
   }
-  function removeButtons(){
-    var controls = document.querySelectorAll('button, a, [role="button"], .btn, .nav-btn');
-    controls.forEach(function(el){
-      if(isSidebarNode(el) && matchesTarget(el)){
-        var row = el.closest ? (el.closest('li, .nav-item, .sidebar-item, .side-item, .action-row, .quick-action, .tool-row') || el) : el;
-        row.remove();
+  function isControl(node){
+    var tag = toText(node.tagName);
+    var role = toText(getAttr(node, 'role'));
+    var cls = toText(getClass(node));
+    return tag === 'button' || tag === 'a' || role === 'button' || cls.indexOf('btn') !== -1 || cls.indexOf('nav-btn') !== -1;
+  }
+  function removableNode(node){
+    var current = node;
+    while(current && current.parentNode && current !== document.body){
+      var tag = toText(current.tagName);
+      var cls = toText(getClass(current));
+      if(tag === 'li' || cls.indexOf('nav-item') !== -1 || cls.indexOf('sidebar-item') !== -1 || cls.indexOf('side-item') !== -1 || cls.indexOf('action-row') !== -1 || cls.indexOf('tool-row') !== -1){
+        return current;
       }
-    });
+      current = current.parentNode;
+    }
+    return node;
+  }
+  function removeSidebarMassMergeAndExportButtons(){
+    var nodes = document.getElementsByTagName('*');
+    var remove = [];
+    var i;
+    for(i = 0; i < nodes.length; i++){
+      if(isControl(nodes[i]) && isSidebarNode(nodes[i]) && isTargetControl(nodes[i])){
+        remove.push(removableNode(nodes[i]));
+      }
+    }
+    for(i = 0; i < remove.length; i++){
+      if(remove[i] && remove[i].parentNode){
+        remove[i].parentNode.removeChild(remove[i]);
+      }
+    }
   }
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', removeButtons);
+    document.addEventListener('DOMContentLoaded', removeSidebarMassMergeAndExportButtons);
   } else {
-    removeButtons();
+    removeSidebarMassMergeAndExportButtons();
   }
-  [0,100,500,1000,2000].forEach(function(ms){ setTimeout(removeButtons, ms); });
+  setTimeout(removeSidebarMassMergeAndExportButtons, 0);
+  setTimeout(removeSidebarMassMergeAndExportButtons, 100);
+  setTimeout(removeSidebarMassMergeAndExportButtons, 500);
+  setTimeout(removeSidebarMassMergeAndExportButtons, 1000);
+  setTimeout(removeSidebarMassMergeAndExportButtons, 2000);
   try {
-    new MutationObserver(removeButtons).observe(document.documentElement, {childList:true, subtree:true});
+    new MutationObserver(removeSidebarMassMergeAndExportButtons).observe(document.documentElement, { childList: true, subtree: true });
   } catch(e) {}
 })();
 </script>
 '''
 
-          html = re.sub(r'\n?<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT(?:-V\d+)?">[\s\S]*?</script>\n?', '\n', html)
+          html = re.sub(r'\n?<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT(?:-V[0-9]+)?">[\s\S]*?</script>\n?', '\n', html)
 
           if marker not in html:
               if '</body>' in html:
@@ -96,9 +140,9 @@ jobs:
               else:
                   html = html + '\n' + cleanup + '\n'
               path.write_text(html, encoding='utf-8')
-              print('Inserted V3 sidebar cleanup block into index.html')
+              print('Inserted V4 sidebar cleanup block into index.html')
           else:
-              print('V3 sidebar cleanup block already present')
+              print('V4 sidebar cleanup block already present')
           PY
 
       - name: Commit and push patched index.html
