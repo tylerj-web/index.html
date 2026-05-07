@@ -4989,7 +4989,7 @@ var _tog=function(id,show){var e=document.getElementById(id);if(e)e.classList.to
   _tog('sideStatsUI',mode==='stats');
 
   currentIndex=null;
-  if(mode==='stats'){currentStatsSub='ledger';renderMainStatsPage();}
+  if(mode==='stats'){currentStatsSub='projectstats';renderProjectStatsPage();}
   else if(mode==='prospects')showProspectDashboard();
   else if(mode==='calendar')showCalendarView();
   else if(mode==='appointments'){apptViewWE=null;showAppointmentsView();}
@@ -5022,6 +5022,8 @@ function renderSidebarList(){
       {id:'ledger',label:'Stat Ledger'},
       {id:'graphs',label:'Daily Graphs'},
       {id:'logging',label:'Stats Logging'},
+      {id:'eowdaily',label:'Daily EOW Figures'},
+      {id:'weeklyprojectgraphs',label:'Weekly Project Graphs'},
       {id:'projectstats',label:'Project Stats'}
     ].forEach(function(it){
       var d=document.createElement('div');
@@ -5077,6 +5079,8 @@ function switchStatsSub(sub){
   currentStatsSub=sub;
   if(sub==='logging')renderStatsLoggingPage();
   else if(sub==='graphs')renderDailyGraphsPage();
+  else if(sub==='eowdaily')renderDailyEOWFiguresPage();
+  else if(sub==='weeklyprojectgraphs')renderWeeklyProjectGraphsPage();
   else if(sub==='projectstats')renderProjectStatsPage();
   else renderMainStatsPage();
 }
@@ -7027,6 +7031,8 @@ function resetStatsWE(){currentStatsWE=null;refreshStatsPage();}
 function refreshStatsPage(){
   if(currentStatsSub==='logging')renderStatsLoggingPage();
   else if(currentStatsSub==='graphs')renderDailyGraphsPage();
+  else if(currentStatsSub==='eowdaily')renderDailyEOWFiguresPage();
+  else if(currentStatsSub==='weeklyprojectgraphs')renderWeeklyProjectGraphsPage();
   else if(currentStatsSub==='projectstats')renderProjectStatsPage();
   else renderMainStatsPage();
 }
@@ -7746,6 +7752,8 @@ function renderProjectStatsPage(){
       +'</div>'
     +'</div>'
     +uxWeekContext(we)
+    +'<div class="section-head" style="margin-top:14px;"><h2>Weekly Stats Snapshot</h2></div>'
+    +renderWeeklyStatsSnapshot(we)
     +'<div class="graph-grid graph-grid-4 stats-print-grid">';
 
   cards.forEach(function(stat){
@@ -7769,6 +7777,131 @@ function renderProjectStatsPage(){
   document.getElementById('viewArea').innerHTML=html;
   renderSidebarList();
   setTimeout(function(){drawAllGraphs(we,getPrevWE(we));},80);
+}
+
+function renderWeeklyStatsSnapshot(selectedWE){
+  var statsDefs=[
+    {label:'PHS',key:'phs'},
+    {label:'Sign Ups',key:'signUp'},
+    {label:'General Prospects',key:'generalProspects'},
+    {label:'Interviews',key:'interviews'},
+    {label:'Appointments',key:'appointments'}
+  ];
+  var weeks=[selectedWE];
+  for(var i=1;i<=5;i++)weeks.push(addDays(selectedWE,-7*i));
+
+  var head='<tr><th style="min-width:120px;">Metric</th>'+weeks.map(function(wk){
+    return '<th>'+fmtDate(wk)+'</th>';
+  }).join('')+'</tr>';
+
+  var rows=statsDefs.map(function(def){
+    var cells=weeks.map(function(wk){
+      var total=statLedger.filter(function(s){
+        if(s.we!==wk)return false;
+        if(def.key==='signUp')return (s.signUp!==undefined?s.signUp:(s.signed||false));
+        return !!s[def.key];
+      }).length;
+      return '<td style="text-align:center;font-weight:700;">'+total+'</td>';
+    }).join('');
+    return '<tr><td style="font-weight:700;">'+def.label+'</td>'+cells+'</tr>';
+  }).join('');
+
+  return '<table class="stats-table" style="margin-bottom:16px;"><thead>'+head+'</thead><tbody>'+rows+'</tbody></table>';
+}
+
+function renderDailyEOWFiguresPage(){
+  var we=currentStatsWE||getCurrentWE();
+  var days=getWeekDays(we);
+  var statsDefs=STATS_LIST.slice();
+  var rows=days.map(function(day){
+    var dayCells=statsDefs.map(function(stat){
+      var total=getStatCount(stat,day,we);
+      return '<td style="text-align:center;font-weight:700;">'+total+'</td>';
+    }).join('');
+    return '<tr><td><strong>'+fmtDate(day)+'</strong></td>'+dayCells+'</tr>';
+  }).join('');
+
+  var totals=statsDefs.map(function(stat){
+    var sum=days.reduce(function(acc,day){
+      return acc+getStatCount(stat,day,we);
+    },0);
+    return '<td style="text-align:center;font-weight:800;">'+sum+'</td>';
+  }).join('');
+
+  document.getElementById('viewArea').innerHTML=
+    '<div class="page-header print-header-row">'
+      +'<div><h1>Statistics &gt; Daily EOW Figures</h1><div class="page-sub"><strong>Daily stats by selected week ending</strong> · W/E '+fmtDate(we)+'</div></div>'
+      +'<div class="page-actions">'
+        +'<button class="btn-ghost" onclick="prevStatsWE()">← Prev</button>'
+        +'<button class="btn-primary" onclick="resetStatsWE()">Current</button>'
+        +'<button class="btn-ghost" onclick="nextStatsWE()">Next →</button>'
+        +pBtn()
+      +'</div>'
+    +'</div>'
+    +uxWeekContext(we)
+    +'<table class="stats-table"><thead><tr><th>Day</th>'
+    +statsDefs.map(function(stat){return '<th>'+stat+'</th>';}).join('')
+    +'</tr></thead><tbody>'
+    +(rows||'<tr><td colspan="'+(statsDefs.length+1)+'"><div class="ux-empty-inline"><strong>No daily stats for this week yet</strong><span>Log stats entries for this W/E to populate the figures.</span></div></td></tr>')
+    +'<tr><td style="font-weight:800;">Week Total</td>'+totals+'</tr>'
+    +'</tbody></table><div style="height:80px;"></div>';
+  renderSidebarList();
+}
+
+function renderWeeklyProjectGraphsPage(){
+  var we=currentStatsWE||getCurrentWE();
+  var html=
+    '<div class="page-header print-header-row">'
+      +'<div><h1>Statistics &gt; Weekly Project Graphs</h1><div class="page-sub"><strong>Weekly graphs for each project stat</strong> · W/E '+fmtDate(we)+'</div></div>'
+      +'<div class="page-actions">'
+        +'<button class="btn-ghost" onclick="prevStatsWE()">← Prev</button>'
+        +'<button class="btn-primary" onclick="resetStatsWE()">Current</button>'
+        +'<button class="btn-ghost" onclick="nextStatsWE()">Next →</button>'
+        +pBtn()
+      +'</div>'
+    +'</div>'
+    +uxWeekContext(we)
+    +'<div class="graph-grid graph-grid-4 stats-print-grid">';
+
+  STATS_LIST.forEach(function(stat){
+    var graphId='gwps_'+stat.replace(/[^a-z0-9]/gi,'_');
+    html+='<div class="graph-card"><div class="gc-title">'+stat+'</div><div class="graph-container" id="'+graphId+'"></div></div>';
+  });
+
+  html+='</div><div style="height:80px;"></div>';
+  document.getElementById('viewArea').innerHTML=html;
+  renderSidebarList();
+  setTimeout(drawWeeklyProjectGraphs,80);
+}
+
+function drawWeeklyProjectGraphs(){
+  var weeks=buildWeeks();
+  var labels=weeks.map(toDDMM);
+  STATS_LIST.forEach(function(stat){
+    var id='gwps_'+stat.replace(/[^a-z0-9]/gi,'_');
+    var box=document.getElementById(id);if(!box)return;
+    var w=box.offsetWidth||520,h=box.offsetHeight||290,tP=44,bP=44,gH=h-tP-bP;
+    var data=weeks.map(function(wk){
+      return getWeekDays(wk).reduce(function(acc,day){
+        return acc+getStatCount(stat,day,wk);
+      },0);
+    });
+    var sc=calcScale(data),minV=sc.minV,maxV=sc.maxV;
+    var yP=function(v){return tP+gH*(1-Math.min(Math.max(v-minV,0),(maxV-minV))/(maxV-minV||1));};
+    var pts='',ci='',xl='';
+    data.forEach(function(v,i){
+      var x=i*(w/(data.length-1||1)),y=yP(v);
+      pts+=x+','+y+' ';
+      ci+='<circle cx="'+x+'" cy="'+y+'" r="6" fill="#38bdf8"/>';
+      ci+='<text x="'+x+'" y="'+(y-12)+'" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">'+v+'</text>';
+      xl+='<text x="'+x+'" y="'+(h-3)+'" text-anchor="end" transform="rotate(-40,'+x+','+(h-3)+')" fill="#64748b" font-size="9" font-weight="600">'+labels[i]+'</text>';
+    });
+    box.innerHTML='<div class="graph-axis" style="top:'+(tP-22)+'px">'+maxV+'</div>'
+      +'<div class="graph-axis" style="bottom:'+(bP-4)+'px">'+minV+'</div>'
+      +'<svg width="100%" height="100%" viewBox="0 0 '+w+' '+h+'" style="overflow:visible;">'
+      +'<polyline points="'+pts+'" fill="none" stroke="#38bdf8" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/>'
+      +ci+xl+'</svg>';
+  });
 }
 
 
@@ -8352,7 +8485,7 @@ if(currentMode==='profiles')showGlobalDashboard();
   else if(currentMode==='appointments')showAppointmentsView();
   else if(currentMode==='surveys')showSurveysDashboard();
   else if(currentMode==='dashboard')showOverallDashboard();
-  else{if(currentStatsSub==='logging')renderStatsLoggingPage();else if(currentStatsSub==='graphs')renderDailyGraphsPage();else renderMainStatsPage();}
+  else{if(currentStatsSub==='logging')renderStatsLoggingPage();else if(currentStatsSub==='graphs')renderDailyGraphsPage();else if(currentStatsSub==='eowdaily')renderDailyEOWFiguresPage();else if(currentStatsSub==='weeklyprojectgraphs')renderWeeklyProjectGraphsPage();else if(currentStatsSub==='projectstats')renderProjectStatsPage();else renderMainStatsPage();}
 
 
   setManualDirty(false);
@@ -8403,6 +8536,8 @@ function applyDataSilent(d){
   else{
     if(currentStatsSub==='logging')renderStatsLoggingPage();
     else if(currentStatsSub==='graphs')renderDailyGraphsPage();
+    else if(currentStatsSub==='eowdaily')renderDailyEOWFiguresPage();
+    else if(currentStatsSub==='weeklyprojectgraphs')renderWeeklyProjectGraphsPage();
     else if(currentStatsSub==='projectstats')renderProjectStatsPage();
     else renderMainStatsPage();
   }
@@ -8547,6 +8682,8 @@ function renderSidebarList(){
       {id:'ledger',label:'Stat Ledger'},
       {id:'graphs',label:'Daily Graphs'},
       {id:'logging',label:'Stats Logging'},
+      {id:'eowdaily',label:'Daily EOW Figures'},
+      {id:'weeklyprojectgraphs',label:'Weekly Project Graphs'},
       {id:'projectstats',label:'Project Stats'}
     ].forEach(function(it){
       var d=document.createElement('div');
