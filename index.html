@@ -3782,6 +3782,151 @@ details.ux-details .ux-details-body { padding:16px; }
   .survey-mini,.survey-answer-text{color:black !important;}
 }
 
+
+
+/* ------------------------------------------
+   COMMAND CENTRE / SIDEBAR STABILITY PATCH
+------------------------------------------ */
+.sync-bar,
+.sync-bar.connected,
+.sync-bar.saving,
+.sync-bar.unsaved,
+.sync-bar.error {
+  min-height: 30px !important;
+  height: 30px !important;
+  max-height: 30px !important;
+  padding: 0 12px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+}
+#syncStatus,
+#syncTime {
+  display: block !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+}
+#syncStatus { flex: 1 1 auto !important; }
+#syncTime { flex: 0 1 auto !important; max-width: 92px !important; text-align: right !important; }
+.sidebar {
+  transition: width .18s ease, background .25s, border-color .25s !important;
+  overflow-x: hidden !important;
+}
+.sidebar.is-collapsed {
+  width: 72px !important;
+  min-width: 72px !important;
+  max-width: 72px !important;
+}
+.sidebar.is-collapsed .sidebar-brand { padding: 12px 8px !important; }
+.sidebar.is-collapsed .app-name,
+.sidebar.is-collapsed .app-sub,
+.sidebar.is-collapsed .tt-label,
+.sidebar.is-collapsed .theme-toggle-wrap,
+.sidebar.is-collapsed .elite-ux-nav-label,
+.sidebar.is-collapsed .sidebar-list,
+.sidebar.is-collapsed .sidebar-section { display: none !important; }
+.sidebar.is-collapsed .sidebar-brand > div[style*="justify-content:space-between"] {
+  margin-top: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.sidebar.is-collapsed .sidebar-brand button,
+.sidebar.is-collapsed .sidebar-data button,
+.sidebar.is-collapsed .nav-tab {
+  width: 44px !important;
+  height: 40px !important;
+  min-width: 44px !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0 !important;
+  font-size: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+.sidebar.is-collapsed .sidebar-brand button svg,
+.sidebar.is-collapsed .sidebar-data button svg,
+.sidebar.is-collapsed .nav-tab svg,
+.sidebar.is-collapsed .nav-tab svg.icon {
+  width: 17px !important;
+  height: 17px !important;
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+}
+.sidebar.is-collapsed .nav-tabs {
+  padding: 8px 8px 0 !important;
+  gap: 6px !important;
+  align-items: center !important;
+}
+.sidebar.is-collapsed .nav-tab.active {
+  border-left: 1px solid var(--accent-dim) !important;
+  box-shadow: inset 0 0 0 2px var(--trim-dim) !important;
+}
+.sidebar.is-collapsed .sidebar-data {
+  padding: 8px !important;
+  margin-top: auto !important;
+  align-items: center !important;
+  border-top: 1px solid var(--border) !important;
+}
+.sidebar.is-collapsed .sync-bar {
+  justify-content: center !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+.sidebar.is-collapsed #syncStatus {
+  width: 10px !important;
+  height: 10px !important;
+  max-width: 10px !important;
+  flex: 0 0 10px !important;
+  border-radius: 99px !important;
+  background: var(--text-3) !important;
+  color: transparent !important;
+  overflow: hidden !important;
+}
+.sidebar.is-collapsed .sync-bar.connected #syncStatus { background: var(--success) !important; }
+.sidebar.is-collapsed .sync-bar.saving #syncStatus,
+.sidebar.is-collapsed .sync-bar.unsaved #syncStatus { background: var(--warning) !important; }
+.sidebar.is-collapsed .sync-bar.error #syncStatus { background: var(--danger) !important; }
+.sidebar.is-collapsed #syncStatus::before,
+.sidebar.is-collapsed #syncTime { display: none !important; }
+@media (max-width: 760px) {
+  .sidebar.is-collapsed { width: 100% !important; min-width: 0 !important; max-width: none !important; }
+  .sidebar.is-collapsed .app-name,
+  .sidebar.is-collapsed .app-sub,
+  .sidebar.is-collapsed .theme-toggle-wrap,
+  .sidebar.is-collapsed .sidebar-section,
+  .sidebar.is-collapsed .sidebar-list { display: flex !important; }
+  .sidebar.is-collapsed .app-name,
+  .sidebar.is-collapsed .app-sub { display: block !important; }
+  .sidebar.is-collapsed .sidebar-list { display: block !important; }
+  .sidebar.is-collapsed .nav-tabs { flex-direction: row !important; align-items: stretch !important; }
+  .sidebar.is-collapsed .nav-tab,
+  .sidebar.is-collapsed .sidebar-data button,
+  .sidebar.is-collapsed .sidebar-brand button {
+    width: auto !important; height: auto !important; min-width: 0 !important; min-height: 36px !important;
+    padding: 9px 10px !important; font-size: 12px !important; gap: 7px !important;
+  }
+  .sidebar.is-collapsed .sync-bar { padding: 0 12px !important; justify-content: space-between !important; }
+  .sidebar.is-collapsed #syncStatus {
+    width: auto !important; height: auto !important; max-width: none !important; flex: 1 1 auto !important;
+    border-radius: 0 !important; background: transparent !important; color: inherit !important;
+  }
+  .sidebar.is-collapsed #syncStatus::before { display: inline !important; }
+  .sidebar.is-collapsed #syncTime { display: block !important; }
+}
+@media print { #sidebarCollapseBtn { display:none !important; } }
+
 </style>
 
 </head>
@@ -3922,11 +4067,25 @@ details.ux-details .ux-details-body { padding:16px; }
       </div>
       <div style="font-size:11px;color:var(--text-3);margin-top:7px;">Bare Minimum keeps your current colors but removes non-essential visual effects. Classic mode applies pixel-art styling, square elements and CRT scanlines.</div>
     </div>
-    <div class="modal-field" style="margin-bottom:0;">
-      <label>Tools</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button onclick="hideSettings();showMassMergeModal();" class="inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-merge"/></svg> Mass Merge</button>
-        <button onclick="hideSettings();showIvExportModal();" class="inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-download"/></svg> Export Interviews</button>
+    <div class="modal-field" id="settingsDataTools">
+      <label>Data Tools</label>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+        <button onclick="hideSettings();connectFolder();" class="btn-primary inline-icon-btn" style="justify-content:flex-start;"><svg class="icon"><use href="#i-folder"/></svg> Connect</button>
+        <button onclick="hideSettings();loadData();" class="inline-icon-btn" style="justify-content:flex-start;"><svg class="icon"><use href="#i-load"/></svg> Load</button>
+        <button onclick="hideSettings();saveData();" class="btn-success inline-icon-btn" style="justify-content:flex-start;"><svg class="icon"><use href="#i-save"/></svg> Save</button>
+      </div>
+    </div>
+    <div class="modal-field" id="settingsInterviewTools">
+      <label>Interview Tools</label>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+        <button onclick="hideSettings();showLogInterview('');" class="btn-purple inline-icon-btn" style="justify-content:flex-start;"><svg class="icon"><use href="#i-edit"/></svg> Log an Interview</button>
+        <button onclick="hideSettings();showIvExportModal();" class="inline-icon-btn" style="justify-content:flex-start;"><svg class="icon"><use href="#i-download"/></svg> Export Interviews</button>
+      </div>
+    </div>
+    <div class="modal-field" id="settingsMaintenanceTools" style="margin-bottom:0;">
+      <label>Maintenance Tools</label>
+      <div style="display:grid;grid-template-columns:1fr;gap:8px;">
+        <button onclick="hideSettings();showMassMergeModal();" class="btn-danger inline-icon-btn" style="justify-content:flex-start;"><svg class="icon"><use href="#i-merge"/></svg> Mass Merge Duplicates</button>
       </div>
     </div>
   </div>
@@ -4208,6 +4367,10 @@ details.ux-details .ux-details-body { padding:16px; }
         <svg class="tt-icon tt-moon"><use href="#i-moon"/></svg>
         <span class="tt-label" id="themeLabel">Blue Dark</span>
       </div>
+      <button id="sidebarCollapseBtn" onclick="toggleSidebarCollapsed()" title="Collapse sidebar" aria-label="Collapse sidebar"
+        style="background:transparent;border:1px solid var(--border-2);padding:4px 8px;font-size:11px;color:var(--text-3);margin:0;gap:4px;min-width:30px;">
+        <svg class="icon" id="sidebarCollapseIcon"><use href="#i-chevron-left"/></svg>
+      </button>
       <button onclick="showSettings()" title="Settings"
         style="background:transparent;border:1px solid var(--border-2);padding:4px 10px;font-size:11px;color:var(--text-3);margin:0;gap:4px;">
         <svg class="icon"><use href="#i-settings"/></svg> Settings
@@ -4257,27 +4420,11 @@ details.ux-details .ux-details-body { padding:16px; }
 
   <div class="sidebar-data" style="margin-top:auto;flex-direction:column;gap:6px;">
 
-    <button id="connectBtn" onclick="connectFolder()" class="btn-primary" style="width:100%;justify-content:flex-start;">
+    <button id="connectBtn" onclick="connectFolder()" class="btn-primary" title="Connect Shared Folder" style="width:100%;justify-content:flex-start;">
 
       <svg class="icon"><use href="#i-folder"/></svg> Connect Shared Folder
 
     </button>
-
-    <div style="display:flex;gap:6px;width:100%;">
-
-      <button onclick="loadData()" style="flex:1;font-size:12px;">
-
-        <svg class="icon"><use href="#i-load"/></svg> Load
-
-      </button>
-
-      <button onclick="saveData()" class="btn-success" style="flex:1;font-size:12px;">
-
-        <svg class="icon"><use href="#i-save"/></svg> Save
-
-      </button>
-
-    </div>
 
   </div>
 
@@ -4349,18 +4496,7 @@ details.ux-details .ux-details-body { padding:16px; }
 </div>  <!-- Log Interview & Mass Merge — always visible -->
 
 
-  <div class="sidebar-section" style="border-bottom:1px solid var(--border);">
-    <button onclick="showLogInterview('')" style="width:100%;justify-content:flex-start;background:var(--purple-dim);border:1px solid rgba(139,92,246,.3);color:var(--purple);margin-bottom:6px;">
-      <svg class="icon"><use href="#i-edit"/></svg> Log an Interview
-    </button>
-<button onclick="showMassMergeModal()" style="width:100%;justify-content:flex-start;background:var(--danger-dim);border:1px solid rgba(244,63,94,.2);color:var(--danger);margin-bottom:6px;">
-      <svg class="icon"><use href="#i-merge"/></svg> Mass Merge Duplicates
-    </button>
-    <button onclick="showIvExportModal()" style="width:100%;justify-content:flex-start;background:var(--accent-dim);border:1px solid var(--accent-glow);color:var(--accent-light);">
-      <svg class="icon"><use href="#i-download"/></svg> Export Interviews
-    </button>
-
-  </div>
+  <!-- Sidebar interview/export/merge shortcuts moved to Settings. -->
 
 
   <div class="sidebar-list" id="sidebarList"></div>
@@ -5239,7 +5375,7 @@ function showGlobalDashboard(){
 
     +'</div></div>'
 
-    +(profiles.length===0?'<div class="empty-state"><h2>No data loaded yet</h2><p>Use the <strong>Load</strong> button in the sidebar to import your data file.</p></div>':'');
+    +(profiles.length===0?'<div class="empty-state"><h2>No data loaded yet</h2><p>Use <strong>Settings → Data Tools → Load</strong> to import your data file.</p></div>':'');
 
   renderSidebarList();
 
@@ -9039,7 +9175,7 @@ function connectFolder(){
 
   if(!hasFolderAPI()){
 
-    alert('Your browser does not support the Shared Folder feature.\n\nUse the Load / Save buttons instead.\n\n(Requires Edge or Chrome version 86 or later.)');
+    alert('Your browser does not support the Shared Folder feature.\n\nUse Settings → Data Tools → Load / Save instead.\n\n(Requires Edge or Chrome version 86 or later.)');
 
     return;
 
@@ -11759,6 +11895,228 @@ function printStatsGraphsView(){
   ccDashSaveLocal(dashboardLayout);
   ccDashInstallStyle();
   if(currentMode==='dashboard')setTimeout(ccDashRender,0);
+})();
+</script>
+
+
+
+<script>
+/* --------------------------------------------
+   FINAL COMMAND CENTRE / SIDEBAR SAFETY LAYER
+-------------------------------------------- */
+(function(){
+  if(window.__eliteCommandCentreFinalFixInstalled)return;
+  window.__eliteCommandCentreFinalFixInstalled=true;
+
+  var SIDEBAR_KEY='eliteSystemSidebarCollapsedV1';
+  var pendingDashboardRender=false;
+  var pendingDashboardTimer=null;
+
+  function q(sel,root){return (root||document).querySelector(sel);}
+  function qa(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel));}
+  function isSmallScreen(){return window.matchMedia&&window.matchMedia('(max-width: 760px)').matches;}
+
+  function applySidebarCollapsed(flag){
+    var sidebar=q('.sidebar');
+    if(!sidebar)return;
+    if(isSmallScreen())flag=false;
+    sidebar.classList.toggle('is-collapsed',!!flag);
+    var btn=document.getElementById('sidebarCollapseBtn');
+    var icon=document.getElementById('sidebarCollapseIcon');
+    if(btn){
+      btn.title=flag?'Expand sidebar':'Collapse sidebar';
+      btn.setAttribute('aria-label',flag?'Expand sidebar':'Collapse sidebar');
+      btn.setAttribute('aria-expanded',flag?'false':'true');
+    }
+    if(icon){icon.innerHTML='<use href="'+(flag?'#i-chevron-right':'#i-chevron-left')+'"/>';}
+  }
+  window.applySidebarCollapsed=applySidebarCollapsed;
+  window.toggleSidebarCollapsed=function(){
+    var sidebar=q('.sidebar');
+    var next=!(sidebar&&sidebar.classList.contains('is-collapsed'));
+    try{localStorage.setItem(SIDEBAR_KEY,next?'1':'0');}catch(e){}
+    applySidebarCollapsed(next);
+  };
+  function initSidebarCollapsed(){
+    var saved='0';
+    try{saved=localStorage.getItem(SIDEBAR_KEY)||'0';}catch(e){}
+    applySidebarCollapsed(saved==='1');
+  }
+
+  function isEditableElement(el){
+    if(!el)return false;
+    var tag=(el.tagName||'').toUpperCase();
+    return tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||tag==='BUTTON'||el.isContentEditable===true;
+  }
+  function modalOpen(){return !!q('.modal-overlay.open');}
+  function visibleSuggestOpen(){
+    return qa('.prospect-suggest,.iv-name-suggest').some(function(el){
+      var st=window.getComputedStyle(el);
+      return st.display!=='none' && st.visibility!=='hidden' && el.offsetParent!==null;
+    });
+  }
+  function dashboardActiveElement(){
+    var view=document.getElementById('viewArea');
+    var active=document.activeElement;
+    return !!(view&&active&&view.contains(active));
+  }
+  function isDashboardInteractionActive(){
+    var active=document.activeElement;
+    if(modalOpen())return true;
+    if(visibleSuggestOpen())return true;
+    if(window.ccDashDraggedId||window.__ccDashDragging)return true;
+    if(dashboardActiveElement()&&isEditableElement(active))return true;
+    return false;
+  }
+  window.isDashboardInteractionActive=isDashboardInteractionActive;
+  window.isUserInteracting=function(){return isDashboardInteractionActive();};
+
+  function captureFocusState(){
+    var active=document.activeElement;
+    if(!active)return null;
+    var state={id:active.id||'',name:active.getAttribute&&active.getAttribute('name')||'',tag:active.tagName||'',scrollTop:(document.getElementById('viewArea')||{}).scrollTop||0};
+    try{state.selectionStart=active.selectionStart;state.selectionEnd=active.selectionEnd;}catch(e){}
+    return state;
+  }
+  function restoreFocusState(state){
+    if(!state)return;
+    var view=document.getElementById('viewArea');
+    if(view)view.scrollTop=state.scrollTop||0;
+    var el=null;
+    if(state.id)el=document.getElementById(state.id);
+    if(!el&&state.name)el=document.querySelector(state.tag+'[name="'+String(state.name).replace(/"/g,'\"')+'"]');
+    if(el&&typeof el.focus==='function'){
+      try{el.focus({preventScroll:true});}catch(e){try{el.focus();}catch(_e){}}
+      try{if(typeof state.selectionStart==='number'&&typeof el.setSelectionRange==='function')el.setSelectionRange(state.selectionStart,state.selectionEnd);}catch(e){}
+    }
+    if(view)view.scrollTop=state.scrollTop||0;
+  }
+  function withStableDashboardRender(fn){
+    var state=captureFocusState();
+    var result=fn();
+    restoreFocusState(state);
+    return result;
+  }
+
+  function scheduleDashboardRender(){
+    pendingDashboardRender=true;
+    clearTimeout(pendingDashboardTimer);
+    pendingDashboardTimer=setTimeout(function flush(){
+      if(!pendingDashboardRender)return;
+      if(currentMode==='dashboard'&&isDashboardInteractionActive()){
+        pendingDashboardTimer=setTimeout(flush,700);
+        return;
+      }
+      pendingDashboardRender=false;
+      if(currentMode==='dashboard'&&typeof window.ccDashRender==='function'){
+        try{window.ccDashRender(true);}catch(e){try{console.warn('Deferred Command Centre render skipped:',e);}catch(_e){}}
+      }
+    },700);
+  }
+  window.scheduleDashboardRender=scheduleDashboardRender;
+
+  var originalCcDashRender=window.ccDashRender;
+  if(typeof originalCcDashRender==='function'){
+    window.__eliteOriginalCcDashRender=originalCcDashRender;
+    window.ccDashRender=function(force){
+      if(!force&&currentMode==='dashboard'&&isDashboardInteractionActive()){
+        scheduleDashboardRender();
+        return;
+      }
+      return withStableDashboardRender(function(){return originalCcDashRender();});
+    };
+    window.showOverallDashboard=function(){return window.ccDashRender(false);};
+  }
+
+  window.setSyncStatus=function(cls,txt){
+    var bar=document.getElementById('syncBar');
+    var el=document.getElementById('syncStatus');
+    if(!bar||!el)return;
+    var label=(typeof uxSyncLabel==='function')?uxSyncLabel(txt):String(txt||'');
+    bar.className='sync-bar '+(cls||'');
+    el.textContent=label;
+    el.title=label;
+    bar.title=label+' '+(((document.getElementById('syncTime')||{}).textContent)||'');
+  };
+
+  window.applyData=function(d){
+    if(typeof loadArrays==='function')loadArrays(d);
+    currentIndex=null;
+    if(typeof renderSidebarList==='function')renderSidebarList();
+    if(currentMode==='profiles')showGlobalDashboard();
+    else if(currentMode==='prospects')showProspectDashboard();
+    else if(currentMode==='calendar')showCalendarView();
+    else if(currentMode==='appointments')showAppointmentsView();
+    else if(currentMode==='surveys')showSurveysDashboard();
+    else if(currentMode==='dashboard')window.ccDashRender?window.ccDashRender(true):showOverallDashboard();
+    else{
+      if(currentStatsSub==='logging')renderStatsLoggingPage();
+      else if(currentStatsSub==='graphs')renderDailyGraphsPage();
+      else if(currentStatsSub==='projectstats')renderProjectStatsPage();
+      else renderMainStatsPage();
+    }
+    if(typeof setManualDirty==='function')setManualDirty(false);
+  };
+
+  window.applyDataSilent=function(d){
+    if(typeof loadArrays==='function')loadArrays(d);
+    if(typeof renderSidebarList==='function')renderSidebarList();
+    var el=document.getElementById('syncStatus');
+    if(el){var prev=el.textContent;el.textContent='Updated';setTimeout(function(){if(el)el.textContent=prev;},1600);}
+    if(currentIndex!==null)return;
+    if(currentMode==='dashboard'){
+      if(isDashboardInteractionActive())scheduleDashboardRender();
+      else if(window.ccDashRender)window.ccDashRender(false);
+      return;
+    }
+    if(isDashboardInteractionActive())return;
+    if(currentMode==='profiles')showGlobalDashboard();
+    else if(currentMode==='prospects')showProspectDashboard();
+    else if(currentMode==='calendar')showCalendarView();
+    else if(currentMode==='appointments')showAppointmentsView();
+    else if(currentMode==='surveys')showSurveysDashboard();
+    else{
+      if(currentStatsSub==='logging')renderStatsLoggingPage();
+      else if(currentStatsSub==='graphs')renderDailyGraphsPage();
+      else if(currentStatsSub==='projectstats')renderProjectStatsPage();
+      else renderMainStatsPage();
+    }
+  };
+
+  if(typeof window.ccDashSetInterviewFilter==='function'){
+    window.ccDashSetInterviewFilter=function(key,val,delay){
+      var l=(typeof ccDashGetLayout==='function')?ccDashGetLayout():(dashboardLayout||{});
+      l.notes=l.notes||{};
+      if(key==='search')l.notes.interviewSearch=String(val||'');
+      else if(key==='recruiter')l.notes.interviewRecruiter=String(val||'');
+      else if(key==='scope')l.notes.interviewScope=String(val||'all');
+      dashboardLayout=l;
+      try{localStorage.setItem('eliteSystemDashboardLayoutV1',JSON.stringify(l));}catch(e){}
+      clearTimeout(window.ccDashInterviewFilterTimer);
+      window.ccDashInterviewFilterTimer=setTimeout(function(){
+        if(currentMode==='dashboard'){
+          if(isDashboardInteractionActive())scheduleDashboardRender();
+          else if(window.ccDashRender)window.ccDashRender(false);
+        }
+      },delay?450:0);
+    };
+  }
+
+  function finalCleanSidebarLabels(){
+    qa('.nav-tab').forEach(function(btn){
+      var txt=btn.textContent.replace(/\s+/g,' ').trim();
+      if(txt)btn.title=txt;
+    });
+    var c=document.getElementById('connectBtn');if(c)c.title='Connect Shared Folder';
+  }
+
+  window.addEventListener('resize',initSidebarCollapsed);
+  document.addEventListener('focusout',function(){if(pendingDashboardRender)setTimeout(scheduleDashboardRender,120);});
+  document.addEventListener('mouseup',function(){if(pendingDashboardRender)setTimeout(scheduleDashboardRender,120);});
+  document.addEventListener('keyup',function(e){if(e.key==='Escape'&&pendingDashboardRender)setTimeout(scheduleDashboardRender,120);});
+  initSidebarCollapsed();
+  finalCleanSidebarLabels();
+  setTimeout(function(){initSidebarCollapsed();finalCleanSidebarLabels();},0);
 })();
 </script>
 
