@@ -28,11 +28,10 @@ jobs:
           original = s
 
           # Remove previous injected variants if present.
-          s = re.sub(r'\n?<script id="(?:SIDEBAR_BUTTON_CLEANER_FINAL|ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT(?:-V[0-9]+)?|ELITE-SIDEBAR-BUTTON-GUARD-FINAL)">[\s\S]*?</script>\n?', '\n', s)
+          s = re.sub(r'\n?<script id="(?:SIDEBAR_BUTTON_CLEANER_FINAL(?:_V[0-9]+)?|ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT(?:-V[0-9]+)?|ELITE-SIDEBAR-BUTTON-GUARD-FINAL)">[\s\S]*?</script>\n?', '\n', s)
 
-          marker = 'SIDEBAR_BUTTON_CLEANER_FINAL_V2'
-          block = '''
-<script id="SIDEBAR_BUTTON_CLEANER_FINAL_V2">
+          marker = 'SIDEBAR_BUTTON_CLEANER_SAFE_V3'
+          js = r'''
 (function(){
   function norm(v){ return String(v == null ? '' : v).replace(/[ \t\r\n]+/g, ' ').toLowerCase(); }
   function attr(n,k){ try { return n.getAttribute ? n.getAttribute(k) : ''; } catch(e) { return ''; } }
@@ -73,8 +72,8 @@ jobs:
   setTimeout(clean, 100); setTimeout(clean, 500); setTimeout(clean, 1500);
   try { new MutationObserver(clean).observe(document.documentElement, { childList: true, subtree: true }); } catch(e) {}
 })();
-</script>
 '''
+          block = '\n<' + 'script id="' + marker + '">\n' + js + '\n</' + 'script>\n'
 
           if marker not in s:
               if '</body>' in s:
