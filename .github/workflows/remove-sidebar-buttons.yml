@@ -26,61 +26,69 @@ jobs:
         run: |
           python3 <<'PY'
           from pathlib import Path
+          import re
 
           path = Path('index.html')
           html = path.read_text(encoding='utf-8')
-          marker = 'ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V2'
+          marker = 'ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V3'
 
           cleanup = '''
-<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V2">
+<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V3">
 (function(){
   function compactText(value){
     return String(value || '').replace(/\s+/g, ' ').trim().toLowerCase();
   }
-  function isTargetControl(el){
-    var text = compactText(el.textContent);
-    var attrs = compactText([
-      el.getAttribute('aria-label'),
-      el.getAttribute('title'),
-      el.getAttribute('data-action'),
-      el.getAttribute('onclick'),
+  function classText(el){
+    try { return typeof el.className === 'string' ? el.className : ''; }
+    catch(e) { return ''; }
+  }
+  function matchesTarget(el){
+    var haystack = compactText([
+      el.textContent,
+      el.getAttribute && el.getAttribute('aria-label'),
+      el.getAttribute && el.getAttribute('title'),
+      el.getAttribute && el.getAttribute('data-action'),
+      el.getAttribute && el.getAttribute('onclick'),
       el.id,
-      el.className
+      classText(el)
     ].join(' '));
-    var haystack = text + ' ' + attrs;
-    return /mass\s*merge/.test(haystack) || /export/.test(haystack);
+    return /mass\s*merge/.test(haystack) || /\bexport\b/.test(haystack);
   }
-  function sidebarAncestor(el){
-    if(!el || !el.closest) return null;
-    return el.closest('aside, nav, [id*=side i], [class*=side i], [id*=sidebar i], [class*=sidebar i], [id*=rail i], [class*=rail i]');
+  function isSidebarNode(node){
+    while(node && node !== document.documentElement){
+      var tag = compactText(node.tagName);
+      var id = compactText(node.id);
+      var cls = compactText(classText(node));
+      if(tag === 'aside' || tag === 'nav') return true;
+      if(id.indexOf('side') !== -1 || id.indexOf('sidebar') !== -1 || id.indexOf('rail') !== -1) return true;
+      if(cls.indexOf('side') !== -1 || cls.indexOf('sidebar') !== -1 || cls.indexOf('rail') !== -1 || cls.indexOf('nav') !== -1) return true;
+      node = node.parentElement;
+    }
+    return false;
   }
-  function removeSidebarMassMergeAndExportButtons(){
-    document.querySelectorAll('button, a, [role="button"], .btn, .nav-btn').forEach(function(el){
-      if(sidebarAncestor(el) && isTargetControl(el)){
-        var row = el.closest('li, .nav-item, .sidebar-item, .side-item, .action-row, .quick-action, .tool-row') || el;
+  function removeButtons(){
+    var controls = document.querySelectorAll('button, a, [role="button"], .btn, .nav-btn');
+    controls.forEach(function(el){
+      if(isSidebarNode(el) && matchesTarget(el)){
+        var row = el.closest ? (el.closest('li, .nav-item, .sidebar-item, .side-item, .action-row, .quick-action, .tool-row') || el) : el;
         row.remove();
       }
     });
   }
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', removeSidebarMassMergeAndExportButtons);
+    document.addEventListener('DOMContentLoaded', removeButtons);
   } else {
-    removeSidebarMassMergeAndExportButtons();
+    removeButtons();
   }
-  [0,100,500,1000,2000].forEach(function(ms){ setTimeout(removeSidebarMassMergeAndExportButtons, ms); });
+  [0,100,500,1000,2000].forEach(function(ms){ setTimeout(removeButtons, ms); });
   try {
-    new MutationObserver(removeSidebarMassMergeAndExportButtons).observe(document.documentElement, {childList:true, subtree:true});
+    new MutationObserver(removeButtons).observe(document.documentElement, {childList:true, subtree:true});
   } catch(e) {}
 })();
 </script>
 '''
 
-          # Remove the previous attempted cleanup if present.
-          old_start = html.find('<script id=\\"ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT\\">')
-          if old_start != -1:
-              old_end = html.find('</script>', old_start)
-              if old_end != -1:
-                  html = html[:old_start] + html[old_end + len('</script>'):]
+          html = re.sub(r'\n?<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT(?:-V\d+)?">[\s\S]*?</script>\n?', '\n', html)
 
           if marker not in html:
               if '</body>' in html:
@@ -88,9 +96,9 @@ jobs:
               else:
                   html = html + '\n' + cleanup + '\n'
               path.write_text(html, encoding='utf-8')
-              print('Inserted V2 sidebar cleanup block into index.html')
+              print('Inserted V3 sidebar cleanup block into index.html')
           else:
-              print('V2 sidebar cleanup block already present')
+              print('V3 sidebar cleanup block already present')
           PY
 
       - name: Commit and push patched index.html
