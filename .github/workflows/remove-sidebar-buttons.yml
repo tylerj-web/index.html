@@ -1,4 +1,4 @@
-name: Remove sidebar mass merge and export buttons
+name: Patch sidebar buttons
 
 on:
   workflow_dispatch:
@@ -12,149 +12,82 @@ permissions:
   contents: write
 
 jobs:
-  patch-index:
+  patch:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Patch index.html directly
+      - name: Update index.html
         shell: bash
         run: |
           python3 <<'PY'
           from pathlib import Path
-          import re
 
-          path = Path('index.html')
-          html = path.read_text(encoding='utf-8')
-          marker = 'ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V4'
-
-          cleanup = r'''
-<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V4">
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          marker = 'SIDEBAR_BUTTON_CLEANER_FINAL'
+          block = '''
+<script id="SIDEBAR_BUTTON_CLEANER_FINAL">
 (function(){
-  function toText(value){
-    value = value == null ? '' : String(value);
-    return value.replace(/[ \t\r\n]+/g, ' ').toLowerCase();
-  }
-  function getClass(node){
-    try {
-      return typeof node.className === 'string' ? node.className : '';
-    } catch(e) {
-      return '';
-    }
-  }
-  function getAttr(node, name){
-    try {
-      return node.getAttribute ? node.getAttribute(name) : '';
-    } catch(e) {
-      return '';
-    }
-  }
-  function controlText(node){
-    return toText([
-      node.textContent,
-      getAttr(node, 'aria-label'),
-      getAttr(node, 'title'),
-      getAttr(node, 'data-action'),
-      getAttr(node, 'onclick'),
-      node.id,
-      getClass(node)
-    ].join(' '));
-  }
-  function isTargetControl(node){
-    var text = controlText(node);
-    return text.indexOf('mass merge') !== -1 ||
-           text.indexOf('massmerge') !== -1 ||
-           text.indexOf('export') !== -1;
-  }
-  function isSidebarNode(node){
-    while(node && node !== document.documentElement){
-      var tag = toText(node.tagName);
-      var id = toText(node.id);
-      var cls = toText(getClass(node));
-      if(tag === 'aside' || tag === 'nav') return true;
-      if(id.indexOf('side') !== -1 || id.indexOf('sidebar') !== -1 || id.indexOf('rail') !== -1) return true;
-      if(cls.indexOf('side') !== -1 || cls.indexOf('sidebar') !== -1 || cls.indexOf('rail') !== -1 || cls.indexOf('nav') !== -1) return true;
-      node = node.parentNode;
+  function norm(v){ return String(v == null ? '' : v).replace(/[ \t\r\n]+/g, ' ').toLowerCase(); }
+  function attr(n,k){ try { return n.getAttribute ? n.getAttribute(k) : ''; } catch(e) { return ''; } }
+  function cls(n){ try { return typeof n.className === 'string' ? n.className : ''; } catch(e) { return ''; } }
+  function sidebar(n){
+    while(n && n !== document.documentElement){
+      var t = norm(n.tagName), id = norm(n.id), c = norm(cls(n));
+      if(t === 'aside' || t === 'nav') return true;
+      if(id.indexOf('side') >= 0 || id.indexOf('rail') >= 0) return true;
+      if(c.indexOf('side') >= 0 || c.indexOf('rail') >= 0 || c.indexOf('nav') >= 0) return true;
+      n = n.parentNode;
     }
     return false;
   }
-  function isControl(node){
-    var tag = toText(node.tagName);
-    var role = toText(getAttr(node, 'role'));
-    var cls = toText(getClass(node));
-    return tag === 'button' || tag === 'a' || role === 'button' || cls.indexOf('btn') !== -1 || cls.indexOf('nav-btn') !== -1;
+  function control(n){
+    var t = norm(n.tagName), c = norm(cls(n)), r = norm(attr(n,'role'));
+    return t === 'button' || t === 'a' || r === 'button' || c.indexOf('btn') >= 0;
   }
-  function removableNode(node){
-    var current = node;
-    while(current && current.parentNode && current !== document.body){
-      var tag = toText(current.tagName);
-      var cls = toText(getClass(current));
-      if(tag === 'li' || cls.indexOf('nav-item') !== -1 || cls.indexOf('sidebar-item') !== -1 || cls.indexOf('side-item') !== -1 || cls.indexOf('action-row') !== -1 || cls.indexOf('tool-row') !== -1){
-        return current;
-      }
-      current = current.parentNode;
+  function target(n){
+    var x = norm([n.textContent, attr(n,'aria-label'), attr(n,'title'), attr(n,'onclick'), attr(n,'data-action'), n.id, cls(n)].join(' '));
+    return x.indexOf('mass merge') >= 0 || x.indexOf('massmerge') >= 0 || x.indexOf('export') >= 0;
+  }
+  function row(n){
+    var cur = n;
+    while(cur && cur.parentNode && cur !== document.body){
+      var t = norm(cur.tagName), c = norm(cls(cur));
+      if(t === 'li' || c.indexOf('nav-item') >= 0 || c.indexOf('sidebar-item') >= 0 || c.indexOf('side-item') >= 0 || c.indexOf('action-row') >= 0) return cur;
+      cur = cur.parentNode;
     }
-    return node;
+    return n;
   }
-  function removeSidebarMassMergeAndExportButtons(){
-    var nodes = document.getElementsByTagName('*');
-    var remove = [];
-    var i;
-    for(i = 0; i < nodes.length; i++){
-      if(isControl(nodes[i]) && isSidebarNode(nodes[i]) && isTargetControl(nodes[i])){
-        remove.push(removableNode(nodes[i]));
-      }
-    }
-    for(i = 0; i < remove.length; i++){
-      if(remove[i] && remove[i].parentNode){
-        remove[i].parentNode.removeChild(remove[i]);
-      }
-    }
+  function clean(){
+    var all = document.getElementsByTagName('*'), found = [], i;
+    for(i = 0; i < all.length; i++) if(control(all[i]) && sidebar(all[i]) && target(all[i])) found.push(row(all[i]));
+    for(i = 0; i < found.length; i++) if(found[i] && found[i].parentNode) found[i].parentNode.removeChild(found[i]);
   }
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', removeSidebarMassMergeAndExportButtons);
-  } else {
-    removeSidebarMassMergeAndExportButtons();
-  }
-  setTimeout(removeSidebarMassMergeAndExportButtons, 0);
-  setTimeout(removeSidebarMassMergeAndExportButtons, 100);
-  setTimeout(removeSidebarMassMergeAndExportButtons, 500);
-  setTimeout(removeSidebarMassMergeAndExportButtons, 1000);
-  setTimeout(removeSidebarMassMergeAndExportButtons, 2000);
-  try {
-    new MutationObserver(removeSidebarMassMergeAndExportButtons).observe(document.documentElement, { childList: true, subtree: true });
-  } catch(e) {}
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', clean); else clean();
+  setTimeout(clean, 100); setTimeout(clean, 500); setTimeout(clean, 1500);
+  try { new MutationObserver(clean).observe(document.documentElement, { childList: true, subtree: true }); } catch(e) {}
 })();
 </script>
 '''
-
-          html = re.sub(r'\n?<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT(?:-V[0-9]+)?">[\s\S]*?</script>\n?', '\n', html)
-
-          if marker not in html:
-              if '</body>' in html:
-                  html = html.replace('</body>', cleanup + '\n</body>', 1)
-              else:
-                  html = html + '\n' + cleanup + '\n'
-              path.write_text(html, encoding='utf-8')
-              print('Inserted V4 sidebar cleanup block into index.html')
+          if marker not in s:
+              s = s.replace('</body>', block + '\n</body>') if '</body>' in s else s + block
+              p.write_text(s, encoding='utf-8')
+              print('patched index.html')
           else:
-              print('V4 sidebar cleanup block already present')
+              print('already patched')
           PY
 
-      - name: Commit and push patched index.html
+      - name: Commit
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git status --short
           if ! git diff --quiet -- index.html; then
             git add index.html
-            git commit -m "Hide sidebar mass merge and export buttons"
+            git commit -m "Remove sidebar buttons from live app"
             git push origin HEAD:main
-          else
-            echo "No index.html changes detected."
           fi
