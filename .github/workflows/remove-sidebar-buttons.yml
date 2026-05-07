@@ -1,6 +1,7 @@
 name: Remove sidebar mass merge and export buttons
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -17,9 +18,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           persist-credentials: true
 
-      - name: Patch index.html
+      - name: Patch index.html directly
         shell: bash
         run: |
           python3 <<'PY'
@@ -27,70 +29,80 @@ jobs:
 
           path = Path('index.html')
           html = path.read_text(encoding='utf-8')
+          marker = 'ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V2'
 
-          marker = 'ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT'
-          cleanup = r'''
-<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT">
+          cleanup = '''
+<script id="ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT-V2">
 (function(){
-  function isSidebarControl(el){
-    return !!(el && el.closest && el.closest('aside, #sidebar, .sidebar, .side-bar, .sidepanel, .side-panel, .side-nav, .sidenav, .left-nav, .nav-rail, .app-sidebar'));
+  function compactText(value){
+    return String(value || '').replace(/\s+/g, ' ').trim().toLowerCase();
   }
-  function shouldRemove(el){
-    var text = (el.textContent || '').replace(/\s+/g, ' ').trim();
-    var attr = [
-      el.getAttribute('aria-label') || '',
-      el.getAttribute('title') || '',
-      el.getAttribute('data-action') || '',
-      el.getAttribute('onclick') || '',
-      el.id || '',
-      el.className || ''
-    ].join(' ');
-    var haystack = (text + ' ' + attr).toLowerCase();
-    return /mass\s*merge/.test(haystack) || /\bexport\b/.test(haystack);
+  function isTargetControl(el){
+    var text = compactText(el.textContent);
+    var attrs = compactText([
+      el.getAttribute('aria-label'),
+      el.getAttribute('title'),
+      el.getAttribute('data-action'),
+      el.getAttribute('onclick'),
+      el.id,
+      el.className
+    ].join(' '));
+    var haystack = text + ' ' + attrs;
+    return /mass\s*merge/.test(haystack) || /export/.test(haystack);
   }
-  function cleanSidebarButtons(){
-    var controls = document.querySelectorAll('button, a, [role="button"]');
-    controls.forEach(function(el){
-      if(isSidebarControl(el) && shouldRemove(el)) el.remove();
+  function sidebarAncestor(el){
+    if(!el || !el.closest) return null;
+    return el.closest('aside, nav, [id*=side i], [class*=side i], [id*=sidebar i], [class*=sidebar i], [id*=rail i], [class*=rail i]');
+  }
+  function removeSidebarMassMergeAndExportButtons(){
+    document.querySelectorAll('button, a, [role="button"], .btn, .nav-btn').forEach(function(el){
+      if(sidebarAncestor(el) && isTargetControl(el)){
+        var row = el.closest('li, .nav-item, .sidebar-item, .side-item, .action-row, .quick-action, .tool-row') || el;
+        row.remove();
+      }
     });
   }
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', cleanSidebarButtons);
+    document.addEventListener('DOMContentLoaded', removeSidebarMassMergeAndExportButtons);
   } else {
-    cleanSidebarButtons();
+    removeSidebarMassMergeAndExportButtons();
   }
-  setTimeout(cleanSidebarButtons, 0);
-  setTimeout(cleanSidebarButtons, 250);
-  setTimeout(cleanSidebarButtons, 1000);
+  [0,100,500,1000,2000].forEach(function(ms){ setTimeout(removeSidebarMassMergeAndExportButtons, ms); });
   try {
-    new MutationObserver(cleanSidebarButtons).observe(document.documentElement, { childList: true, subtree: true });
+    new MutationObserver(removeSidebarMassMergeAndExportButtons).observe(document.documentElement, {childList:true, subtree:true});
   } catch(e) {}
 })();
 </script>
 '''
 
+          # Remove the previous attempted cleanup if present.
+          old_start = html.find('<script id=\\"ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT\\">')
+          if old_start != -1:
+              old_end = html.find('</script>', old_start)
+              if old_end != -1:
+                  html = html[:old_start] + html[old_end + len('</script>'):]
+
           if marker not in html:
-            if '</body>' in html:
-              html = html.replace('</body>', cleanup + '\n</body>', 1)
-            else:
-              html += '\n' + cleanup + '\n'
-            path.write_text(html, encoding='utf-8')
-            print('Inserted sidebar cleanup block.')
+              if '</body>' in html:
+                  html = html.replace('</body>', cleanup + '\n</body>', 1)
+              else:
+                  html = html + '\n' + cleanup + '\n'
+              path.write_text(html, encoding='utf-8')
+              print('Inserted V2 sidebar cleanup block into index.html')
           else:
-            print('Cleanup block already present.')
+              print('V2 sidebar cleanup block already present')
           PY
 
-          rm -f .github/workflows/remove-sidebar-buttons.yml
-
-      - name: Commit patched index.html
+      - name: Commit and push patched index.html
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if ! git diff --quiet; then
-            git add index.html .github/workflows/remove-sidebar-buttons.yml
-            git commit -m "Remove sidebar mass merge and export buttons"
-            git push
+          git status --short
+          if ! git diff --quiet -- index.html; then
+            git add index.html
+            git commit -m "Hide sidebar mass merge and export buttons"
+            git push origin HEAD:main
           else
-            echo "No changes to commit."
+            echo "No index.html changes detected."
           fi
