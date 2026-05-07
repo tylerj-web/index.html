@@ -2,11 +2,6 @@ name: Patch sidebar buttons
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/remove-sidebar-buttons.yml
 
 permissions:
   contents: write
@@ -20,36 +15,43 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Update index.html
+      - name: Patch full index.html inside GitHub runner
         shell: bash
         run: |
           python3 <<'PY'
           from pathlib import Path
+          import re
 
-          p = Path('index.html')
-          s = p.read_text(encoding='utf-8')
-          marker = 'SIDEBAR_BUTTON_CLEANER_FINAL'
+          index_path = Path('index.html')
+          workflow_path = Path('.github/workflows/remove-sidebar-buttons.yml')
+          s = index_path.read_text(encoding='utf-8')
+          original = s
+
+          # Remove previous injected variants if present.
+          s = re.sub(r'\n?<script id="(?:SIDEBAR_BUTTON_CLEANER_FINAL|ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT(?:-V[0-9]+)?|ELITE-SIDEBAR-BUTTON-GUARD-FINAL)">[\s\S]*?</script>\n?', '\n', s)
+
+          marker = 'SIDEBAR_BUTTON_CLEANER_FINAL_V2'
           block = '''
-<script id="SIDEBAR_BUTTON_CLEANER_FINAL">
+<script id="SIDEBAR_BUTTON_CLEANER_FINAL_V2">
 (function(){
   function norm(v){ return String(v == null ? '' : v).replace(/[ \t\r\n]+/g, ' ').toLowerCase(); }
   function attr(n,k){ try { return n.getAttribute ? n.getAttribute(k) : ''; } catch(e) { return ''; } }
   function cls(n){ try { return typeof n.className === 'string' ? n.className : ''; } catch(e) { return ''; } }
-  function sidebar(n){
+  function isSidebar(n){
     while(n && n !== document.documentElement){
       var t = norm(n.tagName), id = norm(n.id), c = norm(cls(n));
       if(t === 'aside' || t === 'nav') return true;
-      if(id.indexOf('side') >= 0 || id.indexOf('rail') >= 0) return true;
-      if(c.indexOf('side') >= 0 || c.indexOf('rail') >= 0 || c.indexOf('nav') >= 0) return true;
+      if(id.indexOf('sidebar') >= 0 || id.indexOf('side') >= 0 || id.indexOf('rail') >= 0) return true;
+      if(c.indexOf('sidebar') >= 0 || c.indexOf('side') >= 0 || c.indexOf('rail') >= 0 || c.indexOf('nav') >= 0) return true;
       n = n.parentNode;
     }
     return false;
   }
-  function control(n){
+  function isControl(n){
     var t = norm(n.tagName), c = norm(cls(n)), r = norm(attr(n,'role'));
     return t === 'button' || t === 'a' || r === 'button' || c.indexOf('btn') >= 0;
   }
-  function target(n){
+  function isTarget(n){
     var x = norm([n.textContent, attr(n,'aria-label'), attr(n,'title'), attr(n,'onclick'), attr(n,'data-action'), n.id, cls(n)].join(' '));
     return x.indexOf('mass merge') >= 0 || x.indexOf('massmerge') >= 0 || x.indexOf('export') >= 0;
   }
@@ -57,14 +59,14 @@ jobs:
     var cur = n;
     while(cur && cur.parentNode && cur !== document.body){
       var t = norm(cur.tagName), c = norm(cls(cur));
-      if(t === 'li' || c.indexOf('nav-item') >= 0 || c.indexOf('sidebar-item') >= 0 || c.indexOf('side-item') >= 0 || c.indexOf('action-row') >= 0) return cur;
+      if(t === 'li' || c.indexOf('nav-item') >= 0 || c.indexOf('sidebar-item') >= 0 || c.indexOf('side-item') >= 0 || c.indexOf('action-row') >= 0 || c.indexOf('tool-row') >= 0) return cur;
       cur = cur.parentNode;
     }
     return n;
   }
   function clean(){
     var all = document.getElementsByTagName('*'), found = [], i;
-    for(i = 0; i < all.length; i++) if(control(all[i]) && sidebar(all[i]) && target(all[i])) found.push(row(all[i]));
+    for(i = 0; i < all.length; i++) if(isControl(all[i]) && isSidebar(all[i]) && isTarget(all[i])) found.push(row(all[i]));
     for(i = 0; i < found.length; i++) if(found[i] && found[i].parentNode) found[i].parentNode.removeChild(found[i]);
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', clean); else clean();
@@ -73,21 +75,35 @@ jobs:
 })();
 </script>
 '''
+
           if marker not in s:
-              s = s.replace('</body>', block + '\n</body>') if '</body>' in s else s + block
-              p.write_text(s, encoding='utf-8')
-              print('patched index.html')
-          else:
-              print('already patched')
+              if '</body>' in s:
+                  s = s.replace('</body>', block + '\n</body>', 1)
+              else:
+                  s = s + '\n' + block + '\n'
+
+          if '</html>' not in s.lower():
+              raise SystemExit('Refusing to write: index.html does not appear complete')
+          for required in ['Profiles', 'Prospects', 'Calendar', 'Statistics', 'Settings']:
+              if required not in s:
+                  raise SystemExit('Refusing to write: missing expected section ' + required)
+
+          index_path.write_text(s, encoding='utf-8')
+          workflow_path.unlink(missing_ok=True)
+          print('index_changed=' + str(s != original))
+          print('workflow_deleted=' + str(not workflow_path.exists()))
           PY
 
-      - name: Commit
+      - name: Commit real app change and delete workflow
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if ! git diff --quiet -- index.html; then
-            git add index.html
-            git commit -m "Remove sidebar buttons from live app"
+          git status --short
+          if ! git diff --quiet; then
+            git add index.html .github/workflows/remove-sidebar-buttons.yml
+            git commit -m "Remove sidebar mass merge and export buttons"
             git push origin HEAD:main
+          else
+            echo "No changes detected."
           fi
