@@ -27,53 +27,53 @@ jobs:
           s = index_path.read_text(encoding='utf-8')
           original = s
 
-          # Remove previous injected variants if present.
-          s = re.sub(r'\n?<script id="(?:SIDEBAR_BUTTON_CLEANER_FINAL(?:_V[0-9]+)?|ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT(?:-V[0-9]+)?|ELITE-SIDEBAR-BUTTON-GUARD-FINAL)">[\s\S]*?</script>\n?', '\n', s)
+          s = re.sub(r'\n?<script id="(?:SIDEBAR_BUTTON_CLEANER_FINAL(?:_V[0-9]+)?|SIDEBAR_BUTTON_CLEANER_SAFE_V[0-9]+|ELITE-SIDEBAR-CLEANUP-MASS-MERGE-EXPORT(?:-V[0-9]+)?|ELITE-SIDEBAR-BUTTON-GUARD-FINAL)">[\s\S]*?</script>\n?', '\n', s)
 
-          marker = 'SIDEBAR_BUTTON_CLEANER_SAFE_V3'
-          js = r'''
-(function(){
-  function norm(v){ return String(v == null ? '' : v).replace(/[ \t\r\n]+/g, ' ').toLowerCase(); }
-  function attr(n,k){ try { return n.getAttribute ? n.getAttribute(k) : ''; } catch(e) { return ''; } }
-  function cls(n){ try { return typeof n.className === 'string' ? n.className : ''; } catch(e) { return ''; } }
-  function isSidebar(n){
-    while(n && n !== document.documentElement){
-      var t = norm(n.tagName), id = norm(n.id), c = norm(cls(n));
-      if(t === 'aside' || t === 'nav') return true;
-      if(id.indexOf('sidebar') >= 0 || id.indexOf('side') >= 0 || id.indexOf('rail') >= 0) return true;
-      if(c.indexOf('sidebar') >= 0 || c.indexOf('side') >= 0 || c.indexOf('rail') >= 0 || c.indexOf('nav') >= 0) return true;
-      n = n.parentNode;
-    }
-    return false;
-  }
-  function isControl(n){
-    var t = norm(n.tagName), c = norm(cls(n)), r = norm(attr(n,'role'));
-    return t === 'button' || t === 'a' || r === 'button' || c.indexOf('btn') >= 0;
-  }
-  function isTarget(n){
-    var x = norm([n.textContent, attr(n,'aria-label'), attr(n,'title'), attr(n,'onclick'), attr(n,'data-action'), n.id, cls(n)].join(' '));
-    return x.indexOf('mass merge') >= 0 || x.indexOf('massmerge') >= 0 || x.indexOf('export') >= 0;
-  }
-  function row(n){
-    var cur = n;
-    while(cur && cur.parentNode && cur !== document.body){
-      var t = norm(cur.tagName), c = norm(cls(cur));
-      if(t === 'li' || c.indexOf('nav-item') >= 0 || c.indexOf('sidebar-item') >= 0 || c.indexOf('side-item') >= 0 || c.indexOf('action-row') >= 0 || c.indexOf('tool-row') >= 0) return cur;
-      cur = cur.parentNode;
-    }
-    return n;
-  }
-  function clean(){
-    var all = document.getElementsByTagName('*'), found = [], i;
-    for(i = 0; i < all.length; i++) if(isControl(all[i]) && isSidebar(all[i]) && isTarget(all[i])) found.push(row(all[i]));
-    for(i = 0; i < found.length; i++) if(found[i] && found[i].parentNode) found[i].parentNode.removeChild(found[i]);
-  }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', clean); else clean();
-  setTimeout(clean, 100); setTimeout(clean, 500); setTimeout(clean, 1500);
-  try { new MutationObserver(clean).observe(document.documentElement, { childList: true, subtree: true }); } catch(e) {}
-})();
-'''
-          block = '\n<' + 'script id="' + marker + '">\n' + js + '\n</' + 'script>\n'
+          marker = 'SIDEBAR_BUTTON_CLEANER_SAFE_V4'
+          js_lines = [
+              "(function(){",
+              "  function norm(v){ return String(v == null ? '' : v).replace(/[ \\t\\r\\n]+/g, ' ').toLowerCase(); }",
+              "  function attr(n,k){ try { return n.getAttribute ? n.getAttribute(k) : ''; } catch(e) { return ''; } }",
+              "  function cls(n){ try { return typeof n.className === 'string' ? n.className : ''; } catch(e) { return ''; } }",
+              "  function isSidebar(n){",
+              "    while(n && n !== document.documentElement){",
+              "      var t = norm(n.tagName), id = norm(n.id), c = norm(cls(n));",
+              "      if(t === 'aside' || t === 'nav') return true;",
+              "      if(id.indexOf('sidebar') >= 0 || id.indexOf('side') >= 0 || id.indexOf('rail') >= 0) return true;",
+              "      if(c.indexOf('sidebar') >= 0 || c.indexOf('side') >= 0 || c.indexOf('rail') >= 0 || c.indexOf('nav') >= 0) return true;",
+              "      n = n.parentNode;",
+              "    }",
+              "    return false;",
+              "  }",
+              "  function isControl(n){",
+              "    var t = norm(n.tagName), c = norm(cls(n)), r = norm(attr(n,'role'));",
+              "    return t === 'button' || t === 'a' || r === 'button' || c.indexOf('btn') >= 0;",
+              "  }",
+              "  function isTarget(n){",
+              "    var x = norm([n.textContent, attr(n,'aria-label'), attr(n,'title'), attr(n,'onclick'), attr(n,'data-action'), n.id, cls(n)].join(' '));",
+              "    return x.indexOf('mass merge') >= 0 || x.indexOf('massmerge') >= 0 || x.indexOf('export') >= 0;",
+              "  }",
+              "  function row(n){",
+              "    var cur = n;",
+              "    while(cur && cur.parentNode && cur !== document.body){",
+              "      var t = norm(cur.tagName), c = norm(cls(cur));",
+              "      if(t === 'li' || c.indexOf('nav-item') >= 0 || c.indexOf('sidebar-item') >= 0 || c.indexOf('side-item') >= 0 || c.indexOf('action-row') >= 0 || c.indexOf('tool-row') >= 0) return cur;",
+              "      cur = cur.parentNode;",
+              "    }",
+              "    return n;",
+              "  }",
+              "  function clean(){",
+              "    var all = document.getElementsByTagName('*'), found = [], i;",
+              "    for(i = 0; i < all.length; i++) if(isControl(all[i]) && isSidebar(all[i]) && isTarget(all[i])) found.push(row(all[i]));",
+              "    for(i = 0; i < found.length; i++) if(found[i] && found[i].parentNode) found[i].parentNode.removeChild(found[i]);",
+              "  }",
+              "  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', clean); else clean();",
+              "  setTimeout(clean, 100); setTimeout(clean, 500); setTimeout(clean, 1500);",
+              "  try { new MutationObserver(clean).observe(document.documentElement, { childList: true, subtree: true }); } catch(e) {}",
+              "})();",
+          ]
+          js = '\n'.join(js_lines)
+          block = '\n' + '<' + 'script id="' + marker + '">' + '\n' + js + '\n' + '</' + 'script>' + '\n'
 
           if marker not in s:
               if '</body>' in s:
