@@ -7125,10 +7125,30 @@ function ivNameSelect(id,name){
 
 
 
+
+function mergeInterviewsList(disk,mine){
+  var byId={};
+  (Array.isArray(disk)?disk:[]).forEach(function(iv){
+    if(iv&&iv.id!=null)byId[iv.id]=iv;
+  });
+  (Array.isArray(mine)?mine:[]).forEach(function(iv){
+    if(!iv||iv.id==null)return;
+    if(deletedInterviewIds[iv.id]){delete byId[iv.id];return;}
+    if(!byId[iv.id]){byId[iv.id]=iv;return;}
+    if(dirtyInterviewIds[iv.id]){byId[iv.id]=iv;return;}
+  });
+  Object.keys(deletedInterviewIds).forEach(function(id){delete byId[id];});
+  var out=[];
+  for(var k in byId){if(Object.prototype.hasOwnProperty.call(byId,k))out.push(byId[k]);}
+  return out;
+}
+
 function updateInterview(id,field,val,forName){
   var iv=interviews.filter(function(x){return x.id===id;})[0];
   if(!iv)return;
   iv[field]=val;
+  dirtyInterviewIds[iv.id]=true;
+  delete deletedInterviewIds[iv.id];
   if(field==='recruiter')ensureRecruiter(val);
   autoSave();
   if(currentIndex!==null){
@@ -7154,6 +7174,8 @@ function deleteInterview(id,forName){
 
   if(!confirm('Delete this interview?'))return;
 
+  deletedInterviewIds[id]=true;
+  delete dirtyInterviewIds[id];
   interviews=interviews.filter(function(x){return x.id!==id;});
 
   autoSave();
@@ -8359,7 +8381,10 @@ function submitInterview(){
   }
   if(foundProspectIndex>=0)prospects[foundProspectIndex].recruiter=rec;
   var iv={id:Date.now()+Math.floor(Math.random()*10000),date:date,we:we,recruiter:rec,prospectName:pName,notes:notes};
-  interviews.push(iv);ivSessionEntries.push(iv);autoSave();
+  interviews.push(iv);
+  dirtyInterviewIds[iv.id]=true;
+  delete deletedInterviewIds[iv.id];
+  ivSessionEntries.push(iv);autoSave();
   var log=document.getElementById('ivSessionLog');
   if(log){
     var hdr=ivSessionEntries.length===1?'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-3);margin-bottom:6px;">Logged this session</div>':'';
@@ -8400,7 +8425,10 @@ function saveInterview(date,rec,pName,notes){
   }
 
 var ivWE=pickWEForDate(date);
-  interviews.push({id:Date.now()+Math.floor(Math.random()*10000),date:date,we:ivWE,recruiter:rec,prospectName:pName,notes:notes});
+  var iv={id:Date.now()+Math.floor(Math.random()*10000),date:date,we:ivWE,recruiter:rec,prospectName:pName,notes:notes};
+  interviews.push(iv);
+  dirtyInterviewIds[iv.id]=true;
+  delete deletedInterviewIds[iv.id];
 
 
   autoSave();
@@ -10044,6 +10072,8 @@ var autoSaveTimer = null;
 var saveInProgress = false;
 var savePending = false;
 var deletedNames = [];
+var dirtyInterviewIds = {};
+var deletedInterviewIds = {};
 var suppressPollUntil = 0;
 
 
@@ -14171,7 +14201,9 @@ function printStatsGraphsView(){
   window.applyData=function(d){
     d=prepareIncomingDataForInterviewSafety(d,'loaded data');
     if(!d)return false;
+    var incomingInterviews=Array.isArray(d&&d.interviews)?d.interviews:[];
     if(typeof loadArrays==='function')loadArrays(d);
+    interviews=mergeInterviewsList(incomingInterviews,interviews);
     currentIndex=null;
     if(typeof renderSidebarList==='function')renderSidebarList();
     if(currentMode==='profiles')showGlobalDashboard();
@@ -14194,7 +14226,9 @@ function printStatsGraphsView(){
   window.applyDataSilent=function(d){
     d=prepareIncomingDataForInterviewSafety(d,'background/shared-folder update');
     if(!d)return false;
+    var incomingInterviews=Array.isArray(d&&d.interviews)?d.interviews:[];
     if(typeof loadArrays==='function')loadArrays(d);
+    interviews=mergeInterviewsList(incomingInterviews,interviews);
     if(typeof renderSidebarList==='function')renderSidebarList();
     var el=document.getElementById('syncStatus');
     if(el){var prev=el.textContent;el.textContent='Updated';setTimeout(function(){if(el)el.textContent=prev;},1600);}
@@ -15318,17 +15352,21 @@ function printStatsGraphsView(){
       saveInProgress=true;
       suppressPollUntil=Date.now()+2500;
       try{setSyncStatus('saving','Saving split files…');}catch(e){}
-      var payload=splitBuildPayloadFromMemory();
-      var dataWrites=Promise.resolve()
-        .then(function(){return splitWriteJson(splitHandles.profiles,payload.profiles);})
-        .then(function(){return splitWriteJson(splitHandles.prospects,payload.prospects);})
-        .then(function(){return splitWriteJson(splitHandles.stats,payload.stats);})
-        .then(function(){return splitWriteJson(splitHandles.interviews,payload.interviews);})
-        .then(function(){return splitWriteJson(splitHandles.appointments,payload.appointments);})
-        .then(function(){return splitWriteJson(splitHandles.surveys,payload.surveys);})
-        .then(function(){return splitWriteJson(splitHandles.meta,payload.meta);});
+      var dataWrites=splitReadJson(splitHandles.interviews,[])
+        .then(function(diskInterviews){
+          interviews=mergeInterviewsList(Array.isArray(diskInterviews)?diskInterviews:[],interviews);
+          var payload=splitBuildPayloadFromMemory();
+          return Promise.resolve()
+            .then(function(){return splitWriteJson(splitHandles.profiles,payload.profiles);})
+            .then(function(){return splitWriteJson(splitHandles.prospects,payload.prospects);})
+            .then(function(){return splitWriteJson(splitHandles.stats,payload.stats);})
+            .then(function(){return splitWriteJson(splitHandles.interviews,payload.interviews);})
+            .then(function(){return splitWriteJson(splitHandles.appointments,payload.appointments);})
+            .then(function(){return splitWriteJson(splitHandles.surveys,payload.surveys);})
+            .then(function(){return splitWriteJson(splitHandles.meta,payload.meta);});
+        });
       dataWrites.then(function(metaText){
-        splitLastMetaText=metaText;lastFileText=metaText;deletedNames=[];saveInProgress=false;
+        splitLastMetaText=metaText;lastFileText=metaText;deletedNames=[];dirtyInterviewIds={};deletedInterviewIds={};saveInProgress=false;
         if(savePending){savePending=false;folderSave();return;}
         var name=folderHandle?folderHandle.name:'Shared';
         setSyncStatus('connected',name+' (split)');setConnectBtn(name,'connected');setSyncTime();flashSaveButton();setManualDirty(false);hideBanner();
