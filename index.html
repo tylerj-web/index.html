@@ -11294,6 +11294,7 @@ function startFolderPoll(){
 
   pollTimer=setInterval(function(){
 
+    if(document.hidden)return;
     if(!splitFolderMode || !splitHandles || !splitHandles.meta)return;
 
     splitHandles.meta.getFile()
@@ -11333,6 +11334,14 @@ function startFolderPoll(){
   },2000);
 
 }
+
+/* Reduce background filesystem polling while tab is hidden (helps browser stability). */
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden)return;
+  if(splitFolderMode&&splitHandles&&splitHandles.meta){
+    folderRead(false).then(function(){setSyncTime();}).catch(function(){});
+  }
+});
 
 function autoSave(){
 
