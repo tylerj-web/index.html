@@ -6993,7 +6993,7 @@ function renderInterviewCards(ivs,forName){
       +'<div class="interview-topline">'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Date</div>'
-          +'<input type="date" value="'+(iv.date||'')+'" onchange="updateInterview('+rid+',\'date\',this.value,\''+safeForName+'\')">'
+          +'<input type="date" value="'+(iv.date||'')+'" oninput="updateInterviewLive('+rid+',\'date\',this.value,\''+safeForName+'\')">'
         +'</div>'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Prospect</div>'
@@ -7007,13 +7007,13 @@ function renderInterviewCards(ivs,forName){
         +'</div>'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Recruiter</div>'
-          +'<input type="text" value="'+escHtml(iv.recruiter||'TBA')+'" placeholder="Recruiter" onblur="updateInterview('+rid+',\'recruiter\',this.value,\''+safeForName+'\')">'
+          +'<input type="text" value="'+escHtml(iv.recruiter||'TBA')+'" placeholder="Recruiter" oninput="updateInterviewLive('+rid+',\'recruiter\',this.value,\''+safeForName+'\')">'
         +'</div>'
         +'<div class="interview-actions">'
           +'<button class="btn-danger btn-icon" onclick="deleteInterview('+rid+',\''+safeForName+'\')" title="Delete">'+svgI('i-trash')+'</button>'
         +'</div>'
       +'</div>'
-      +'<textarea class="interview-note-edit" rows="'+noteRows+'" placeholder="Interview notes…" onfocus="autoGrowTextarea(this)" oninput="autoGrowTextarea(this)" onblur="updateInterview('+rid+',\'notes\',this.value,\''+safeForName+'\')">'+escHtml(iv.notes||'')+'</textarea>'
+      +'<textarea class="interview-note-edit" rows="'+noteRows+'" placeholder="Interview notes…" onfocus="autoGrowTextarea(this)" oninput="autoGrowTextarea(this);updateInterviewLive('+rid+',\'notes\',this.value,\''+safeForName+'\')">'+escHtml(iv.notes||'')+'</textarea>'
       +'</div>';
 
   }).join('');
@@ -7030,7 +7030,7 @@ function renderEditableInterviewListCards(ivs,context){
       +'<div class="interview-topline">'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Date</div>'
-          +'<input type="date" value="'+(iv.date||'')+'" onchange="updateInterview('+rid+',\'date\',this.value,\''+safeContext+'\')">'
+          +'<input type="date" value="'+(iv.date||'')+'" oninput="updateInterviewLive('+rid+',\'date\',this.value,\''+safeContext+'\')">'
         +'</div>'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Prospect</div>'
@@ -7044,13 +7044,13 @@ function renderEditableInterviewListCards(ivs,context){
         +'</div>'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Recruiter</div>'
-          +'<input type="text" value="'+escHtml(iv.recruiter||'TBA')+'" placeholder="Recruiter" onblur="updateInterview('+rid+',\'recruiter\',this.value,\''+safeContext+'\')">'
+          +'<input type="text" value="'+escHtml(iv.recruiter||'TBA')+'" placeholder="Recruiter" oninput="updateInterviewLive('+rid+',\'recruiter\',this.value,\''+safeContext+'\')">'
         +'</div>'
         +'<div class="interview-actions">'
           +'<button class="btn-danger btn-icon" onclick="deleteInterview('+rid+',\''+safeContext+'\')" title="Delete">'+svgI('i-trash')+'</button>'
         +'</div>'
       +'</div>'
-      +'<textarea class="interview-note-edit" rows="'+noteRows+'" placeholder="Interview notes…" onfocus="autoGrowTextarea(this)" oninput="autoGrowTextarea(this)" onblur="updateInterview('+rid+',\'notes\',this.value,\''+safeContext+'\')">'+escHtml(iv.notes||'')+'</textarea>'
+      +'<textarea class="interview-note-edit" rows="'+noteRows+'" placeholder="Interview notes…" onfocus="autoGrowTextarea(this)" oninput="autoGrowTextarea(this);updateInterviewLive('+rid+',\'notes\',this.value,\''+safeContext+'\')">'+escHtml(iv.notes||'')+'</textarea>'
       +'</div>';
   }).join('');
 }
@@ -7126,6 +7126,10 @@ function ivNameSelect(id,name){
 
 
 
+function hasPendingInterviewOps(){
+  return Object.keys(dirtyInterviewIds).length>0||Object.keys(deletedInterviewIds).length>0;
+}
+
 function mergeInterviewsList(disk,mine){
   var byId={};
   (Array.isArray(disk)?disk:[]).forEach(function(iv){
@@ -7143,13 +7147,31 @@ function mergeInterviewsList(disk,mine){
   return out;
 }
 
-function updateInterview(id,field,val,forName){
+
+var interviewLiveTimers={};
+function setInterviewFieldValue(id,field,val){
   var iv=interviews.filter(function(x){return x.id===id;})[0];
-  if(!iv)return;
+  if(!iv)return null;
   iv[field]=val;
   dirtyInterviewIds[iv.id]=true;
   delete deletedInterviewIds[iv.id];
   if(field==='recruiter')ensureRecruiter(val);
+  return iv;
+}
+function updateInterviewLive(id,field,val,forName){
+  var iv=setInterviewFieldValue(id,field,val);
+  if(!iv)return;
+  var key=String(id)+'::'+field;
+  if(interviewLiveTimers[key])clearTimeout(interviewLiveTimers[key]);
+  interviewLiveTimers[key]=setTimeout(function(){
+    delete interviewLiveTimers[key];
+    autoSave();
+  },300);
+}
+
+function updateInterview(id,field,val,forName){
+  var iv=setInterviewFieldValue(id,field,val);
+  if(!iv)return;
   autoSave();
   if(currentIndex!==null){
     showProfile(currentIndex);
@@ -14228,7 +14250,7 @@ function printStatsGraphsView(){
     if(!d)return false;
     var incomingInterviews=Array.isArray(d&&d.interviews)?d.interviews:[];
     if(typeof loadArrays==='function')loadArrays(d);
-    interviews=mergeInterviewsList(incomingInterviews,interviews);
+    if(hasPendingInterviewOps())interviews=mergeInterviewsList(incomingInterviews,interviews);
     if(typeof renderSidebarList==='function')renderSidebarList();
     var el=document.getElementById('syncStatus');
     if(el){var prev=el.textContent;el.textContent='Updated';setTimeout(function(){if(el)el.textContent=prev;},1600);}
