@@ -7126,10 +7126,6 @@ function ivNameSelect(id,name){
 
 
 
-function hasPendingInterviewOps(){
-  return Object.keys(dirtyInterviewIds).length>0||Object.keys(deletedInterviewIds).length>0;
-}
-
 function mergeInterviewsList(disk,mine){
   var byId={};
   (Array.isArray(disk)?disk:[]).forEach(function(iv){
@@ -14205,7 +14201,9 @@ function printStatsGraphsView(){
   window.applyData=function(d){
     d=prepareIncomingDataForInterviewSafety(d,'loaded data');
     if(!d)return false;
+    var incomingInterviews=Array.isArray(d&&d.interviews)?d.interviews:[];
     if(typeof loadArrays==='function')loadArrays(d);
+    interviews=mergeInterviewsList(incomingInterviews,interviews);
     currentIndex=null;
     if(typeof renderSidebarList==='function')renderSidebarList();
     if(currentMode==='profiles')showGlobalDashboard();
@@ -14230,7 +14228,7 @@ function printStatsGraphsView(){
     if(!d)return false;
     var incomingInterviews=Array.isArray(d&&d.interviews)?d.interviews:[];
     if(typeof loadArrays==='function')loadArrays(d);
-    if(hasPendingInterviewOps())interviews=mergeInterviewsList(incomingInterviews,interviews);
+    interviews=mergeInterviewsList(incomingInterviews,interviews);
     if(typeof renderSidebarList==='function')renderSidebarList();
     var el=document.getElementById('syncStatus');
     if(el){var prev=el.textContent;el.textContent='Updated';setTimeout(function(){if(el)el.textContent=prev;},1600);}
