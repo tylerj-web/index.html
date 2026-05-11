@@ -3619,7 +3619,7 @@ details.ux-details .ux-details-body { padding:16px; }
 
   .target-row input[type="text"], .target-row textarea, .target-row input[type="date"], .target-row select, .target-row .btn-success, .target-row .btn-danger, .target-row .btn-icon { display: none !important; }
 
-  .target-row { display: grid !important; grid-template-columns: 1fr 78pt 46pt 48pt !important; gap: 5pt !important; background: white !important; border: none !important; border-bottom: .5pt solid #ddd !important; padding: 5pt 2pt !important; margin: 0 !important; border-radius: 0 !important; color: black !important; break-inside: avoid; align-items: start !important; opacity: 1 !important; filter: none !important; }
+  .target-row { display: grid !important; grid-template-columns: minmax(0,1fr) 68pt 56pt 56pt !important; gap: 6pt !important; background: white !important; border: none !important; border-bottom: .5pt solid #ddd !important; padding: 5pt 3pt !important; margin: 0 !important; border-radius: 0 !important; color: black !important; break-inside: avoid; align-items: start !important; opacity: 1 !important; filter: none !important; }
 
   .target-row.completed { opacity: .4 !important; }
 
@@ -3628,6 +3628,10 @@ details.ux-details .ux-details-body { padding:16px; }
   .print-text { word-wrap: break-word !important; overflow-wrap: break-word !important; white-space: pre-wrap !important; font-size: 9.5pt !important; color: black !important; line-height: 1.4; min-width: 0; }
 
   .target-row.completed .print-text { color: #777 !important; }
+
+  #tList, .interview-section-body, .prospect-split-right, .prospect-split-left { overflow: visible !important; max-height: none !important; }
+  #tList { width: 100% !important; }
+  .target-row .print-text { max-width: 100% !important; }
 
   .print-date { font-size: 8pt !important; font-weight: 700 !important; color: #222 !important; }
 
