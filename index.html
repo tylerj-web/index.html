@@ -8941,15 +8941,23 @@ function renderStatsLoggingPage(){
 
   html+='<div style="background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">'
     +'<div style="overflow:auto;">'
-    +'<table style="width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;">'
-    +'<thead><tr style="background:var(--surface);">'
-    +'<th style="position:sticky;left:0;z-index:2;background:var(--surface);padding:8px 10px;text-align:left;width:120px;border-bottom:1px solid var(--border);">DAY</th>';
+    +'<table style="width:max-content;min-width:100%;border-collapse:collapse;font-size:10px;">'
+    +'<thead>'
+    +'<tr style="background:var(--surface);">'
+    +'<th rowspan="2" style="position:sticky;left:0;z-index:3;background:var(--surface);padding:7px 10px;text-align:left;width:120px;border-bottom:1px solid var(--border);">DAY</th>';
 
   STATS_LIST.forEach(function(stat){
-    html+='<th style="padding:8px 6px;text-align:center;border-bottom:1px solid var(--border);min-width:110px;">'
+    html+='<th colspan="5" style="padding:7px 4px;text-align:center;border-bottom:1px solid var(--border);border-left:1px solid var(--border);">'
       +'<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--trim-light);">'+stat+'</div>'
-      +'<div style="font-size:9px;color:var(--text-3);font-weight:600;">Daily · Total · Quota</div>'
       +'</th>';
+  });
+  html+='</tr><tr style="background:var(--surface);">';
+  STATS_LIST.forEach(function(){
+    html+='<th style="padding:4px 5px;border-bottom:1px solid var(--border);border-left:1px solid var(--border);color:var(--accent-light);">DAILY</th>'
+      +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--success);">TOTAL</th>'
+      +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--text-3);">LW DAILY</th>'
+      +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--text-3);">LW TOTAL</th>'
+      +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--accent);">QUOTA</th>';
   });
   html+='</tr></thead><tbody>';
 
@@ -8958,10 +8966,9 @@ function renderStatsLoggingPage(){
     var isToday=d===today;
     var rowBg=isToday?'background:rgba(59,130,246,.07);':'';
     html+='<tr style="border-bottom:1px solid var(--border);'+rowBg+'">'
-      +'<td style="position:sticky;left:0;z-index:1;background:var(--panel);padding:7px 10px;font-size:11px;color:var(--text-2);white-space:nowrap;">'
+      +'<td style="position:sticky;left:0;z-index:2;background:var(--panel);padding:6px 10px;font-size:10px;color:var(--text-2);white-space:nowrap;">'
       +(isToday?'<strong style="color:var(--accent-light);">▶ ':'')+dayLbl(d)+(isToday?'</strong>':'')
       +'<div style="font-size:9px;color:var(--text-3);">'+fmtDate(d)+'</div></td>';
-
     STATS_LIST.forEach(function(stat){
       var isAuto=AUTO_STATS[stat];
       var dailyVal=getStatForDay(stat,d,we);
@@ -8971,11 +8978,12 @@ function renderStatsLoggingPage(){
       var dailyCell=isAuto
         ?'<span style="font-weight:800;color:var(--accent-light);">'+dailyVal+'</span>'
         :'<span onclick="showEditStatModal(\''+stat+'\',\''+d+'\',\''+we+'\','+dailyVal+')" style="cursor:pointer;font-weight:800;color:var(--accent-light);border-bottom:1px dashed var(--border-2);padding:0 2px;" title="Click to edit">'+dailyVal+'</span>';
-      html+='<td style="padding:6px 5px;text-align:center;vertical-align:top;">'
-        +'<div>'+dailyCell+'</div>'
-        +'<div style="font-size:10px;color:var(--success);font-weight:700;">T '+cwTotal+'</div>'
-        +'<div style="font-size:9px;color:var(--text-3);">LW '+lwDaily+' / '+lwTotal+'</div>'
-        +'<div style="margin-top:3px;"><input type="number" min="0" max="999" value="'+getQuotaForDay(stat,d)+'" style="width:52px;padding:2px;text-align:center;font-size:10px;font-weight:700;background:var(--card);border:1px solid var(--border-2);border-radius:4px;color:var(--accent);" onchange="setStatQuota(\''+stat+'\',\''+d+'\',this.value)"></div>'
+      html+='<td style="padding:4px 5px;text-align:center;border-left:1px solid var(--border);">'+dailyCell+'</td>'
+        +'<td style="padding:4px 5px;text-align:center;color:var(--success);font-weight:700;">'+cwTotal+'</td>'
+        +'<td style="padding:4px 5px;text-align:center;color:var(--text-3);">'+lwDaily+'</td>'
+        +'<td style="padding:4px 5px;text-align:center;color:var(--text-3);">'+lwTotal+'</td>'
+        +'<td style="padding:3px 4px;text-align:center;">'
+        +'<input type="number" min="0" max="999" value="'+getQuotaForDay(stat,d)+'" style="width:48px;padding:2px;text-align:center;font-size:10px;font-weight:700;background:var(--card);border:1px solid var(--border-2);border-radius:4px;color:var(--accent);" onchange="setStatQuota(\''+stat+'\',\''+d+'\',this.value)">'
         +'</td>';
     });
     html+='</tr>';
