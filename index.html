@@ -8939,57 +8939,64 @@ function renderStatsLoggingPage(){
     +pBtn()+'</div></div>'
     +uxWeekContext(we);
 
-  html+='<div style="background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">'
-    +'<div style="overflow:auto;">'
-    +'<table style="width:max-content;min-width:100%;border-collapse:collapse;font-size:10px;">'
-    +'<thead>'
-    +'<tr style="background:var(--surface);">'
-    +'<th rowspan="2" style="position:sticky;left:0;z-index:3;background:var(--surface);padding:7px 10px;text-align:left;width:120px;border-bottom:1px solid var(--border);">DAY</th>';
+  var splitAt=Math.ceil(STATS_LIST.length/2);
+  var statRows=[STATS_LIST.slice(0,splitAt),STATS_LIST.slice(splitAt)];
 
-  STATS_LIST.forEach(function(stat){
-    html+='<th colspan="5" style="padding:7px 4px;text-align:center;border-bottom:1px solid var(--border);border-left:1px solid var(--border);">'
-      +'<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--trim-light);">'+stat+'</div>'
-      +'</th>';
-  });
-  html+='</tr><tr style="background:var(--surface);">';
-  STATS_LIST.forEach(function(){
-    html+='<th style="padding:4px 5px;border-bottom:1px solid var(--border);border-left:1px solid var(--border);color:var(--accent-light);">DAILY</th>'
-      +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--success);">TOTAL</th>'
-      +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--text-3);">LW DAILY</th>'
-      +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--text-3);">LW TOTAL</th>'
-      +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--accent);">QUOTA</th>';
-  });
-  html+='</tr></thead><tbody>';
-
-  cwDays.forEach(function(d,i){
-    var today=toLocalISO(new Date());
-    var isToday=d===today;
-    var rowBg=isToday?'background:rgba(59,130,246,.07);':'';
-    html+='<tr style="border-bottom:1px solid var(--border);'+rowBg+'">'
-      +'<td style="position:sticky;left:0;z-index:2;background:var(--panel);padding:6px 10px;font-size:10px;color:var(--text-2);white-space:nowrap;">'
-      +(isToday?'<strong style="color:var(--accent-light);">▶ ':'')+dayLbl(d)+(isToday?'</strong>':'')
-      +'<div style="font-size:9px;color:var(--text-3);">'+fmtDate(d)+'</div></td>';
-    STATS_LIST.forEach(function(stat){
-      var isAuto=AUTO_STATS[stat];
-      var dailyVal=getStatForDay(stat,d,we);
-      var cwTotal=0;for(var k=0;k<=i;k++)cwTotal+=getStatForDay(stat,cwDays[k],we);
-      var lwDaily=getStatForDay(stat,lwDays[i],lwe);
-      var lwTotal=0;for(var m=0;m<=i;m++)lwTotal+=getStatForDay(stat,lwDays[m],lwe);
-      var dailyCell=isAuto
-        ?'<span style="font-weight:800;color:var(--accent-light);">'+dailyVal+'</span>'
-        :'<span onclick="showEditStatModal(\''+stat+'\',\''+d+'\',\''+we+'\','+dailyVal+')" style="cursor:pointer;font-weight:800;color:var(--accent-light);border-bottom:1px dashed var(--border-2);padding:0 2px;" title="Click to edit">'+dailyVal+'</span>';
-      html+='<td style="padding:4px 5px;text-align:center;border-left:1px solid var(--border);">'+dailyCell+'</td>'
-        +'<td style="padding:4px 5px;text-align:center;color:var(--success);font-weight:700;">'+cwTotal+'</td>'
-        +'<td style="padding:4px 5px;text-align:center;color:var(--text-3);">'+lwDaily+'</td>'
-        +'<td style="padding:4px 5px;text-align:center;color:var(--text-3);">'+lwTotal+'</td>'
-        +'<td style="padding:3px 4px;text-align:center;">'
-        +'<input type="number" min="0" max="999" value="'+getQuotaForDay(stat,d)+'" style="width:48px;padding:2px;text-align:center;font-size:10px;font-weight:700;background:var(--card);border:1px solid var(--border-2);border-radius:4px;color:var(--accent);" onchange="setStatQuota(\''+stat+'\',\''+d+'\',this.value)">'
-        +'</td>';
+  function renderStatBand(stats){
+    var out='<div style="background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px;">'
+      +'<div style="overflow:auto;">'
+      +'<table style="width:max-content;min-width:100%;border-collapse:collapse;font-size:10px;">'
+      +'<thead><tr style="background:var(--surface);">'
+      +'<th rowspan="2" style="position:sticky;left:0;z-index:3;background:var(--surface);padding:7px 10px;text-align:left;width:120px;border-bottom:1px solid var(--border);">DAY</th>';
+    stats.forEach(function(stat){
+      out+='<th colspan="5" style="padding:7px 4px;text-align:center;border-bottom:1px solid var(--border);border-left:1px solid var(--border);">'
+        +'<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--trim-light);">'+stat+'</div>'
+        +'</th>';
     });
-    html+='</tr>';
-  });
+    out+='</tr><tr style="background:var(--surface);">';
+    stats.forEach(function(){
+      out+='<th style="padding:4px 5px;border-bottom:1px solid var(--border);border-left:1px solid var(--border);color:var(--accent-light);">DAILY</th>'
+        +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--success);">TOTAL</th>'
+        +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--text-3);">LW DAILY</th>'
+        +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--text-3);">LW TOTAL</th>'
+        +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--accent);">QUOTA</th>';
+    });
+    out+='</tr></thead><tbody>';
 
-  html+='</tbody></table></div></div><div style="height:80px;"></div>';
+    cwDays.forEach(function(d,i){
+      var today=toLocalISO(new Date());
+      var isToday=d===today;
+      var rowBg=isToday?'background:rgba(59,130,246,.07);':'';
+      out+='<tr style="border-bottom:1px solid var(--border);'+rowBg+'">'
+        +'<td style="position:sticky;left:0;z-index:2;background:var(--panel);padding:6px 10px;font-size:10px;color:var(--text-2);white-space:nowrap;">'
+        +(isToday?'<strong style="color:var(--accent-light);">▶ ':'')+dayLbl(d)+(isToday?'</strong>':'')
+        +'<div style="font-size:9px;color:var(--text-3);">'+fmtDate(d)+'</div></td>';
+      stats.forEach(function(stat){
+        var isAuto=AUTO_STATS[stat];
+        var dailyVal=getStatForDay(stat,d,we);
+        var cwTotal=0;for(var k=0;k<=i;k++)cwTotal+=getStatForDay(stat,cwDays[k],we);
+        var lwDaily=getStatForDay(stat,lwDays[i],lwe);
+        var lwTotal=0;for(var m=0;m<=i;m++)lwTotal+=getStatForDay(stat,lwDays[m],lwe);
+        var dailyCell=isAuto
+          ?'<span style="font-weight:800;color:var(--accent-light);">'+dailyVal+'</span>'
+          :'<span onclick="showEditStatModal(\''+stat+'\',\''+d+'\',\''+we+'\','+dailyVal+')" style="cursor:pointer;font-weight:800;color:var(--accent-light);border-bottom:1px dashed var(--border-2);padding:0 2px;" title="Click to edit">'+dailyVal+'</span>';
+        out+='<td style="padding:4px 5px;text-align:center;border-left:1px solid var(--border);">'+dailyCell+'</td>'
+          +'<td style="padding:4px 5px;text-align:center;color:var(--success);font-weight:700;">'+cwTotal+'</td>'
+          +'<td style="padding:4px 5px;text-align:center;color:var(--text-3);">'+lwDaily+'</td>'
+          +'<td style="padding:4px 5px;text-align:center;color:var(--text-3);">'+lwTotal+'</td>'
+          +'<td style="padding:3px 4px;text-align:center;">'
+          +'<input type="number" min="0" max="999" value="'+getQuotaForDay(stat,d)+'" style="width:48px;padding:2px;text-align:center;font-size:10px;font-weight:700;background:var(--card);border:1px solid var(--border-2);border-radius:4px;color:var(--accent);" onchange="setStatQuota(\''+stat+'\',\''+d+'\',this.value)">'
+          +'</td>';
+      });
+      out+='</tr>';
+    });
+
+    out+='</tbody></table></div></div>';
+    return out;
+  }
+
+  statRows.forEach(function(group){ if(group.length) html+=renderStatBand(group); });
+  html+='<div style="height:80px;"></div>';
   document.getElementById('viewArea').innerHTML=html;
   renderSidebarList();
 }
