@@ -1006,6 +1006,31 @@ html[data-theme="crimson"][data-tone="light"] {
 /* ------------------------------------------
    CLASSIC 8-BIT MODE
 ------------------------------------------ */
+
+html[data-executive="true"] {
+  --radius-sm: 8px; --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
+}
+html[data-executive="true"] body { letter-spacing:.01em; }
+html[data-executive="true"] .sidebar { border-right:1px solid var(--border); background:linear-gradient(180deg,var(--surface),var(--panel)); padding-top:8px; }
+html[data-executive="true"] .sidebar-brand { background:transparent; border-bottom:1px solid var(--border); }
+html[data-executive="true"] .nav-tab, html[data-executive="true"] .slist-item, html[data-executive="true"] .person-item { border-radius:10px; border:1px solid transparent; margin:2px 0; }
+html[data-executive="true"] .nav-tab.active, html[data-executive="true"] .slist-item.active, html[data-executive="true"] .person-item.active { background:var(--accent-dim); border-color:var(--border-2); box-shadow:none; }
+html[data-executive="true"] .page-header { padding:14px 16px; border:1px solid var(--border); border-radius:14px; background:var(--surface); margin-bottom:12px; }
+html[data-executive="true"] .page-header h1 { font-size:22px; letter-spacing:.01em; }
+html[data-executive="true"] .page-actions { gap:8px; flex-wrap:wrap; }
+html[data-executive="true"] button, html[data-executive="true"] .btn-ghost, html[data-executive="true"] .btn-primary, html[data-executive="true"] .btn-success, html[data-executive="true"] .btn-danger, html[data-executive="true"] .btn-warning, html[data-executive="true"] .btn-purple { border-radius:10px; border:1px solid var(--border-2); box-shadow:none; }
+html[data-executive="true"] .btn-primary { background:var(--accent); }
+html[data-executive="true"] .btn-ghost { background:var(--surface); }
+html[data-executive="true"] input, html[data-executive="true"] select, html[data-executive="true"] textarea { border-radius:10px; border:1px solid var(--border-2); background:var(--surface); }
+html[data-executive="true"] input:focus, html[data-executive="true"] select:focus, html[data-executive="true"] textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-dim); }
+html[data-executive="true"] .metric-card, html[data-executive="true"] .profile-card, html[data-executive="true"] .field-box, html[data-executive="true"] .target-row, html[data-executive="true"] .graph-card, html[data-executive="true"] .interview-card, html[data-executive="true"] .appt-card, html[data-executive="true"] .cc-dash-widget, html[data-executive="true"] .modal-box, html[data-executive="true"] .month, html[data-executive="true"] .day-cell { border:1px solid var(--border); box-shadow:0 6px 18px rgba(0,0,0,.12); background:var(--surface); }
+html[data-executive="true"] .target-row { grid-template-columns:1fr 130px 108px 84px; gap:10px; }
+html[data-executive="true"] .target-row.completed { opacity:.6; }
+html[data-executive="true"] .target-row.is-overdue { border-color:var(--danger); }
+html[data-executive="true"] .modal-actions { justify-content:flex-end; gap:8px; }
+html[data-executive="true"] .cc-dash-grid { gap:12px; }
+@media (max-width:760px){html[data-executive="true"] .page-header{padding:12px;} html[data-executive="true"] .target-row{grid-template-columns:1fr !important;}}
+
 html[data-classic="true"] { --radius-sm:0px;--radius:0px;--radius-lg:0px;--radius-xl:0px; }
 html[data-classic="true"] body { font-family:'Courier New',Courier,monospace !important; }
 html[data-classic="true"] * { border-radius:0 !important; font-family:'Courier New',Courier,monospace !important; }
@@ -5439,6 +5464,7 @@ html[data-glass="true"] .survey-category-suggest-item:hover{background:var(--lg-
         <button id="btnLiquidGlassMode" onclick="setInterfaceStyle('liquid')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-dash"/></svg> Liquid Glass</button>
         <button id="btnBareMode" onclick="setInterfaceStyle('bare')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-dash"/></svg> Bare Minimum</button>
         <button id="btnClassicMode" onclick="setInterfaceStyle('classic')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-settings"/></svg> 8-Bit Classic</button>
+        <button id="btnExecutiveMode" onclick="setInterfaceStyle('executive')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-star"/></svg> Executive Minimal</button>
       </div>
       <div style="font-size:11px;color:var(--text-3);margin-top:7px;">Liquid Glass adds a lightweight iOS-style glass finish without heavy whole-app blur. Bare Minimum keeps your current colors but removes non-essential visual effects. Classic mode applies pixel-art styling, square elements and CRT scanlines.</div>
     </div>
@@ -11647,18 +11673,22 @@ function getInterfaceStyle(){
   if(document.documentElement.getAttribute('data-classic')==='true')return 'classic';
   if(document.documentElement.getAttribute('data-bare')==='true')return 'bare';
   if(document.documentElement.getAttribute('data-glass')==='true')return 'liquid';
+  if(document.documentElement.getAttribute('data-executive')==='true')return 'executive';
   return 'modern';
 }
 
 function setInterfaceStyle(mode){
-  mode=(mode==='classic'||mode==='bare'||mode==='liquid')?mode:'modern';
+  mode=(mode==='classic'||mode==='bare'||mode==='liquid'||mode==='executive')?mode:'modern';
   document.documentElement.removeAttribute('data-classic');
   document.documentElement.removeAttribute('data-bare');
   document.documentElement.removeAttribute('data-glass');
+  document.documentElement.removeAttribute('data-executive');
+  document.documentElement.removeAttribute('data-executive');
   document.documentElement.setAttribute('data-interface',mode);
   if(mode==='classic')document.documentElement.setAttribute('data-classic','true');
   else if(mode==='bare')document.documentElement.setAttribute('data-bare','true');
   else if(mode==='liquid')document.documentElement.setAttribute('data-glass','true');
+  else if(mode==='executive')document.documentElement.setAttribute('data-executive','true');
   try{localStorage.setItem('esp-classic',mode==='classic'?'true':'false');}catch(e){}
   try{localStorage.setItem('esp-glass',mode==='liquid'?'true':'false');}catch(e){}
   try{localStorage.setItem('esp-ui-style',mode);}catch(e){}
@@ -11667,6 +11697,8 @@ function setInterfaceStyle(mode){
   if(bl)bl.className=mode==='liquid'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bb)bb.className=mode==='bare'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bc)bc.className=mode==='classic'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
+    var be=document.getElementById('btnExecutiveMode');if(be)be.className=mode==='executive'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
+  var be=document.getElementById('btnExecutiveMode');if(be)be.className=mode==='executive'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
 }
 
 function setClassicMode(on){
@@ -11685,6 +11717,7 @@ function showSettings(){
   if(bl)bl.className=styleMode==='liquid'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bb)bb.className=styleMode==='bare'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bc)bc.className=styleMode==='classic'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
+  var be=document.getElementById('btnExecutiveMode');if(be)be.className=styleMode==='executive'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   document.getElementById('settingsModal').classList.add('open');
 }
 
@@ -11721,7 +11754,7 @@ function initTheme(){
   document.documentElement.setAttribute('data-theme',savedTheme);
   document.documentElement.setAttribute('data-tone',savedTone);
 
-  if(savedUiStyle!=='modern' && savedUiStyle!=='bare' && savedUiStyle!=='classic' && savedUiStyle!=='liquid'){
+  if(savedUiStyle!=='modern' && savedUiStyle!=='bare' && savedUiStyle!=='classic' && savedUiStyle!=='liquid' && savedUiStyle!=='executive'){
     savedUiStyle = savedClassic==='true' ? 'classic' : 'modern';
   }
   document.documentElement.removeAttribute('data-classic');
@@ -11731,6 +11764,7 @@ function initTheme(){
   if(savedUiStyle==='classic')document.documentElement.setAttribute('data-classic','true');
   else if(savedUiStyle==='bare')document.documentElement.setAttribute('data-bare','true');
   else if(savedUiStyle==='liquid')document.documentElement.setAttribute('data-glass','true');
+  else if(savedUiStyle==='executive')document.documentElement.setAttribute('data-executive','true');
 
   ALL_THEMES.forEach(function(t){
     var btn=document.getElementById('ts-'+t);
@@ -12855,6 +12889,7 @@ function printStatsGraphsView(){
   var tone=document.documentElement.getAttribute('data-tone')||'';
   var classic=document.documentElement.getAttribute('data-classic')||'false';
   var bare=document.documentElement.getAttribute('data-bare')||'false';
+  var executive=document.documentElement.getAttribute('data-executive')||'false';
 
   function sanitizeGraphCard(card){
     var clone=card.cloneNode(true);
@@ -12908,7 +12943,7 @@ function printStatsGraphsView(){
     }
   }
 
-  var doc='<!DOCTYPE html><html data-theme="'+theme+'" data-tone="'+tone+'" data-classic="'+classic+'" data-bare="'+bare+'"><head><meta charset="UTF-8"><title>'+escHtml(pageTitle+(pageSub?' - '+pageSub:''))+'</title>'
+  var doc='<!DOCTYPE html><html data-theme="'+theme+'" data-tone="'+tone+'" data-classic="'+classic+'" data-bare="'+bare+'" data-executive="'+executive+'"><head><meta charset="UTF-8"><title>'+escHtml(pageTitle+(pageSub?' - '+pageSub:''))+'</title>'
     +'<style>'+styles+'</style>'
     +'<style>'
     +'@page{size:A4 portrait;margin:10mm 11mm;}'
@@ -15221,7 +15256,7 @@ function printStatsGraphsView(){
       settings:{
         theme:document.documentElement.getAttribute('data-theme')||'blue',
         tone:document.documentElement.getAttribute('data-tone')||'dark',
-        interfaceStyle:document.documentElement.getAttribute('data-glass')==='true'?'liquid':(document.documentElement.getAttribute('data-bare')==='true'?'bare':(document.documentElement.getAttribute('data-classic')==='true'?'classic':'modern')),
+        interfaceStyle:document.documentElement.getAttribute('data-executive')==='true'?'executive':(document.documentElement.getAttribute('data-glass')==='true'?'liquid':(document.documentElement.getAttribute('data-bare')==='true'?'bare':(document.documentElement.getAttribute('data-classic')==='true'?'classic':'modern'))),
         sidebarCollapsed:!!(document.querySelector('.sidebar')&&document.querySelector('.sidebar').classList.contains('is-collapsed')),
         dashboardLayout:dash
       }
