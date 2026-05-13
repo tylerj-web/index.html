@@ -1031,6 +1031,25 @@ html[data-executive="true"] .modal-actions { justify-content:flex-end; gap:8px; 
 html[data-executive="true"] .cc-dash-grid { gap:12px; }
 @media (max-width:760px){html[data-executive="true"] .page-header{padding:12px;} html[data-executive="true"] .target-row{grid-template-columns:1fr !important;}}
 
+html[data-executive="true"] .sidebar{display:none !important;}
+html[data-executive="true"] .main{margin-left:0 !important;padding-top:56px !important;}
+html[data-executive="true"] .executive-top-nav{position:fixed;top:0;left:0;right:0;height:52px;display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);z-index:1200;}
+html[data-executive="true"] .executive-top-nav .ex-left,html[data-executive="true"] .executive-top-nav .ex-center,html[data-executive="true"] .executive-top-nav .ex-right{display:flex;align-items:center;gap:6px;}
+html[data-executive="true"] .executive-top-nav .ex-center{flex:1;overflow:auto;white-space:nowrap;}
+html[data-executive="true"] .executive-top-nav .ex-nav{background:transparent;border:1px solid transparent;color:var(--text-2);padding:6px 8px;border-radius:2px;font-size:12px;}
+html[data-executive="true"] .executive-top-nav .ex-nav:hover{border-color:var(--border-2);color:var(--text);}
+html[data-executive="true"] .executive-top-nav .ex-nav.active{color:var(--text);border-color:var(--accent);}
+html[data-executive="true"] .executive-top-nav .ex-icon{width:30px;height:30px;padding:0;display:grid;place-items:center;border-radius:2px;}
+html[data-executive="true"] .executive-top-nav .ex-search{width:220px;max-width:34vw;background:var(--surface);border:1px solid var(--border);padding:6px 8px;border-radius:2px;}
+html[data-executive="true"] .executive-top-nav .ex-status{font-size:11px;color:var(--text-3);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+html[data-executive="true"] .executive-stats-dd{position:relative;}
+html[data-executive="true"] .executive-stats-menu{display:none;position:absolute;top:100%;left:0;background:var(--surface);border:1px solid var(--border);min-width:220px;z-index:1300;}
+html[data-executive="true"] .executive-stats-dd.open .executive-stats-menu{display:block;}
+html[data-executive="true"] .executive-stats-menu button{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--border);padding:8px 10px;color:var(--text-2);} 
+html[data-executive="true"] .executive-stats-menu button:hover{background:var(--hover);color:var(--text);} 
+@media (max-width:760px){html[data-executive="true"] .executive-top-nav{height:auto;flex-wrap:wrap;padding:6px 8px;}html[data-executive="true"] .main{padding-top:92px !important;}html[data-executive="true"] .executive-top-nav .ex-search{width:100%;max-width:100%;}}
+
+
 html[data-classic="true"] { --radius-sm:0px;--radius:0px;--radius-lg:0px;--radius-xl:0px; }
 html[data-classic="true"] body { font-family:'Courier New',Courier,monospace !important; }
 html[data-classic="true"] * { border-radius:0 !important; font-family:'Courier New',Courier,monospace !important; }
@@ -14367,6 +14386,45 @@ function printStatsGraphsView(){
   finalCleanSidebarLabels();
   setTimeout(function(){initSidebarCollapsed();finalCleanSidebarLabels();},0);
 })();
+
+(function(){
+  function execNav(){
+    var root=document.documentElement;
+    var old=document.getElementById('executiveTopNav');
+    if(root.getAttribute('data-executive')!=='true'){if(old&&old.parentNode)old.parentNode.removeChild(old);return;}
+    if(!old){
+      old=document.createElement('div');old.id='executiveTopNav';old.className='executive-top-nav';
+      old.innerHTML=`<div class="ex-left"><button class="btn-ghost ex-icon" title="Reconnect / Connect Shared Folder" aria-label="Reconnect / Connect Shared Folder" onclick="var b=document.getElementById('connectBtn');if(b)b.click();">${svgI('i-users')}</button><button class="btn-ghost ex-icon" title="Settings" aria-label="Settings" onclick="showSettings()">${svgI('i-settings')}</button><div class="ex-status" id="exSyncMini">Elite System</div></div>
+      <div class="ex-center">
+      <button class="ex-nav" data-mode="dashboard" onclick="switchMode('dashboard')">Command Centre</button>
+      <button class="ex-nav" data-mode="profiles" onclick="switchMode('profiles')">Profiles</button>
+      <button class="ex-nav" data-mode="prospects" onclick="switchMode('prospects')">Prospects</button>
+      <button class="ex-nav" data-mode="appointments" onclick="switchMode('appointments')">Appointments</button>
+      <button class="ex-nav" data-mode="surveys" onclick="switchMode('surveys')">Surveys</button>
+      <button class="ex-nav" data-mode="calendar" onclick="switchMode('calendar')">Calendar</button>
+      <div class="executive-stats-dd" id="exStatsDD"><button class="ex-nav" onclick="var d=document.getElementById('exStatsDD');if(d)d.classList.toggle('open');switchMode('stats');">Statistics ▾</button><div class="executive-stats-menu">
+      <button onclick="switchMode('stats');switchStatsSub('ledger');document.getElementById('exStatsDD').classList.remove('open');">Unit Stats</button>
+      <button onclick="switchMode('stats');switchStatsSub('graphs');document.getElementById('exStatsDD').classList.remove('open');">Overall Daily Graphs</button>
+      <button onclick="switchMode('stats');switchStatsSub('weeklyfigures');document.getElementById('exStatsDD').classList.remove('open');">Overall Weekly Graphs</button>
+      <button onclick="switchMode('stats');switchStatsSub('projectstats');document.getElementById('exStatsDD').classList.remove('open');">Project Daily Graphs</button>
+      <button onclick="switchMode('stats');switchStatsSub('weeklyprojectstats');document.getElementById('exStatsDD').classList.remove('open');">Project Weekly Graphs</button>
+      <button onclick="switchMode('stats');switchStatsSub('logging');document.getElementById('exStatsDD').classList.remove('open');">Stat Logging</button>
+      </div></div></div>
+      <div class="ex-right"><input class="ex-search" id="exTopSearch" placeholder="Search people…" oninput="if(typeof globalSearch==='function')globalSearch(this.value)"></div>`;
+      document.body.appendChild(old);
+    }
+    var mode=window.currentMode||'profiles';
+    old.querySelectorAll('.ex-nav[data-mode]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-mode')===mode);});
+    var ss=document.getElementById('syncStatus');var es=document.getElementById('exSyncMini');if(ss&&es)es.textContent=ss.textContent||'Ready';
+  }
+  window.execNavRefresh=execNav;
+  setInterval(execNav,1200);
+  var osm=window.switchMode;if(typeof osm==='function'){window.switchMode=function(){var r=osm.apply(this,arguments);setTimeout(execNav,0);return r;};}
+  var oss=window.setSyncStatus;if(typeof oss==='function'){window.setSyncStatus=function(){var r=oss.apply(this,arguments);setTimeout(execNav,0);return r;};}
+  var ois=window.setInterfaceStyle;if(typeof ois==='function'){window.setInterfaceStyle=function(){var r=ois.apply(this,arguments);setTimeout(execNav,0);return r;};}
+  setTimeout(execNav,100);
+})();
+
 </script>
 
 <script>
