@@ -1006,6 +1006,31 @@ html[data-theme="crimson"][data-tone="light"] {
 /* ------------------------------------------
    CLASSIC 8-BIT MODE
 ------------------------------------------ */
+
+html[data-executive="true"] {
+  --radius-sm: 8px; --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
+}
+html[data-executive="true"] body { letter-spacing:.01em; }
+html[data-executive="true"] .sidebar { border-right:1px solid var(--border); background:linear-gradient(180deg,var(--surface),var(--panel)); padding-top:8px; }
+html[data-executive="true"] .sidebar-brand { background:transparent; border-bottom:1px solid var(--border); }
+html[data-executive="true"] .nav-tab, html[data-executive="true"] .slist-item, html[data-executive="true"] .person-item { border-radius:10px; border:1px solid transparent; margin:2px 0; }
+html[data-executive="true"] .nav-tab.active, html[data-executive="true"] .slist-item.active, html[data-executive="true"] .person-item.active { background:var(--accent-dim); border-color:var(--border-2); box-shadow:none; }
+html[data-executive="true"] .page-header { padding:14px 16px; border:1px solid var(--border); border-radius:14px; background:var(--surface); margin-bottom:12px; }
+html[data-executive="true"] .page-header h1 { font-size:22px; letter-spacing:.01em; }
+html[data-executive="true"] .page-actions { gap:8px; flex-wrap:wrap; }
+html[data-executive="true"] button, html[data-executive="true"] .btn-ghost, html[data-executive="true"] .btn-primary, html[data-executive="true"] .btn-success, html[data-executive="true"] .btn-danger, html[data-executive="true"] .btn-warning, html[data-executive="true"] .btn-purple { border-radius:10px; border:1px solid var(--border-2); box-shadow:none; }
+html[data-executive="true"] .btn-primary { background:var(--accent); }
+html[data-executive="true"] .btn-ghost { background:var(--surface); }
+html[data-executive="true"] input, html[data-executive="true"] select, html[data-executive="true"] textarea { border-radius:10px; border:1px solid var(--border-2); background:var(--surface); }
+html[data-executive="true"] input:focus, html[data-executive="true"] select:focus, html[data-executive="true"] textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-dim); }
+html[data-executive="true"] .metric-card, html[data-executive="true"] .profile-card, html[data-executive="true"] .field-box, html[data-executive="true"] .target-row, html[data-executive="true"] .graph-card, html[data-executive="true"] .interview-card, html[data-executive="true"] .appt-card, html[data-executive="true"] .cc-dash-widget, html[data-executive="true"] .modal-box, html[data-executive="true"] .month, html[data-executive="true"] .day-cell { border:1px solid var(--border); box-shadow:0 6px 18px rgba(0,0,0,.12); background:var(--surface); }
+html[data-executive="true"] .target-row { grid-template-columns:1fr 130px 108px 84px; gap:10px; }
+html[data-executive="true"] .target-row.completed { opacity:.6; }
+html[data-executive="true"] .target-row.is-overdue { border-color:var(--danger); }
+html[data-executive="true"] .modal-actions { justify-content:flex-end; gap:8px; }
+html[data-executive="true"] .cc-dash-grid { gap:12px; }
+@media (max-width:760px){html[data-executive="true"] .page-header{padding:12px;} html[data-executive="true"] .target-row{grid-template-columns:1fr !important;}}
+
 html[data-classic="true"] { --radius-sm:0px;--radius:0px;--radius-lg:0px;--radius-xl:0px; }
 html[data-classic="true"] body { font-family:'Courier New',Courier,monospace !important; }
 html[data-classic="true"] * { border-radius:0 !important; font-family:'Courier New',Courier,monospace !important; }
@@ -3617,9 +3642,9 @@ details.ux-details .ux-details-body { padding:16px; }
 
   .print-text, .print-date, .print-priority, .print-status { display: block !important; }
 
-  .target-row input[type="text"], .target-row textarea, .target-row input[type="date"], .target-row select, .target-row .btn-success, .target-row .btn-danger, .target-row .btn-icon { display: none !important; }
+  .target-row input[type="text"], .target-row textarea, .target-row input[type="date"], .target-row select, .target-row .btn-success, .target-row .btn-danger, .target-row .btn-icon, .target-row .ux-target-cell, .target-row .ux-target-badge { display: none !important; }
 
-  .target-row { display: grid !important; grid-template-columns: 1fr 78pt 46pt 48pt !important; gap: 5pt !important; background: white !important; border: none !important; border-bottom: .5pt solid #ddd !important; padding: 5pt 2pt !important; margin: 0 !important; border-radius: 0 !important; color: black !important; break-inside: avoid; align-items: start !important; opacity: 1 !important; filter: none !important; }
+  .target-row { display: grid !important; grid-template-columns: minmax(0,1fr) 68pt 56pt 56pt !important; gap: 6pt !important; background: white !important; border: none !important; border-bottom: .5pt solid #ddd !important; padding: 5pt 3pt !important; margin: 0 !important; border-radius: 0 !important; color: black !important; break-inside: avoid; align-items: start !important; opacity: 1 !important; filter: none !important; }
 
   .target-row.completed { opacity: .4 !important; }
 
@@ -3628,6 +3653,10 @@ details.ux-details .ux-details-body { padding:16px; }
   .print-text { word-wrap: break-word !important; overflow-wrap: break-word !important; white-space: pre-wrap !important; font-size: 9.5pt !important; color: black !important; line-height: 1.4; min-width: 0; }
 
   .target-row.completed .print-text { color: #777 !important; }
+
+  #tList, .interview-section-body, .prospect-split-right, .prospect-split-left { overflow: visible !important; max-height: none !important; }
+  #tList { width: 100% !important; }
+  .target-row .print-text { max-width: 100% !important; }
 
   .print-date { font-size: 8pt !important; font-weight: 700 !important; color: #222 !important; }
 
@@ -5435,6 +5464,7 @@ html[data-glass="true"] .survey-category-suggest-item:hover{background:var(--lg-
         <button id="btnLiquidGlassMode" onclick="setInterfaceStyle('liquid')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-dash"/></svg> Liquid Glass</button>
         <button id="btnBareMode" onclick="setInterfaceStyle('bare')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-dash"/></svg> Bare Minimum</button>
         <button id="btnClassicMode" onclick="setInterfaceStyle('classic')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-settings"/></svg> 8-Bit Classic</button>
+        <button id="btnExecutiveMode" onclick="setInterfaceStyle('executive')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-star"/></svg> Executive Minimal</button>
       </div>
       <div style="font-size:11px;color:var(--text-3);margin-top:7px;">Liquid Glass adds a lightweight iOS-style glass finish without heavy whole-app blur. Bare Minimum keeps your current colors but removes non-essential visual effects. Classic mode applies pixel-art styling, square elements and CRT scanlines.</div>
     </div>
@@ -6993,7 +7023,7 @@ function renderInterviewCards(ivs,forName){
       +'<div class="interview-topline">'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Date</div>'
-          +'<input type="date" value="'+(iv.date||'')+'" onchange="updateInterview('+rid+',\'date\',this.value,\''+safeForName+'\')">'
+          +'<input type="date" value="'+(iv.date||'')+'" oninput="updateInterviewLive('+rid+',\'date\',this.value,\''+safeForName+'\')">'
         +'</div>'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Prospect</div>'
@@ -7007,13 +7037,13 @@ function renderInterviewCards(ivs,forName){
         +'</div>'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Recruiter</div>'
-          +'<input type="text" value="'+escHtml(iv.recruiter||'TBA')+'" placeholder="Recruiter" onblur="updateInterview('+rid+',\'recruiter\',this.value,\''+safeForName+'\')">'
+          +'<input type="text" value="'+escHtml(iv.recruiter||'TBA')+'" placeholder="Recruiter" oninput="updateInterviewLive('+rid+',\'recruiter\',this.value,\''+safeForName+'\')">'
         +'</div>'
         +'<div class="interview-actions">'
           +'<button class="btn-danger btn-icon" onclick="deleteInterview('+rid+',\''+safeForName+'\')" title="Delete">'+svgI('i-trash')+'</button>'
         +'</div>'
       +'</div>'
-      +'<textarea class="interview-note-edit" rows="'+noteRows+'" placeholder="Interview notes…" onfocus="autoGrowTextarea(this)" oninput="autoGrowTextarea(this)" onblur="updateInterview('+rid+',\'notes\',this.value,\''+safeForName+'\')">'+escHtml(iv.notes||'')+'</textarea>'
+      +'<textarea class="interview-note-edit" rows="'+noteRows+'" placeholder="Interview notes…" onfocus="autoGrowTextarea(this)" oninput="autoGrowTextarea(this);updateInterviewLive('+rid+',\'notes\',this.value,\''+safeForName+'\')">'+escHtml(iv.notes||'')+'</textarea>'
       +'</div>';
 
   }).join('');
@@ -7030,7 +7060,7 @@ function renderEditableInterviewListCards(ivs,context){
       +'<div class="interview-topline">'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Date</div>'
-          +'<input type="date" value="'+(iv.date||'')+'" onchange="updateInterview('+rid+',\'date\',this.value,\''+safeContext+'\')">'
+          +'<input type="date" value="'+(iv.date||'')+'" oninput="updateInterviewLive('+rid+',\'date\',this.value,\''+safeContext+'\')">'
         +'</div>'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Prospect</div>'
@@ -7044,13 +7074,13 @@ function renderEditableInterviewListCards(ivs,context){
         +'</div>'
         +'<div class="interview-meta">'
           +'<div class="interview-meta-label">Recruiter</div>'
-          +'<input type="text" value="'+escHtml(iv.recruiter||'TBA')+'" placeholder="Recruiter" onblur="updateInterview('+rid+',\'recruiter\',this.value,\''+safeContext+'\')">'
+          +'<input type="text" value="'+escHtml(iv.recruiter||'TBA')+'" placeholder="Recruiter" oninput="updateInterviewLive('+rid+',\'recruiter\',this.value,\''+safeContext+'\')">'
         +'</div>'
         +'<div class="interview-actions">'
           +'<button class="btn-danger btn-icon" onclick="deleteInterview('+rid+',\''+safeContext+'\')" title="Delete">'+svgI('i-trash')+'</button>'
         +'</div>'
       +'</div>'
-      +'<textarea class="interview-note-edit" rows="'+noteRows+'" placeholder="Interview notes…" onfocus="autoGrowTextarea(this)" oninput="autoGrowTextarea(this)" onblur="updateInterview('+rid+',\'notes\',this.value,\''+safeContext+'\')">'+escHtml(iv.notes||'')+'</textarea>'
+      +'<textarea class="interview-note-edit" rows="'+noteRows+'" placeholder="Interview notes…" onfocus="autoGrowTextarea(this)" oninput="autoGrowTextarea(this);updateInterviewLive('+rid+',\'notes\',this.value,\''+safeContext+'\')">'+escHtml(iv.notes||'')+'</textarea>'
       +'</div>';
   }).join('');
 }
@@ -7125,11 +7155,53 @@ function ivNameSelect(id,name){
 
 
 
-function updateInterview(id,field,val,forName){
+
+function hasPendingInterviewOps(){
+  return Object.keys(dirtyInterviewIds).length>0||Object.keys(deletedInterviewIds).length>0;
+}
+
+function mergeInterviewsList(disk,mine){
+  var byId={};
+  (Array.isArray(disk)?disk:[]).forEach(function(iv){
+    if(iv&&iv.id!=null)byId[iv.id]=iv;
+  });
+  (Array.isArray(mine)?mine:[]).forEach(function(iv){
+    if(!iv||iv.id==null)return;
+    if(deletedInterviewIds[iv.id]){delete byId[iv.id];return;}
+    if(!byId[iv.id]){byId[iv.id]=iv;return;}
+    if(dirtyInterviewIds[iv.id]){byId[iv.id]=iv;return;}
+  });
+  Object.keys(deletedInterviewIds).forEach(function(id){delete byId[id];});
+  var out=[];
+  for(var k in byId){if(Object.prototype.hasOwnProperty.call(byId,k))out.push(byId[k]);}
+  return out;
+}
+
+
+var interviewLiveTimers={};
+function setInterviewFieldValue(id,field,val){
   var iv=interviews.filter(function(x){return x.id===id;})[0];
-  if(!iv)return;
+  if(!iv)return null;
   iv[field]=val;
+  dirtyInterviewIds[iv.id]=true;
+  delete deletedInterviewIds[iv.id];
   if(field==='recruiter')ensureRecruiter(val);
+  return iv;
+}
+function updateInterviewLive(id,field,val,forName){
+  var iv=setInterviewFieldValue(id,field,val);
+  if(!iv)return;
+  var key=String(id)+'::'+field;
+  if(interviewLiveTimers[key])clearTimeout(interviewLiveTimers[key]);
+  interviewLiveTimers[key]=setTimeout(function(){
+    delete interviewLiveTimers[key];
+    autoSave();
+  },300);
+}
+
+function updateInterview(id,field,val,forName){
+  var iv=setInterviewFieldValue(id,field,val);
+  if(!iv)return;
   autoSave();
   if(currentIndex!==null){
     showProfile(currentIndex);
@@ -7154,6 +7226,8 @@ function deleteInterview(id,forName){
 
   if(!confirm('Delete this interview?'))return;
 
+  deletedInterviewIds[id]=true;
+  delete dirtyInterviewIds[id];
   interviews=interviews.filter(function(x){return x.id!==id;});
 
   autoSave();
@@ -8359,7 +8433,10 @@ function submitInterview(){
   }
   if(foundProspectIndex>=0)prospects[foundProspectIndex].recruiter=rec;
   var iv={id:Date.now()+Math.floor(Math.random()*10000),date:date,we:we,recruiter:rec,prospectName:pName,notes:notes};
-  interviews.push(iv);ivSessionEntries.push(iv);autoSave();
+  interviews.push(iv);
+  dirtyInterviewIds[iv.id]=true;
+  delete deletedInterviewIds[iv.id];
+  ivSessionEntries.push(iv);autoSave();
   var log=document.getElementById('ivSessionLog');
   if(log){
     var hdr=ivSessionEntries.length===1?'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-3);margin-bottom:6px;">Logged this session</div>':'';
@@ -8400,7 +8477,10 @@ function saveInterview(date,rec,pName,notes){
   }
 
 var ivWE=pickWEForDate(date);
-  interviews.push({id:Date.now()+Math.floor(Math.random()*10000),date:date,we:ivWE,recruiter:rec,prospectName:pName,notes:notes});
+  var iv={id:Date.now()+Math.floor(Math.random()*10000),date:date,we:ivWE,recruiter:rec,prospectName:pName,notes:notes};
+  interviews.push(iv);
+  dirtyInterviewIds[iv.id]=true;
+  delete deletedInterviewIds[iv.id];
 
 
   autoSave();
@@ -8883,62 +8963,70 @@ function renderStatsLoggingPage(){
     +'<div class="page-actions">'
     +'<button class="btn-success" onclick="showLogTodayModal()" style="font-size:13px;"><svg class="icon"><use href="#i-edit"/></svg> Log Today</button>'
     +'<button class="btn-ghost" onclick="setQuotasFromLastWeek()" style="font-size:13px;"><svg class="icon"><use href="#i-settings"/></svg> Set Quotas</button>'
-    +'<button class="btn-ghost" onclick="prevStatsWE()">\u2190 Prev</button>'
+    +'<button class="btn-ghost" onclick="prevStatsWE()">← Prev</button>'
     +'<button class="btn-primary" onclick="resetStatsWE()">Current Week</button>'
-    +'<button class="btn-ghost" onclick="nextStatsWE()">Next \u2192</button>'
+    +'<button class="btn-ghost" onclick="nextStatsWE()">Next →</button>'
     +pBtn()+'</div></div>'
-    +uxWeekContext(we)
-    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(390px,1fr));gap:14px;">';
-  STATS_LIST.forEach(function(stat){
-    var isAuto=AUTO_STATS[stat];
-    var cwD=cwDays.map(function(d){return getStatForDay(stat,d,we);});
-    var lwD=lwDays.map(function(d){return getStatForDay(stat,d,lwe);});
-    var cT=0,cwT=cwD.map(function(v){cT+=v;return cT;});
-    var lT=0,lwT=lwD.map(function(v){lT+=v;return lT;});
-    var logBtn='';
-    if(stat==='INTERVIEWS')logBtn='<button class="btn-primary" onclick="showLogInterview(\'\')" style="font-size:10px;padding:4px 9px;">+ Log</button>';
-    else if(stat==='PHS'||stat==='SIGN UPS')logBtn='<span style="font-size:9px;color:var(--text-3);font-style:italic;">auto \u2014 Excel paste</span>';
-    else if(stat==='PP STEPS')logBtn='<span style="font-size:9px;color:var(--text-3);font-style:italic;">auto \u2014 targets</span>';
-    else logBtn='<button class="btn-primary" onclick="showEditWeekModal(\''+stat+'\',\''+we+'\')" style="font-size:10px;padding:4px 9px;">Update Graph</button>';
-    html+='<div style="background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);">'
-      +'<span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--trim-light);">'+stat+'</span>'
-      +logBtn+'</div>'
-      +'<table style="width:100%;border-collapse:collapse;font-size:11px;"><thead>'
-      +'<tr style="background:var(--surface);">'
-      +'<th style="padding:4px 8px;text-align:left;font-size:8px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">DAY</th>'
-      +'<th style="padding:4px 3px;text-align:center;font-size:8px;color:var(--accent-light);font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">DAILY</th>'
-      +'<th style="padding:4px 3px;text-align:center;font-size:8px;color:var(--success);font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">TOTAL</th>'
-      +'<th style="padding:4px 3px;text-align:center;font-size:8px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">LW DAILY</th>'
-      +'<th style="padding:4px 3px;text-align:center;font-size:8px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">LW TOTAL</th>'
-      +'<th style="padding:4px 3px;text-align:center;font-size:8px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">QUOTA</th>'
-      +'</tr></thead><tbody>';
+    +uxWeekContext(we);
+
+  var splitAt=Math.ceil(STATS_LIST.length/2);
+  var statRows=[STATS_LIST.slice(0,splitAt),STATS_LIST.slice(splitAt)];
+
+  function renderStatBand(stats){
+    var out='<div style="background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px;">'
+      +'<div style="overflow:auto;">'
+      +'<table style="width:max-content;min-width:100%;border-collapse:collapse;font-size:10px;">'
+      +'<thead><tr style="background:var(--surface);">'
+      +'<th rowspan="2" style="position:sticky;left:0;z-index:3;background:var(--surface);padding:7px 10px;text-align:left;width:120px;border-bottom:1px solid var(--border);">DAY</th>';
+    stats.forEach(function(stat){
+      out+='<th colspan="5" style="padding:7px 4px;text-align:center;border-bottom:1px solid var(--border);border-left:1px solid var(--border);">'
+        +'<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--trim-light);">'+stat+'</div>'
+        +'</th>';
+    });
+    out+='</tr><tr style="background:var(--surface);">';
+    stats.forEach(function(){
+      out+='<th style="padding:4px 5px;border-bottom:1px solid var(--border);border-left:1px solid var(--border);color:var(--accent-light);">DAILY</th>'
+        +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--success);">TOTAL</th>'
+        +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--text-3);">LW DAILY</th>'
+        +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--text-3);">LW TOTAL</th>'
+        +'<th style="padding:4px 5px;border-bottom:1px solid var(--border);color:var(--accent);">QUOTA</th>';
+    });
+    out+='</tr></thead><tbody>';
+
     cwDays.forEach(function(d,i){
       var today=toLocalISO(new Date());
       var isToday=d===today;
-      var bg=isToday?'background:rgba(59,130,246,.07);':'';
-      var dailyVal=cwD[i];
-      var dailyCell=isAuto
-        ?'<span style="font-weight:700;color:var(--accent-light);">'+dailyVal+'</span>'
-        :'<span onclick="showEditStatModal(\''+stat+'\',\''+d+'\',\''+we+'\','+dailyVal+')" '
-          +'style="cursor:pointer;font-weight:700;color:var(--accent-light);border-bottom:1px dashed var(--border-2);padding:0 2px;" '
-          +'title="Click to edit">'+dailyVal+'</span>';
-      html+='<tr style="border-bottom:1px solid var(--border);'+bg+'">'
-        +'<td style="padding:4px 8px;font-size:10px;color:var(--text-2);white-space:nowrap;">'+(isToday?'<strong style="color:var(--accent-light);">':'')+(isToday?'\u25b6 ':'')+dayLbl(d)+(isToday?'</strong>':'')+'</td>'
-        +'<td style="padding:4px 3px;text-align:center;">'+dailyCell+'</td>'
-        +'<td style="padding:4px 3px;text-align:center;color:var(--success);font-weight:600;">'+cwT[i]+'</td>'
-        +'<td style="padding:4px 3px;text-align:center;color:var(--text-3);">'+lwD[i]+'</td>'
-        +'<td style="padding:4px 3px;text-align:center;color:var(--text-3);">'+lwT[i]+'</td>'
-        +'<td style="padding:4px 3px;text-align:center;">'
-        +'<input type="number" min="0" max="999" value="'+getQuotaForDay(stat,d)+'" '
-        +'style="width:44px;padding:2px;text-align:center;font-size:11px;font-weight:700;'
-        +'background:var(--card);border:1px solid var(--border-2);border-radius:4px;color:var(--accent);" '
-        +'onchange="setStatQuota(\''+stat+'\',\''+d+'\',this.value)">'
-        +'</td></tr>';
+      var rowBg=isToday?'background:rgba(59,130,246,.07);':'';
+      out+='<tr style="border-bottom:1px solid var(--border);'+rowBg+'">'
+        +'<td style="position:sticky;left:0;z-index:2;background:var(--panel);padding:6px 10px;font-size:10px;color:var(--text-2);white-space:nowrap;">'
+        +(isToday?'<strong style="color:var(--accent-light);">▶ ':'')+dayLbl(d)+(isToday?'</strong>':'')
+        +'<div style="font-size:9px;color:var(--text-3);">'+fmtDate(d)+'</div></td>';
+      stats.forEach(function(stat){
+        var isAuto=AUTO_STATS[stat];
+        var dailyVal=getStatForDay(stat,d,we);
+        var cwTotal=0;for(var k=0;k<=i;k++)cwTotal+=getStatForDay(stat,cwDays[k],we);
+        var lwDaily=getStatForDay(stat,lwDays[i],lwe);
+        var lwTotal=0;for(var m=0;m<=i;m++)lwTotal+=getStatForDay(stat,lwDays[m],lwe);
+        var dailyCell=isAuto
+          ?'<span style="font-weight:800;color:var(--accent-light);">'+dailyVal+'</span>'
+          :'<span onclick="showEditStatModal(\''+stat+'\',\''+d+'\',\''+we+'\','+dailyVal+')" style="cursor:pointer;font-weight:800;color:var(--accent-light);border-bottom:1px dashed var(--border-2);padding:0 2px;" title="Click to edit">'+dailyVal+'</span>';
+        out+='<td style="padding:4px 5px;text-align:center;border-left:1px solid var(--border);">'+dailyCell+'</td>'
+          +'<td style="padding:4px 5px;text-align:center;color:var(--success);font-weight:700;">'+cwTotal+'</td>'
+          +'<td style="padding:4px 5px;text-align:center;color:var(--text-3);">'+lwDaily+'</td>'
+          +'<td style="padding:4px 5px;text-align:center;color:var(--text-3);">'+lwTotal+'</td>'
+          +'<td style="padding:3px 4px;text-align:center;">'
+          +'<input type="number" min="0" max="999" value="'+getQuotaForDay(stat,d)+'" style="width:48px;padding:2px;text-align:center;font-size:10px;font-weight:700;background:var(--card);border:1px solid var(--border-2);border-radius:4px;color:var(--accent);" onchange="setStatQuota(\''+stat+'\',\''+d+'\',this.value)">'
+          +'</td>';
+      });
+      out+='</tr>';
     });
-    html+='</tbody></table></div>';
-  });
-  html+='</div><div style="height:80px;"></div>';
+
+    out+='</tbody></table></div></div>';
+    return out;
+  }
+
+  statRows.forEach(function(group){ if(group.length) html+=renderStatBand(group); });
+  html+='<div style="height:80px;"></div>';
   document.getElementById('viewArea').innerHTML=html;
   renderSidebarList();
 }
@@ -10044,6 +10132,8 @@ var autoSaveTimer = null;
 var saveInProgress = false;
 var savePending = false;
 var deletedNames = [];
+var dirtyInterviewIds = {};
+var deletedInterviewIds = {};
 var suppressPollUntil = 0;
 
 
@@ -11234,6 +11324,7 @@ function startFolderPoll(){
 
   pollTimer=setInterval(function(){
 
+    if(document.hidden)return;
     if(!splitFolderMode || !splitHandles || !splitHandles.meta)return;
 
     splitHandles.meta.getFile()
@@ -11273,6 +11364,14 @@ function startFolderPoll(){
   },2000);
 
 }
+
+/* Reduce background filesystem polling while tab is hidden (helps browser stability). */
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden)return;
+  if(splitFolderMode&&splitHandles&&splitHandles.meta){
+    folderRead(false).then(function(){setSyncTime();}).catch(function(){});
+  }
+});
 
 function autoSave(){
 
@@ -11574,18 +11673,22 @@ function getInterfaceStyle(){
   if(document.documentElement.getAttribute('data-classic')==='true')return 'classic';
   if(document.documentElement.getAttribute('data-bare')==='true')return 'bare';
   if(document.documentElement.getAttribute('data-glass')==='true')return 'liquid';
+  if(document.documentElement.getAttribute('data-executive')==='true')return 'executive';
   return 'modern';
 }
 
 function setInterfaceStyle(mode){
-  mode=(mode==='classic'||mode==='bare'||mode==='liquid')?mode:'modern';
+  mode=(mode==='classic'||mode==='bare'||mode==='liquid'||mode==='executive')?mode:'modern';
   document.documentElement.removeAttribute('data-classic');
   document.documentElement.removeAttribute('data-bare');
   document.documentElement.removeAttribute('data-glass');
+  document.documentElement.removeAttribute('data-executive');
+  document.documentElement.removeAttribute('data-executive');
   document.documentElement.setAttribute('data-interface',mode);
   if(mode==='classic')document.documentElement.setAttribute('data-classic','true');
   else if(mode==='bare')document.documentElement.setAttribute('data-bare','true');
   else if(mode==='liquid')document.documentElement.setAttribute('data-glass','true');
+  else if(mode==='executive')document.documentElement.setAttribute('data-executive','true');
   try{localStorage.setItem('esp-classic',mode==='classic'?'true':'false');}catch(e){}
   try{localStorage.setItem('esp-glass',mode==='liquid'?'true':'false');}catch(e){}
   try{localStorage.setItem('esp-ui-style',mode);}catch(e){}
@@ -11594,6 +11697,8 @@ function setInterfaceStyle(mode){
   if(bl)bl.className=mode==='liquid'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bb)bb.className=mode==='bare'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bc)bc.className=mode==='classic'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
+    var be=document.getElementById('btnExecutiveMode');if(be)be.className=mode==='executive'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
+  var be=document.getElementById('btnExecutiveMode');if(be)be.className=mode==='executive'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
 }
 
 function setClassicMode(on){
@@ -11612,6 +11717,7 @@ function showSettings(){
   if(bl)bl.className=styleMode==='liquid'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bb)bb.className=styleMode==='bare'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bc)bc.className=styleMode==='classic'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
+  var be=document.getElementById('btnExecutiveMode');if(be)be.className=styleMode==='executive'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   document.getElementById('settingsModal').classList.add('open');
 }
 
@@ -11648,7 +11754,7 @@ function initTheme(){
   document.documentElement.setAttribute('data-theme',savedTheme);
   document.documentElement.setAttribute('data-tone',savedTone);
 
-  if(savedUiStyle!=='modern' && savedUiStyle!=='bare' && savedUiStyle!=='classic' && savedUiStyle!=='liquid'){
+  if(savedUiStyle!=='modern' && savedUiStyle!=='bare' && savedUiStyle!=='classic' && savedUiStyle!=='liquid' && savedUiStyle!=='executive'){
     savedUiStyle = savedClassic==='true' ? 'classic' : 'modern';
   }
   document.documentElement.removeAttribute('data-classic');
@@ -11658,6 +11764,7 @@ function initTheme(){
   if(savedUiStyle==='classic')document.documentElement.setAttribute('data-classic','true');
   else if(savedUiStyle==='bare')document.documentElement.setAttribute('data-bare','true');
   else if(savedUiStyle==='liquid')document.documentElement.setAttribute('data-glass','true');
+  else if(savedUiStyle==='executive')document.documentElement.setAttribute('data-executive','true');
 
   ALL_THEMES.forEach(function(t){
     var btn=document.getElementById('ts-'+t);
@@ -12782,6 +12889,7 @@ function printStatsGraphsView(){
   var tone=document.documentElement.getAttribute('data-tone')||'';
   var classic=document.documentElement.getAttribute('data-classic')||'false';
   var bare=document.documentElement.getAttribute('data-bare')||'false';
+  var executive=document.documentElement.getAttribute('data-executive')||'false';
 
   function sanitizeGraphCard(card){
     var clone=card.cloneNode(true);
@@ -12835,7 +12943,7 @@ function printStatsGraphsView(){
     }
   }
 
-  var doc='<!DOCTYPE html><html data-theme="'+theme+'" data-tone="'+tone+'" data-classic="'+classic+'" data-bare="'+bare+'"><head><meta charset="UTF-8"><title>'+escHtml(pageTitle+(pageSub?' - '+pageSub:''))+'</title>'
+  var doc='<!DOCTYPE html><html data-theme="'+theme+'" data-tone="'+tone+'" data-classic="'+classic+'" data-bare="'+bare+'" data-executive="'+executive+'"><head><meta charset="UTF-8"><title>'+escHtml(pageTitle+(pageSub?' - '+pageSub:''))+'</title>'
     +'<style>'+styles+'</style>'
     +'<style>'
     +'@page{size:A4 portrait;margin:10mm 11mm;}'
@@ -14194,7 +14302,9 @@ function printStatsGraphsView(){
   window.applyDataSilent=function(d){
     d=prepareIncomingDataForInterviewSafety(d,'background/shared-folder update');
     if(!d)return false;
+    var incomingInterviews=Array.isArray(d&&d.interviews)?d.interviews:[];
     if(typeof loadArrays==='function')loadArrays(d);
+    if(hasPendingInterviewOps())interviews=mergeInterviewsList(incomingInterviews,interviews);
     if(typeof renderSidebarList==='function')renderSidebarList();
     var el=document.getElementById('syncStatus');
     if(el){var prev=el.textContent;el.textContent='Updated';setTimeout(function(){if(el)el.textContent=prev;},1600);}
@@ -15144,7 +15254,7 @@ function printStatsGraphsView(){
       settings:{
         theme:document.documentElement.getAttribute('data-theme')||'blue',
         tone:document.documentElement.getAttribute('data-tone')||'dark',
-        interfaceStyle:document.documentElement.getAttribute('data-glass')==='true'?'liquid':(document.documentElement.getAttribute('data-bare')==='true'?'bare':(document.documentElement.getAttribute('data-classic')==='true'?'classic':'modern')),
+        interfaceStyle:document.documentElement.getAttribute('data-executive')==='true'?'executive':(document.documentElement.getAttribute('data-glass')==='true'?'liquid':(document.documentElement.getAttribute('data-bare')==='true'?'bare':(document.documentElement.getAttribute('data-classic')==='true'?'classic':'modern'))),
         sidebarCollapsed:!!(document.querySelector('.sidebar')&&document.querySelector('.sidebar').classList.contains('is-collapsed')),
         dashboardLayout:dash
       }
@@ -15318,17 +15428,21 @@ function printStatsGraphsView(){
       saveInProgress=true;
       suppressPollUntil=Date.now()+2500;
       try{setSyncStatus('saving','Saving split files…');}catch(e){}
-      var payload=splitBuildPayloadFromMemory();
-      var dataWrites=Promise.resolve()
-        .then(function(){return splitWriteJson(splitHandles.profiles,payload.profiles);})
-        .then(function(){return splitWriteJson(splitHandles.prospects,payload.prospects);})
-        .then(function(){return splitWriteJson(splitHandles.stats,payload.stats);})
-        .then(function(){return splitWriteJson(splitHandles.interviews,payload.interviews);})
-        .then(function(){return splitWriteJson(splitHandles.appointments,payload.appointments);})
-        .then(function(){return splitWriteJson(splitHandles.surveys,payload.surveys);})
-        .then(function(){return splitWriteJson(splitHandles.meta,payload.meta);});
+      var dataWrites=splitReadJson(splitHandles.interviews,[])
+        .then(function(diskInterviews){
+          interviews=mergeInterviewsList(Array.isArray(diskInterviews)?diskInterviews:[],interviews);
+          var payload=splitBuildPayloadFromMemory();
+          return Promise.resolve()
+            .then(function(){return splitWriteJson(splitHandles.profiles,payload.profiles);})
+            .then(function(){return splitWriteJson(splitHandles.prospects,payload.prospects);})
+            .then(function(){return splitWriteJson(splitHandles.stats,payload.stats);})
+            .then(function(){return splitWriteJson(splitHandles.interviews,payload.interviews);})
+            .then(function(){return splitWriteJson(splitHandles.appointments,payload.appointments);})
+            .then(function(){return splitWriteJson(splitHandles.surveys,payload.surveys);})
+            .then(function(){return splitWriteJson(splitHandles.meta,payload.meta);});
+        });
       dataWrites.then(function(metaText){
-        splitLastMetaText=metaText;lastFileText=metaText;deletedNames=[];saveInProgress=false;
+        splitLastMetaText=metaText;lastFileText=metaText;deletedNames=[];dirtyInterviewIds={};deletedInterviewIds={};saveInProgress=false;
         if(savePending){savePending=false;folderSave();return;}
         var name=folderHandle?folderHandle.name:'Shared';
         setSyncStatus('connected',name+' (split)');setConnectBtn(name,'connected');setSyncTime();flashSaveButton();setManualDirty(false);hideBanner();
