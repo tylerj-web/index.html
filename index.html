@@ -11702,7 +11702,6 @@ function setInterfaceStyle(mode){
   document.documentElement.removeAttribute('data-bare');
   document.documentElement.removeAttribute('data-glass');
   document.documentElement.removeAttribute('data-executive');
-  document.documentElement.removeAttribute('data-executive');
   document.documentElement.setAttribute('data-interface',mode);
   if(mode==='classic')document.documentElement.setAttribute('data-classic','true');
   else if(mode==='bare')document.documentElement.setAttribute('data-bare','true');
@@ -11716,7 +11715,6 @@ function setInterfaceStyle(mode){
   if(bl)bl.className=mode==='liquid'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bb)bb.className=mode==='bare'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bc)bc.className=mode==='classic'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
-    var be=document.getElementById('btnExecutiveMode');if(be)be.className=mode==='executive'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   var be=document.getElementById('btnExecutiveMode');if(be)be.className=mode==='executive'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
 }
 
@@ -11779,6 +11777,7 @@ function initTheme(){
   document.documentElement.removeAttribute('data-classic');
   document.documentElement.removeAttribute('data-bare');
   document.documentElement.removeAttribute('data-glass');
+  document.documentElement.removeAttribute('data-executive');
   document.documentElement.setAttribute('data-interface',savedUiStyle);
   if(savedUiStyle==='classic')document.documentElement.setAttribute('data-classic','true');
   else if(savedUiStyle==='bare')document.documentElement.setAttribute('data-bare','true');
