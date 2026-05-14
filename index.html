@@ -1042,11 +1042,11 @@ html[data-executive="true"] .executive-top-nav .ex-nav.active{color:var(--text);
 html[data-executive="true"] .executive-top-nav .ex-icon{width:30px;height:30px;padding:0;display:grid;place-items:center;border-radius:2px;}
 html[data-executive="true"] .executive-top-nav .ex-search{width:220px;max-width:34vw;background:var(--surface);border:1px solid var(--border);padding:6px 8px;border-radius:2px;}
 html[data-executive="true"] .executive-top-nav .ex-status{font-size:11px;color:var(--text-3);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-html[data-executive="true"] .executive-stats-dd{position:relative;}
-html[data-executive="true"] .executive-stats-menu{display:none;position:absolute;top:100%;left:0;background:var(--surface);border:1px solid var(--border);min-width:220px;z-index:1300;}
-html[data-executive="true"] .executive-stats-dd.open .executive-stats-menu{display:block;}
-html[data-executive="true"] .executive-stats-menu button{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--border);padding:8px 10px;color:var(--text-2);} 
-html[data-executive="true"] .executive-stats-menu button:hover{background:var(--hover);color:var(--text);} 
+html[data-executive="true"] .executive-stats-dd,html[data-executive="true"] .executive-actions-dd{position:relative;}
+html[data-executive="true"] .executive-stats-menu,html[data-executive="true"] .executive-actions-menu{display:none;position:absolute;top:100%;left:0;background:var(--surface);border:1px solid var(--border);min-width:220px;z-index:1300;}
+html[data-executive="true"] .executive-stats-dd.open .executive-stats-menu,html[data-executive="true"] .executive-actions-dd.open .executive-actions-menu{display:block;}
+html[data-executive="true"] .executive-stats-menu button,html[data-executive="true"] .executive-actions-menu button{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--border);padding:8px 10px;color:var(--text-2);} 
+html[data-executive="true"] .executive-stats-menu button:hover,html[data-executive="true"] .executive-actions-menu button:hover{background:var(--hover);color:var(--text);} 
 @media (max-width:760px){html[data-executive="true"] .executive-top-nav{height:auto;flex-wrap:wrap;padding:6px 8px;}html[data-executive="true"] .main{padding-top:92px !important;}html[data-executive="true"] .executive-top-nav .ex-search{width:100%;max-width:100%;}}
 
 
@@ -14408,6 +14408,15 @@ function printStatsGraphsView(){
       <button onclick="switchMode('stats');switchStatsSub('projectstats');document.getElementById('exStatsDD').classList.remove('open');">Project Daily Graphs</button>
       <button onclick="switchMode('stats');switchStatsSub('weeklyprojectstats');document.getElementById('exStatsDD').classList.remove('open');">Project Weekly Graphs</button>
       <button onclick="switchMode('stats');switchStatsSub('logging');document.getElementById('exStatsDD').classList.remove('open');">Stat Logging</button>
+      </div></div>
+      <div class="executive-actions-dd" id="exActionsDD"><button class="ex-nav" onclick="var d=document.getElementById('exActionsDD');if(d)d.classList.toggle('open');">Actions ▾</button><div class="executive-actions-menu">
+      <button onclick="switchMode('profiles');addNewPerson();document.getElementById('exActionsDD').classList.remove('open');">New Profile</button>
+      <button onclick="switchMode('prospects');addNewProspect();document.getElementById('exActionsDD').classList.remove('open');">New Prospect</button>
+      <button onclick="showApptModal(null);document.getElementById('exActionsDD').classList.remove('open');">New Appointment</button>
+      <button onclick="showLogInterview('');document.getElementById('exActionsDD').classList.remove('open');">Log Interview</button>
+      <button onclick="showSurveyResponseModal();document.getElementById('exActionsDD').classList.remove('open');">Log Survey</button>
+      <button onclick="folderSave();document.getElementById('exActionsDD').classList.remove('open');">Save</button>
+      <button onclick="fileLoad();document.getElementById('exActionsDD').classList.remove('open');">Load</button>
       </div></div></div>
       <div class="ex-right"><input class="ex-search" id="exTopSearch" placeholder="Search people…" oninput="if(typeof globalSearch==='function')globalSearch(this.value)"></div>`;
       document.body.appendChild(old);
@@ -14421,6 +14430,10 @@ function printStatsGraphsView(){
   var osm=window.switchMode;if(typeof osm==='function'){window.switchMode=function(){var r=osm.apply(this,arguments);setTimeout(execNav,0);return r;};}
   var oss=window.setSyncStatus;if(typeof oss==='function'){window.setSyncStatus=function(){var r=oss.apply(this,arguments);setTimeout(execNav,0);return r;};}
   var ois=window.setInterfaceStyle;if(typeof ois==='function'){window.setInterfaceStyle=function(){var r=ois.apply(this,arguments);setTimeout(execNav,0);return r;};}
+  document.addEventListener('click',function(e){
+    var st=document.getElementById('exStatsDD');if(st&&!st.contains(e.target))st.classList.remove('open');
+    var ac=document.getElementById('exActionsDD');if(ac&&!ac.contains(e.target))ac.classList.remove('open');
+  });
   setTimeout(execNav,100);
 })();
 
