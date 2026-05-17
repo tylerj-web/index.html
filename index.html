@@ -15748,7 +15748,7 @@ function bulkMissingNameSuggest(i,val){
   all.forEach(function(it){var n=String(it.name||'');if(!n)return;var k=n.toLowerCase();if(seen[k])return;seen[k]=1;if(k.indexOf(v)>=0)hits.push(it);});
   if(!hits.length){box.style.display='none';box.innerHTML='';return;}
   hits.sort(function(a,b){return a.name.localeCompare(b.name);});
-  box.innerHTML=hits.slice(0,16).map(function(it){return '<div class="prospect-suggest-item" onmousedown="event.preventDefault();bulkMissingNamePick('+i+',''+jsQ(it.name)+'')"><div class="survey-name-result"><span>'+escHtml(it.name)+'</span><span class="survey-pill">'+it.type+'</span></div></div>';}).join('');
+  box.innerHTML=hits.slice(0,16).map(function(it){return '<div class="prospect-suggest-item" onmousedown="event.preventDefault();bulkMissingNamePick('+i+',\''+jsQ(it.name)+'\')"><div class="survey-name-result"><span>'+escHtml(it.name)+'</span><span class="survey-pill">'+it.type+'</span></div></div>';}).join('');
   box.style.display='block';
 }
 function bulkMissingNamePick(i,name){var x=bulkNotesState.missing[i];if(!x||x.done)return;name=jsD(name);x.assignName=name;var inp=document.getElementById('bnmi_'+i);if(inp)inp.value=name;var box=document.getElementById('bnms_'+i);if(box){box.style.display='none';box.innerHTML='';}}
