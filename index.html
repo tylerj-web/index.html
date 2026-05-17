@@ -14316,7 +14316,9 @@ function printStatsGraphsView(){
   window.applyData=function(d){
     d=prepareIncomingDataForInterviewSafety(d,'loaded data');
     if(!d)return false;
+    var incomingInterviews=Array.isArray(d&&d.interviews)?d.interviews:[];
     if(typeof loadArrays==='function')loadArrays(d);
+    interviews=mergeInterviewsList(incomingInterviews,interviews);
     currentIndex=null;
     if(typeof renderSidebarList==='function')renderSidebarList();
     if(currentMode==='profiles')showGlobalDashboard();
