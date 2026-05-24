@@ -5440,6 +5440,7 @@ html[data-glass="true"] .survey-category-suggest-item:hover{background:var(--lg-
         <button id="btnLiquidGlassMode" onclick="setInterfaceStyle('liquid')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-dash"/></svg> Liquid Glass</button>
         <button id="btnBareMode" onclick="setInterfaceStyle('bare')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-dash"/></svg> Bare Minimum</button>
         <button id="btnClassicMode" onclick="setInterfaceStyle('classic')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-settings"/></svg> 8-Bit Classic</button>
+        <button id="btnExecutiveMode" onclick="setInterfaceStyle('executive')" class="btn-ghost inline-icon-btn" style="flex:1;"><svg class="icon"><use href="#i-star"/></svg> Executive Minimal</button>
       </div>
       <div style="font-size:11px;color:var(--text-3);margin-top:7px;">Liquid Glass adds a lightweight iOS-style glass finish without heavy whole-app blur. Bare Minimum keeps your current colors but removes non-essential visual effects. Classic mode applies pixel-art styling, square elements and CRT scanlines.</div>
     </div>
@@ -11696,18 +11697,21 @@ function getInterfaceStyle(){
   if(document.documentElement.getAttribute('data-classic')==='true')return 'classic';
   if(document.documentElement.getAttribute('data-bare')==='true')return 'bare';
   if(document.documentElement.getAttribute('data-glass')==='true')return 'liquid';
+  if(document.documentElement.getAttribute('data-executive')==='true')return 'executive';
   return 'modern';
 }
 
 function setInterfaceStyle(mode){
-  mode=(mode==='classic'||mode==='bare'||mode==='liquid')?mode:'modern';
+  mode=(mode==='classic'||mode==='bare'||mode==='liquid'||mode==='executive')?mode:'modern';
   document.documentElement.removeAttribute('data-classic');
   document.documentElement.removeAttribute('data-bare');
   document.documentElement.removeAttribute('data-glass');
+  document.documentElement.removeAttribute('data-executive');
   document.documentElement.setAttribute('data-interface',mode);
   if(mode==='classic')document.documentElement.setAttribute('data-classic','true');
   else if(mode==='bare')document.documentElement.setAttribute('data-bare','true');
   else if(mode==='liquid')document.documentElement.setAttribute('data-glass','true');
+  else if(mode==='executive')document.documentElement.setAttribute('data-executive','true');
   try{localStorage.setItem('esp-classic',mode==='classic'?'true':'false');}catch(e){}
   try{localStorage.setItem('esp-glass',mode==='liquid'?'true':'false');}catch(e){}
   try{localStorage.setItem('esp-ui-style',mode);}catch(e){}
@@ -11716,6 +11720,7 @@ function setInterfaceStyle(mode){
   if(bl)bl.className=mode==='liquid'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bb)bb.className=mode==='bare'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bc)bc.className=mode==='classic'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
+  var be=document.getElementById('btnExecutiveMode');if(be)be.className=mode==='executive'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
 }
 
 function setClassicMode(on){
@@ -11734,6 +11739,7 @@ function showSettings(){
   if(bl)bl.className=styleMode==='liquid'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bb)bb.className=styleMode==='bare'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   if(bc)bc.className=styleMode==='classic'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
+  var be=document.getElementById('btnExecutiveMode');if(be)be.className=styleMode==='executive'?'btn-primary inline-icon-btn':'btn-ghost inline-icon-btn';
   document.getElementById('settingsModal').classList.add('open');
 }
 
@@ -11770,16 +11776,18 @@ function initTheme(){
   document.documentElement.setAttribute('data-theme',savedTheme);
   document.documentElement.setAttribute('data-tone',savedTone);
 
-  if(savedUiStyle!=='modern' && savedUiStyle!=='bare' && savedUiStyle!=='classic' && savedUiStyle!=='liquid'){
+  if(savedUiStyle!=='modern' && savedUiStyle!=='bare' && savedUiStyle!=='classic' && savedUiStyle!=='liquid' && savedUiStyle!=='executive'){
     savedUiStyle = savedClassic==='true' ? 'classic' : 'modern';
   }
   document.documentElement.removeAttribute('data-classic');
   document.documentElement.removeAttribute('data-bare');
   document.documentElement.removeAttribute('data-glass');
+  document.documentElement.removeAttribute('data-executive');
   document.documentElement.setAttribute('data-interface',savedUiStyle);
   if(savedUiStyle==='classic')document.documentElement.setAttribute('data-classic','true');
   else if(savedUiStyle==='bare')document.documentElement.setAttribute('data-bare','true');
   else if(savedUiStyle==='liquid')document.documentElement.setAttribute('data-glass','true');
+  else if(savedUiStyle==='executive')document.documentElement.setAttribute('data-executive','true');
 
   ALL_THEMES.forEach(function(t){
     var btn=document.getElementById('ts-'+t);
@@ -12904,6 +12912,7 @@ function printStatsGraphsView(){
   var tone=document.documentElement.getAttribute('data-tone')||'';
   var classic=document.documentElement.getAttribute('data-classic')||'false';
   var bare=document.documentElement.getAttribute('data-bare')||'false';
+  var executive=document.documentElement.getAttribute('data-executive')||'false';
 
   function sanitizeGraphCard(card){
     var clone=card.cloneNode(true);
@@ -12957,7 +12966,7 @@ function printStatsGraphsView(){
     }
   }
 
-  var doc='<!DOCTYPE html><html data-theme="'+theme+'" data-tone="'+tone+'" data-classic="'+classic+'" data-bare="'+bare+'"><head><meta charset="UTF-8"><title>'+escHtml(pageTitle+(pageSub?' - '+pageSub:''))+'</title>'
+  var doc='<!DOCTYPE html><html data-theme="'+theme+'" data-tone="'+tone+'" data-classic="'+classic+'" data-bare="'+bare+'" data-executive="'+executive+'"><head><meta charset="UTF-8"><title>'+escHtml(pageTitle+(pageSub?' - '+pageSub:''))+'</title>'
     +'<style>'+styles+'</style>'
     +'<style>'
     +'@page{size:A4 portrait;margin:10mm 11mm;}'
@@ -14293,7 +14302,9 @@ function printStatsGraphsView(){
   window.applyData=function(d){
     d=prepareIncomingDataForInterviewSafety(d,'loaded data');
     if(!d)return false;
+    var incomingInterviews=Array.isArray(d&&d.interviews)?d.interviews:[];
     if(typeof loadArrays==='function')loadArrays(d);
+    interviews=mergeInterviewsList(incomingInterviews,interviews);
     currentIndex=null;
     if(typeof renderSidebarList==='function')renderSidebarList();
     if(currentMode==='profiles')showGlobalDashboard();
@@ -15271,7 +15282,7 @@ function printStatsGraphsView(){
       settings:{
         theme:document.documentElement.getAttribute('data-theme')||'blue',
         tone:document.documentElement.getAttribute('data-tone')||'dark',
-        interfaceStyle:document.documentElement.getAttribute('data-glass')==='true'?'liquid':(document.documentElement.getAttribute('data-bare')==='true'?'bare':(document.documentElement.getAttribute('data-classic')==='true'?'classic':'modern')),
+        interfaceStyle:document.documentElement.getAttribute('data-executive')==='true'?'executive':(document.documentElement.getAttribute('data-glass')==='true'?'liquid':(document.documentElement.getAttribute('data-bare')==='true'?'bare':(document.documentElement.getAttribute('data-classic')==='true'?'classic':'modern'))),
         sidebarCollapsed:!!(document.querySelector('.sidebar')&&document.querySelector('.sidebar').classList.contains('is-collapsed')),
         dashboardLayout:dash
       }
@@ -15697,6 +15708,7 @@ function bulkSkipAllMissing(){bulkNotesState.missing.forEach(function(x){x.done=
 function finalizeBulkNotesImport(){bulkNotesState.conflicts.forEach(function(c){if(c.resolution!=='replace')return;var list=c.type==='profile'?profiles:prospects;var p=list[c.idx];if(!p)return;if(!p.data)p.data={};p.data.NOTE=c.newNote;markDirty(p.fullName||c.name);});autoSave();if(currentMode==='profiles')showGlobalDashboard();else if(currentMode==='prospects')showProspectDashboard();hideBulkNotesReviewModal();}
 
 </script>
+
 
 </body>
 
