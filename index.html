@@ -9123,6 +9123,10 @@ function drawAllGraphs(we,lwe){
     var cT=0,cwT=cwD.map(function(v){if(v==null)return null;cT+=v;return cT;});
     var lT=0,lwT=lwD.map(function(v){lT+=v;return lT;});
 var qLine=cwDays.map(function(d){return getQuotaForDay(stat,d);});
+    var lastQuota=0,firstQuota=0,fi=-1;
+    for(var qi=0;qi<qLine.length;qi++){if(qLine[qi]>0){fi=qi;firstQuota=qLine[qi];break;}}
+    if(fi>0){for(var qj=0;qj<fi;qj++)qLine[qj]=firstQuota;}
+    for(var qk=0;qk<qLine.length;qk++){if(qLine[qk]>0)lastQuota=qLine[qk];else if(lastQuota>0)qLine[qk]=lastQuota;}
     var sc=calcScale(cwD.concat(cwT,lwD,lwT,qLine),{tight:isPrintMode});
     var w=box.offsetWidth||480,h=box.offsetHeight||260;
     var tP=isPrintMode?18:28,bP=isPrintMode?26:36,gH=h-tP-bP;
