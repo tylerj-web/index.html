@@ -9142,7 +9142,7 @@ var qLine=getQuotaLineForWeek(stat,cwDays);
     var n=cwDays.length-1||1;
     var xs=w/n;
     var cy=function(v){var r=sc.maxV-sc.minV||1;return tP+gH*(1-Math.min(Math.max(v-sc.minV,0),r)/r);};
-    function mkLine(arr,col,dash,showLbls){
+    function mkLine(arr,col,dash,showLbls,bubble){
       var svg='',seg=[],ci='';
       function flush(){
         if(seg.length<2){seg=[];return;}
@@ -9154,7 +9154,7 @@ var qLine=getQuotaLineForWeek(stat,cwDays);
         var x=(i*xs).toFixed(1),y=cy(v).toFixed(1);
         seg.push(x+','+y);
         ci+='<circle cx="'+x+'" cy="'+y+'" r="4" fill="'+col+'"/>';
-        if(showLbls&&v>0)ci+='<text x="'+x+'" y="'+(parseFloat(y)-9)+'" text-anchor="middle" font-size="9" font-weight="700" fill="'+col+'">'+v+'</text>';
+        if(showLbls&&v>0){var yy=parseFloat(y);if(bubble){var tx=(parseFloat(x)-9).toFixed(1),ty=(yy-17).toFixed(1);ci+='<rect x="'+tx+'" y="'+ty+'" width="18" height="12" rx="6" fill="#ffffff" stroke="'+col+'" stroke-width="1"/>';ci+='<text x="'+x+'" y="'+(yy-8.5).toFixed(1)+'" text-anchor="middle" font-size="8" font-weight="700" fill="#111827">'+v+'</text>';}else{ci+='<text x="'+x+'" y="'+(yy-9)+'" text-anchor="middle" font-size="9" font-weight="700" fill="'+col+'">'+v+'</text>';}}
       });
       flush();
       return svg+ci;
@@ -9163,7 +9163,7 @@ var qLine=getQuotaLineForWeek(stat,cwDays);
     box.innerHTML='<div class="graph-axis" style="top:'+(tP-16)+'px">'+sc.maxV+'</div>'
       +'<div class="graph-axis" style="bottom:'+(bP-6)+'px">'+sc.minV+'</div>'
       +'<svg width="100%" height="100%" viewBox="0 0 '+w+' '+h+'" style="overflow:visible;">'
-+mkLine(qLine,'#60a5fa',false,true)
++mkLine(qLine,'#60a5fa',false,true,true)
       +mkLine(lwT,'#94a3b8',true,true)
       +mkLine(lwD,'#94a3b8',false,true)
       +mkLine(cwT,'#22c55e',true,true)
