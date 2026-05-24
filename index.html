@@ -14345,7 +14345,9 @@ function printStatsGraphsView(){
   window.applyData=function(d){
     d=prepareIncomingDataForInterviewSafety(d,'loaded data');
     if(!d)return false;
+    var incomingInterviews=Array.isArray(d&&d.interviews)?d.interviews:[];
     if(typeof loadArrays==='function')loadArrays(d);
+    interviews=mergeInterviewsList(incomingInterviews,interviews);
     currentIndex=null;
     if(typeof renderSidebarList==='function')renderSidebarList();
     if(currentMode==='profiles')showGlobalDashboard();
@@ -15798,6 +15800,7 @@ function bulkSkipAllMissing(){bulkNotesState.missing.forEach(function(x){x.done=
 function finalizeBulkNotesImport(){bulkNotesState.conflicts.forEach(function(c){if(c.resolution!=='replace')return;var list=c.type==='profile'?profiles:prospects;var p=list[c.idx];if(!p)return;if(!p.data)p.data={};p.data.NOTE=c.newNote;markDirty(p.fullName||c.name);});autoSave();if(currentMode==='profiles')showGlobalDashboard();else if(currentMode==='prospects')showProspectDashboard();hideBulkNotesReviewModal();}
 
 </script>
+
 
 </body>
 
