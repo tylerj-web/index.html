@@ -15919,7 +15919,7 @@ function printStatsGraphsView(){
       var cT=0,cwT=cwD.map(function(v){cT+=v;return cT;});
       var lT=0,lwT=lwD.map(function(v){lT+=v;return lT;});
       var qLine=cwDays.map(function(d){return typeof getQuotaForDay==='function'?getQuotaForDay(stat,d):0;});
-      var cwDm=maskedValues(cwD,mask), cwTm=maskedValues(cwT,mask), qM=maskedValues(qLine,mask);
+      var cwDm=maskedValues(cwD,mask), cwTm=maskedValues(cwT,mask), qM=qLine;
       var sc=calcVisibleScale(cwDm.concat(cwTm,lwD,lwT,qM));
       var w=box.offsetWidth||480,h=box.offsetHeight||260,tP=isPrintMode?18:28,bP=isPrintMode?26:36,gH=h-tP-bP,n=cwDays.length-1||1,xs=w/n;
       function cy(v){var r=sc.maxV-sc.minV||1;return tP+gH*(1-Math.min(Math.max(v-sc.minV,0),r)/r);}
