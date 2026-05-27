@@ -1076,14 +1076,6 @@ html[data-bare="true"] .btn-ghost:hover,
 html[data-bare="true"] .calendar-badge:hover {
   transform:none !important;
 }
-
-
-/* ------------------------------------------
-   LIQUID GLASS INTERFACE STYLE
-   Final scoped implementation is declared at the end of the CSS cascade.
------------------------------------------- */
-
-
 /* ------------------------------------------
    SYNC / SERVER STATUS
 ------------------------------------------ */
@@ -1335,12 +1327,12 @@ html[data-tone="light"] .sidebar {
 }
 
 html[data-tone="light"] .sidebar-brand {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--panel) 68%, white 32%) 0%, color-mix(in srgb, var(--card) 78%, white 22%) 60%, color-mix(in srgb, var(--trim-dim) 28%, white 72%) 100%);
+  background: linear-gradient(135deg, rgba(255,255,255,.76), rgba(255,255,255,.42)), var(--panel);
   border-bottom: 1px solid var(--border);
 }
 
 html[data-tone="dark"] .sidebar-brand {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 88%, black 12%) 0%, color-mix(in srgb, var(--panel) 92%, black 8%) 70%, color-mix(in srgb, var(--card) 88%, black 12%) 100%);
+  background: linear-gradient(135deg, rgba(255,255,255,.035), rgba(0,0,0,.08)), var(--surface);
   border-bottom: 1px solid var(--border);
 }
 
@@ -4223,63 +4215,80 @@ html[data-theme="blackwhite"][data-tone="dark"] input[type="date"] {
   .profile-subtabs,.routed-toggle-card { display:none !important; }
 }
 
-
 /* ------------------------------------------
-   LIQUID GLASS INTERFACE STYLE — FINAL LIGHT/DARK CLEANUP
-   Scoped, readable and performance-safe. No whole-app blur.
+   LIQUID GLASS — IOS-STYLE LEGACY-SAFE REBUILD
+   Single scoped implementation. Older Edge safe: no CSS nesting, no :has, no container queries.
 ------------------------------------------ */
 html[data-glass="true"] {
-  --radius-sm: 10px;
-  --radius: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 26px;
-  --lg-blur: 6px;
+  --radius-sm: 11px;
+  --radius: 15px;
+  --radius-lg: 21px;
+  --radius-xl: 28px;
+
+  --lg-page-bg: var(--bg);
+  --lg-surface-bg: var(--surface);
+  --lg-panel-bg: var(--panel);
+  --lg-card-bg: var(--card);
+  --lg-control-bg: var(--card);
+  --lg-control-hover-bg: var(--raised);
+  --lg-input-bg: var(--surface);
+  --lg-table-head-bg: var(--surface);
+  --lg-modal-bg: var(--panel);
+  --lg-border: var(--border-2);
+  --lg-border-strong: var(--trim-dim);
+  --lg-shadow: 0 16px 34px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.10);
+  --lg-shadow-soft: 0 8px 20px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.08);
+  --lg-modal-overlay: rgba(0,0,0,.58);
+  --lg-focus: var(--accent-glow);
 }
 
 html[data-glass="true"][data-tone="dark"] {
-  color-scheme: dark;
-  --lg-app-bg:
-    radial-gradient(circle at 14% 10%, var(--accent-dim) 0, transparent 28rem),
-    radial-gradient(circle at 84% 4%, var(--trim-dim) 0, transparent 30rem),
-    radial-gradient(circle at 74% 92%, var(--accent-glow) 0, transparent 32rem),
-    linear-gradient(145deg, rgba(255,255,255,.025), rgba(0,0,0,.10)),
+  --lg-page-bg:
+    radial-gradient(circle at 14% -8%, var(--accent-dim) 0, rgba(0,0,0,0) 24rem),
+    radial-gradient(circle at 88% 0%, var(--trim-dim) 0, rgba(0,0,0,0) 30rem),
+    radial-gradient(circle at 80% 104%, rgba(96,165,250,.14) 0, rgba(0,0,0,0) 32rem),
+    linear-gradient(150deg, rgba(255,255,255,.025), rgba(0,0,0,.10)),
     var(--bg);
-  --lg-surface-bg: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.018) 42%, rgba(0,0,0,.10)), var(--surface);
-  --lg-panel-bg: linear-gradient(145deg, rgba(255,255,255,.085), rgba(255,255,255,.022) 45%, rgba(0,0,0,.12)), var(--panel);
-  --lg-card-bg: linear-gradient(145deg, rgba(255,255,255,.095), rgba(255,255,255,.026) 42%, rgba(0,0,0,.10)), var(--card);
-  --lg-raised-bg: linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.032) 45%, rgba(0,0,0,.08)), var(--raised);
-  --lg-input-bg: linear-gradient(145deg, rgba(255,255,255,.07), rgba(255,255,255,.018)), var(--card);
-  --lg-modal-bg: linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.028) 44%, rgba(0,0,0,.14)), var(--panel);
-  --lg-border: rgba(226,236,255,.20);
-  --lg-border-strong: rgba(226,236,255,.30);
-  --lg-shadow: 0 12px 28px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.10);
-  --lg-shadow-soft: 0 6px 16px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.08);
-  --lg-modal-overlay: rgba(4,8,16,.62);
+  --lg-surface-bg: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025)), var(--surface);
+  --lg-panel-bg: linear-gradient(180deg, rgba(255,255,255,.085), rgba(255,255,255,.028)), var(--panel);
+  --lg-card-bg: linear-gradient(180deg, rgba(255,255,255,.105), rgba(255,255,255,.035)), var(--card);
+  --lg-control-bg: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.025)), var(--card);
+  --lg-control-hover-bg: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.04)), var(--raised);
+  --lg-input-bg: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02)), var(--surface);
+  --lg-table-head-bg: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.025)), var(--surface);
+  --lg-modal-bg: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.035)), var(--panel);
+  --lg-border: rgba(226,236,255,.17);
+  --lg-border-strong: rgba(226,236,255,.28);
+  --lg-shadow: 0 18px 40px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.12);
+  --lg-shadow-soft: 0 8px 20px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.09);
+  --lg-modal-overlay: rgba(3,7,18,.66);
 }
 
 html[data-glass="true"][data-tone="light"] {
-  color-scheme: light;
-  --lg-app-bg:
-    radial-gradient(circle at 12% 9%, var(--accent-dim) 0, transparent 26rem),
-    radial-gradient(circle at 84% 6%, var(--trim-dim) 0, transparent 30rem),
-    radial-gradient(circle at 72% 92%, rgba(255,255,255,.70) 0, transparent 32rem),
-    linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,255,255,.26)),
+  --lg-page-bg:
+    radial-gradient(circle at 14% -8%, var(--accent-dim) 0, rgba(255,255,255,0) 23rem),
+    radial-gradient(circle at 88% 0%, var(--trim-dim) 0, rgba(255,255,255,0) 30rem),
+    radial-gradient(circle at 80% 104%, rgba(255,255,255,.88) 0, rgba(255,255,255,0) 32rem),
+    linear-gradient(150deg, rgba(255,255,255,.72), rgba(255,255,255,.20)),
     var(--bg);
-  --lg-surface-bg: linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,255,255,.66) 48%, rgba(255,255,255,.48)), var(--surface);
-  --lg-panel-bg: linear-gradient(145deg, rgba(255,255,255,.84), rgba(255,255,255,.58) 48%, rgba(255,255,255,.40)), var(--panel);
-  --lg-card-bg: linear-gradient(145deg, rgba(255,255,255,.90), rgba(255,255,255,.62) 45%, rgba(255,255,255,.44)), var(--card);
-  --lg-raised-bg: linear-gradient(145deg, rgba(255,255,255,.96), rgba(255,255,255,.72) 48%, rgba(255,255,255,.52)), var(--raised);
-  --lg-input-bg: linear-gradient(145deg, rgba(255,255,255,.96), rgba(255,255,255,.78)), var(--surface);
-  --lg-modal-bg: linear-gradient(145deg, rgba(255,255,255,.96), rgba(255,255,255,.82) 48%, rgba(255,255,255,.70)), var(--surface);
-  --lg-border: rgba(15,23,42,.16);
+  --lg-surface-bg: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.54)), var(--surface);
+  --lg-panel-bg: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.42)), var(--panel);
+  --lg-card-bg: linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,255,255,.48)), var(--card);
+  --lg-control-bg: linear-gradient(180deg, rgba(255,255,255,.90), rgba(255,255,255,.54)), var(--card);
+  --lg-control-hover-bg: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.66)), var(--raised);
+  --lg-input-bg: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.82)), #ffffff;
+  --lg-table-head-bg: linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.68)), var(--surface);
+  --lg-modal-bg: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.82)), #ffffff;
+  --lg-border: rgba(15,23,42,.13);
   --lg-border-strong: rgba(15,23,42,.24);
-  --lg-shadow: 0 12px 28px rgba(15,23,42,.11), inset 0 1px 0 rgba(255,255,255,.80);
-  --lg-shadow-soft: 0 6px 16px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.74);
-  --lg-modal-overlay: rgba(15,23,42,.26);
+  --lg-shadow: 0 18px 40px rgba(15,23,42,.12), inset 0 1px 0 rgba(255,255,255,.85);
+  --lg-shadow-soft: 0 8px 20px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.80);
+  --lg-modal-overlay: rgba(15,23,42,.30);
 }
 
 html[data-glass="true"] body {
-  background: var(--lg-app-bg) !important;
+  background: var(--lg-page-bg) !important;
+  color: var(--text) !important;
 }
 
 html[data-glass="true"] .main {
@@ -4293,607 +4302,13 @@ html[data-glass="true"] .sidebar-section,
 html[data-glass="true"] .stats-collapsed-flyout {
   background: var(--lg-surface-bg) !important;
   border-color: var(--lg-border) !important;
-  box-shadow: var(--lg-shadow-soft);
+  box-shadow: var(--lg-shadow-soft) !important;
 }
 
 html[data-glass="true"] .sidebar {
   border-right-color: var(--lg-border-strong) !important;
 }
 
-html[data-glass="true"] .sidebar-brand {
-  border-bottom-color: var(--lg-border) !important;
-}
-
-html[data-glass="true"] .nav-tab,
-html[data-glass="true"] .slist-item,
-html[data-glass="true"] .person-item,
-html[data-glass="true"] button,
-html[data-glass="true"] .btn-ghost,
-html[data-glass="true"] .profile-subtabs button,
-html[data-glass="true"] .cc-dash-edit-tools button,
-html[data-glass="true"] .cc-dash-edit-tools select,
-html[data-glass="true"] .cc-interview-day-btn,
-html[data-glass="true"] .cc-dash-view,
-html[data-glass="true"] .calendar-badge,
-html[data-glass="true"] .ux-chip,
-html[data-glass="true"] .ux-badge,
-html[data-glass="true"] .status-pill,
-html[data-glass="true"] .survey-pill,
-html[data-glass="true"] .org-pill {
-  background: var(--lg-card-bg);
-  border-color: var(--lg-border);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
-}
-
-html[data-glass="true"] .btn-primary,
-html[data-glass="true"] .btn-success,
-html[data-glass="true"] .btn-danger,
-html[data-glass="true"] .btn-warning,
-html[data-glass="true"] .btn-purple {
-  box-shadow: 0 8px 18px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.22);
-}
-
-html[data-glass="true"] button:hover,
-html[data-glass="true"] .nav-tab:hover,
-html[data-glass="true"] .person-item:hover,
-html[data-glass="true"] .slist-item:hover,
-html[data-glass="true"] .cc-interview-day-btn:hover,
-html[data-glass="true"] .calendar-badge:hover {
-  background: var(--lg-raised-bg);
-  border-color: var(--lg-border-strong);
-}
-
-html[data-glass="true"] .nav-tab.active,
-html[data-glass="true"] .slist-item.active,
-html[data-glass="true"] .person-item.active,
-html[data-glass="true"] .profile-subtabs button.active,
-html[data-glass="true"] .cc-interview-day-btn.active,
-html[data-glass="true"] .stats-collapsed-flyout-item.active {
-  background:
-    linear-gradient(145deg, var(--accent-dim), transparent 72%),
-    var(--lg-raised-bg);
-  border-color: var(--accent-glow) !important;
-  color: var(--accent-light) !important;
-  box-shadow: inset 3px 0 0 var(--trim), 0 8px 20px rgba(0,0,0,.12);
-}
-
-html[data-glass="true"] input,
-html[data-glass="true"] select,
-html[data-glass="true"] textarea,
-html[data-glass="true"] .cc-dash-note,
-html[data-glass="true"] .interview-note-edit,
-html[data-glass="true"] .cc-interview-board-card textarea {
-  background: var(--lg-input-bg) !important;
-  border-color: var(--lg-border) !important;
-  color: var(--text) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
-}
-
-html[data-glass="true"] input::placeholder,
-html[data-glass="true"] textarea::placeholder {
-  color: var(--text-3) !important;
-}
-
-html[data-glass="true"] input:focus,
-html[data-glass="true"] select:focus,
-html[data-glass="true"] textarea:focus {
-  border-color: var(--accent) !important;
-  box-shadow: 0 0 0 3px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,.16) !important;
-}
-
-html[data-glass="true"] input[type="date"] {
-  color: var(--text) !important;
-}
-
-html[data-glass="true"] .metric-card,
-html[data-glass="true"] .profile-card,
-html[data-glass="true"] .field-box,
-html[data-glass="true"] .filter-bar,
-html[data-glass="true"] .target-row,
-html[data-glass="true"] .target-list-panel,
-html[data-glass="true"] .tl-row,
-html[data-glass="true"] .graph-card,
-html[data-glass="true"] .month,
-html[data-glass="true"] .day-cell,
-html[data-glass="true"] .interview-card,
-html[data-glass="true"] .interview-meta,
-html[data-glass="true"] .interview-notes,
-html[data-glass="true"] .appt-inline-row,
-html[data-glass="true"] .survey-card,
-html[data-glass="true"] .survey-row,
-html[data-glass="true"] .survey-question-card,
-html[data-glass="true"] .survey-q-editor,
-html[data-glass="true"] .survey-answer-line,
-html[data-glass="true"] .survey-answer-person-line,
-html[data-glass="true"] .profile-subtabs,
-html[data-glass="true"] .routed-toggle-card,
-html[data-glass="true"] .ux-context-bar,
-html[data-glass="true"] .ux-filter-state,
-html[data-glass="true"] .ux-empty-inline,
-html[data-glass="true"] .ux-person-stat,
-html[data-glass="true"] details.ux-details,
-html[data-glass="true"] .mm-pair,
-html[data-glass="true"] .mm-card,
-html[data-glass="true"] .stats-table,
-html[data-glass="true"] .weekly-figures-scroll,
-html[data-glass="true"] .cc-dash-toolbar,
-html[data-glass="true"] .cc-dash-widget,
-html[data-glass="true"] .cc-dash-row,
-html[data-glass="true"] .cc-dash-mini,
-html[data-glass="true"] .cc-dash-empty,
-html[data-glass="true"] .cc-board-week-label,
-html[data-glass="true"] .cc-appt-day,
-html[data-glass="true"] .cc-appt-card,
-html[data-glass="true"] .cc-interview-selected-date,
-html[data-glass="true"] .cc-interview-board-card,
-html[data-glass="true"] .cc-dash-library-row {
-  background: var(--lg-panel-bg) !important;
-  border-color: var(--lg-border) !important;
-  box-shadow: var(--lg-shadow-soft);
-}
-
-html[data-glass="true"] .profile-card,
-html[data-glass="true"] .metric-card,
-html[data-glass="true"] .graph-card,
-html[data-glass="true"] .cc-dash-widget,
-html[data-glass="true"] .survey-card,
-html[data-glass="true"] .target-list-panel,
-html[data-glass="true"] .month,
-html[data-glass="true"] details.ux-details {
-  box-shadow: var(--lg-shadow);
-}
-
-html[data-glass="true"] .profile-card:hover,
-html[data-glass="true"] .survey-card:hover,
-html[data-glass="true"] .interview-card:hover,
-html[data-glass="true"] .cc-dash-widget.is-editing,
-html[data-glass="true"] .cc-dash-row:hover,
-html[data-glass="true"] .survey-answer-person-line:hover {
-  background: var(--lg-card-bg) !important;
-  border-color: var(--lg-border-strong) !important;
-}
-
-html[data-glass="true"] .metric-card.danger,
-html[data-glass="true"] .profile-card.overdue,
-html[data-glass="true"] .target-row.is-overdue,
-html[data-glass="true"] .tl-row.overdue {
-  background:
-    linear-gradient(145deg, var(--danger-dim), transparent 70%),
-    var(--lg-panel-bg) !important;
-  border-color: var(--danger) !important;
-}
-
-html[data-glass="true"] .cc-dash-widget-head,
-html[data-glass="true"] .target-list-panel .tl-header,
-html[data-glass="true"] .month-header,
-html[data-glass="true"] .weekdays,
-html[data-glass="true"] details.ux-details > summary,
-html[data-glass="true"] .stats-table th,
-html[data-glass="true"] .weekly-figures-table th,
-html[data-glass="true"] .weekly-figures-table td:first-child,
-html[data-glass="true"] .weekly-figures-table th:first-child {
-  background: var(--lg-surface-bg) !important;
-  border-color: var(--lg-border) !important;
-}
-
-html[data-glass="true"] .cc-dash-mini,
-html[data-glass="true"] .cc-dash-row,
-html[data-glass="true"] .cc-appt-card,
-html[data-glass="true"] .cc-appt-day,
-html[data-glass="true"] .cc-interview-board-card,
-html[data-glass="true"] .day-cell,
-html[data-glass="true"] .tl-row,
-html[data-glass="true"] .survey-answer-line,
-html[data-glass="true"] .appt-inline-row {
-  background: var(--lg-card-bg) !important;
-}
-
-html[data-glass="true"] .modal-overlay {
-  background: var(--lg-modal-overlay) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-
-html[data-glass="true"] .modal-box,
-html[data-glass="true"] #ccDashLibraryModal .modal-box,
-html[data-glass="true"] .prospect-suggest,
-html[data-glass="true"] .iv-name-suggest,
-html[data-glass="true"] .stats-collapsed-flyout {
-  background: var(--lg-modal-bg) !important;
-  border-color: var(--lg-border-strong) !important;
-  box-shadow: 0 18px 48px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.18) !important;
-}
-
-html[data-glass="true"] .modal-actions {
-  background: linear-gradient(to top, var(--panel) 76%, rgba(0,0,0,0)) !important;
-  border-top-color: var(--lg-border) !important;
-}
-
-html[data-glass="true"][data-tone="light"] .modal-actions {
-  background: linear-gradient(to top, rgba(255,255,255,.94) 76%, rgba(255,255,255,0)) !important;
-}
-
-html[data-glass="true"] .graph-container svg text,
-html[data-glass="true"] .graph-card .gc-title,
-html[data-glass="true"] .cc-dash-widget-head h3,
-html[data-glass="true"] .cc-dash-row strong,
-html[data-glass="true"] .cc-dash-mini strong,
-html[data-glass="true"] .cc-appt-main strong,
-html[data-glass="true"] .cc-interview-selected-date strong,
-html[data-glass="true"] .survey-answer-text,
-html[data-glass="true"] .pc-name,
-html[data-glass="true"] .mm-card-name {
-  color: var(--text) !important;
-}
-
-html[data-glass="true"] .page-sub,
-html[data-glass="true"] .cc-dash-widget-head p,
-html[data-glass="true"] .cc-dash-row em,
-html[data-glass="true"] .cc-dash-help,
-html[data-glass="true"] .cc-dash-empty,
-html[data-glass="true"] .cc-appt-main span,
-html[data-glass="true"] .cc-interview-selected-date span,
-html[data-glass="true"] .survey-mini,
-html[data-glass="true"] .progress-label,
-html[data-glass="true"] .filter-label,
-html[data-glass="true"] .filter-count {
-  color: var(--text-3) !important;
-}
-
-html[data-glass="true"] .metric-card .metric-value,
-html[data-glass="true"] .ux-person-stat .v,
-html[data-glass="true"] .weekly-figures-value,
-html[data-glass="true"] .cc-dash-mini strong,
-html[data-glass="true"] .cc-board-week-label strong,
-html[data-glass="true"] .cc-appt-day-head strong {
-  color: var(--trim-light) !important;
-}
-
-@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  html[data-glass="true"] .modal-box,
-  html[data-glass="true"] #ccDashLibraryModal .modal-box,
-  html[data-glass="true"] .prospect-suggest,
-  html[data-glass="true"] .iv-name-suggest,
-  html[data-glass="true"] .stats-collapsed-flyout {
-    -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(118%);
-    backdrop-filter: blur(var(--lg-blur)) saturate(118%);
-  }
-}
-
-@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  html[data-glass="true"] .modal-box,
-  html[data-glass="true"] #ccDashLibraryModal .modal-box,
-  html[data-glass="true"] .prospect-suggest,
-  html[data-glass="true"] .iv-name-suggest,
-  html[data-glass="true"] .stats-collapsed-flyout {
-    background: var(--panel) !important;
-  }
-  html[data-glass="true"][data-tone="light"] .modal-box,
-  html[data-glass="true"][data-tone="light"] #ccDashLibraryModal .modal-box,
-  html[data-glass="true"][data-tone="light"] .prospect-suggest,
-  html[data-glass="true"][data-tone="light"] .iv-name-suggest,
-  html[data-glass="true"][data-tone="light"] .stats-collapsed-flyout {
-    background: var(--surface) !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html[data-glass="true"] *,
-  html[data-glass="true"] *::before,
-  html[data-glass="true"] *::after {
-    animation: none !important;
-    transition-duration: .01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-@media (max-width:760px) {
-  html[data-glass="true"] .metric-card,
-  html[data-glass="true"] .profile-card,
-  html[data-glass="true"] .graph-card,
-  html[data-glass="true"] .cc-dash-widget,
-  html[data-glass="true"] .survey-card,
-  html[data-glass="true"] .month {
-    box-shadow: var(--lg-shadow-soft);
-  }
-  html[data-glass="true"] .mode-switch-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-@media print {
-  html[data-glass="true"] *,
-  html[data-glass="true"] *::before,
-  html[data-glass="true"] *::after {
-    box-shadow: none !important;
-    text-shadow: none !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-}
-
-
-/* ------------------------------------------
-   LIQUID GLASS PERFORMANCE OVERRIDE — STATIC FAST MODE
-   Keeps the glass identity while removing blur, filters, heavy shadows and motion.
------------------------------------------- */
-html[data-glass="true"] {
-  --radius-sm: 10px;
-  --radius: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 26px;
-  --lg-blur: 0px;
-}
-html[data-glass="true"],
-html[data-glass="true"] *,
-html[data-glass="true"] *::before,
-html[data-glass="true"] *::after {
-  animation: none !important;
-  transition: none !important;
-  scroll-behavior: auto !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-html[data-glass="true"] body::after { display:none !important; }
-html[data-glass="true"][data-tone="dark"] {
-  --lg-app-bg: linear-gradient(145deg, color-mix(in srgb, var(--bg) 92%, var(--accent) 8%), var(--bg));
-  --lg-surface-bg: linear-gradient(145deg, color-mix(in srgb, var(--surface) 88%, white 12%), var(--surface));
-  --lg-panel-bg: linear-gradient(145deg, color-mix(in srgb, var(--panel) 90%, white 10%), var(--panel));
-  --lg-card-bg: linear-gradient(145deg, color-mix(in srgb, var(--card) 90%, white 10%), var(--card));
-  --lg-raised-bg: linear-gradient(145deg, color-mix(in srgb, var(--raised) 88%, white 12%), var(--raised));
-  --lg-input-bg: color-mix(in srgb, var(--card) 94%, white 6%);
-  --lg-modal-bg: color-mix(in srgb, var(--panel) 92%, white 8%);
-  --lg-border: rgba(226,236,255,.18);
-  --lg-border-strong: rgba(226,236,255,.26);
-  --lg-shadow: 0 1px 0 rgba(255,255,255,.06) inset;
-  --lg-shadow-soft: none;
-  --lg-modal-overlay: rgba(4,8,16,.72);
-}
-html[data-glass="true"][data-tone="light"] {
-  --lg-app-bg: linear-gradient(145deg, color-mix(in srgb, var(--bg) 88%, white 12%), var(--bg));
-  --lg-surface-bg: linear-gradient(145deg, color-mix(in srgb, var(--surface) 88%, var(--accent) 4%), var(--surface));
-  --lg-panel-bg: linear-gradient(145deg, color-mix(in srgb, var(--panel) 86%, white 14%), var(--panel));
-  --lg-card-bg: linear-gradient(145deg, color-mix(in srgb, var(--card) 86%, white 14%), var(--card));
-  --lg-raised-bg: linear-gradient(145deg, color-mix(in srgb, var(--raised) 86%, white 14%), var(--raised));
-  --lg-input-bg: color-mix(in srgb, var(--surface) 94%, var(--accent) 6%);
-  --lg-modal-bg: color-mix(in srgb, var(--surface) 94%, var(--accent) 3%);
-  --lg-border: rgba(15,23,42,.14);
-  --lg-border-strong: rgba(15,23,42,.22);
-  --lg-shadow: 0 1px 0 rgba(255,255,255,.58) inset;
-  --lg-shadow-soft: none;
-  --lg-modal-overlay: rgba(15,23,42,.28);
-}
-html[data-glass="true"] body { background: var(--lg-app-bg) !important; }
-html[data-glass="true"] .main { background: transparent !important; }
-html[data-glass="true"] .sidebar,
-html[data-glass="true"] .sidebar-brand,
-html[data-glass="true"] .sync-bar,
-html[data-glass="true"] .sidebar-section,
-html[data-glass="true"] .modal-box,
-html[data-glass="true"] #ccDashLibraryModal .modal-box {
-  background: var(--lg-surface-bg) !important;
-  border-color: var(--lg-border) !important;
-  box-shadow: var(--lg-shadow) !important;
-}
-html[data-glass="true"] .metric-card,
-html[data-glass="true"] .profile-card,
-html[data-glass="true"] .field-box,
-html[data-glass="true"] .filter-bar,
-html[data-glass="true"] .target-row,
-html[data-glass="true"] .target-list-panel,
-html[data-glass="true"] .tl-row,
-html[data-glass="true"] .graph-card,
-html[data-glass="true"] .month,
-html[data-glass="true"] .day-cell,
-html[data-glass="true"] .interview-card,
-html[data-glass="true"] .interview-meta,
-html[data-glass="true"] .interview-notes,
-html[data-glass="true"] .appt-inline-row,
-html[data-glass="true"] .survey-card,
-html[data-glass="true"] .survey-row,
-html[data-glass="true"] .survey-question-card,
-html[data-glass="true"] .survey-q-editor,
-html[data-glass="true"] .survey-answer-line,
-html[data-glass="true"] .survey-answer-person-line,
-html[data-glass="true"] .profile-subtabs,
-html[data-glass="true"] .routed-toggle-card,
-html[data-glass="true"] .ux-context-bar,
-html[data-glass="true"] .ux-filter-state,
-html[data-glass="true"] .ux-empty-inline,
-html[data-glass="true"] .ux-person-stat,
-html[data-glass="true"] details.ux-details,
-html[data-glass="true"] .mm-pair,
-html[data-glass="true"] .mm-card,
-html[data-glass="true"] .stats-table,
-html[data-glass="true"] .weekly-figures-scroll,
-html[data-glass="true"] .cc-dash-toolbar,
-html[data-glass="true"] .cc-dash-widget,
-html[data-glass="true"] .cc-dash-row,
-html[data-glass="true"] .cc-dash-mini,
-html[data-glass="true"] .cc-dash-empty,
-html[data-glass="true"] .cc-board-week-label,
-html[data-glass="true"] .cc-appt-day,
-html[data-glass="true"] .cc-appt-card,
-html[data-glass="true"] .cc-interview-selected-date,
-html[data-glass="true"] .cc-interview-board-card,
-html[data-glass="true"] .cc-dash-library-row,
-html[data-glass="true"] .prospect-suggest,
-html[data-glass="true"] .iv-name-suggest,
-html[data-glass="true"] .stats-collapsed-flyout {
-  background: var(--lg-panel-bg) !important;
-  border-color: var(--lg-border) !important;
-  box-shadow: none !important;
-}
-html[data-glass="true"] .nav-tab,
-html[data-glass="true"] .slist-item,
-html[data-glass="true"] .person-item,
-html[data-glass="true"] button,
-html[data-glass="true"] .btn-ghost,
-html[data-glass="true"] .profile-subtabs button,
-html[data-glass="true"] .cc-dash-edit-tools button,
-html[data-glass="true"] .cc-dash-edit-tools select,
-html[data-glass="true"] .cc-interview-day-btn,
-html[data-glass="true"] .cc-dash-view,
-html[data-glass="true"] .calendar-badge,
-html[data-glass="true"] .ux-chip,
-html[data-glass="true"] .ux-badge,
-html[data-glass="true"] .status-pill,
-html[data-glass="true"] .survey-pill,
-html[data-glass="true"] .org-pill {
-  background: var(--lg-card-bg) !important;
-  border-color: var(--lg-border) !important;
-  box-shadow: none !important;
-}
-html[data-glass="true"] input,
-html[data-glass="true"] select,
-html[data-glass="true"] textarea,
-html[data-glass="true"] .cc-dash-note,
-html[data-glass="true"] .interview-note-edit,
-html[data-glass="true"] .cc-interview-board-card textarea {
-  background: var(--lg-input-bg) !important;
-  border-color: var(--lg-border) !important;
-  color: var(--text) !important;
-  box-shadow: none !important;
-}
-html[data-glass="true"] input:focus,
-html[data-glass="true"] select:focus,
-html[data-glass="true"] textarea:focus,
-html[data-glass="true"] button:focus-visible,
-html[data-glass="true"] .nav-tab:focus-visible,
-html[data-glass="true"] .person-item:focus-visible,
-html[data-glass="true"] .slist-item:focus-visible {
-  box-shadow: 0 0 0 2px var(--accent-glow) !important;
-  outline: none !important;
-}
-html[data-glass="true"] button:hover,
-html[data-glass="true"] .nav-tab:hover,
-html[data-glass="true"] .person-item:hover,
-html[data-glass="true"] .slist-item:hover,
-html[data-glass="true"] .profile-card:hover,
-html[data-glass="true"] .survey-card:hover,
-html[data-glass="true"] .interview-card:hover,
-html[data-glass="true"] .cc-dash-row:hover,
-html[data-glass="true"] .survey-answer-person-line:hover,
-html[data-glass="true"] .calendar-badge:hover {
-  background: var(--lg-raised-bg) !important;
-  border-color: var(--lg-border-strong) !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-html[data-glass="true"] .btn-primary,
-html[data-glass="true"] .btn-success,
-html[data-glass="true"] .btn-danger,
-html[data-glass="true"] .btn-warning,
-html[data-glass="true"] .btn-purple,
-html[data-glass="true"] .nav-tab.active,
-html[data-glass="true"] .slist-item.active,
-html[data-glass="true"] .person-item.active,
-html[data-glass="true"] .profile-subtabs button.active,
-html[data-glass="true"] .cc-interview-day-btn.active,
-html[data-glass="true"] .stats-collapsed-flyout-item.active {
-  box-shadow: inset 3px 0 0 var(--trim) !important;
-}
-html[data-glass="true"] .target-row.completed,
-html[data-glass="true"] .tl-row.completed {
-  filter: none !important;
-  opacity: .55 !important;
-}
-html[data-glass="true"] .modal-overlay {
-  background: var(--lg-modal-overlay) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-html[data-glass="true"] svg,
-html[data-glass="true"] img,
-html[data-glass="true"] canvas {
-  filter: none !important;
-}
-@media print {
-  html[data-glass="true"] *,
-  html[data-glass="true"] *::before,
-  html[data-glass="true"] *::after {
-    box-shadow: none !important;
-    text-shadow: none !important;
-    filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-}
-
-
-/* ------------------------------------------
-   LIQUID GLASS READABILITY CLEANUP — FINAL SAFE OVERRIDE
-   Scoped to Liquid Glass only. Static, high-contrast, no blur/filter/motion.
------------------------------------------- */
-html[data-glass="true"] {
-  --radius-sm: 10px;
-  --radius: 14px;
-  --radius-lg: 18px;
-  --radius-xl: 22px;
-  --lg-page-bg: linear-gradient(180deg, rgba(255,255,255,.018), rgba(0,0,0,.035)), var(--bg);
-  --lg-surface-bg: linear-gradient(180deg, rgba(255,255,255,.035), rgba(0,0,0,.015)), var(--surface);
-  --lg-panel-bg: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.018)), var(--panel);
-  --lg-card-bg: linear-gradient(180deg, rgba(255,255,255,.045), rgba(0,0,0,.012)), var(--card);
-  --lg-control-bg: var(--card);
-  --lg-control-hover-bg: var(--raised);
-  --lg-input-bg: var(--surface);
-  --lg-modal-bg: var(--panel);
-  --lg-table-head-bg: var(--surface);
-  --lg-border: var(--border-2);
-  --lg-border-strong: var(--trim-dim);
-  --lg-focus: var(--accent-glow);
-  --lg-major-shadow: 0 2px 10px rgba(0,0,0,.16);
-  --lg-minor-shadow: none;
-  --lg-disabled-bg: var(--raised);
-  --lg-disabled-text: var(--text-3);
-}
-
-html[data-glass="true"][data-tone="light"] {
-  --lg-page-bg: linear-gradient(180deg, rgba(255,255,255,.56), rgba(255,255,255,.18)), var(--bg);
-  --lg-surface-bg: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.30)), var(--surface);
-  --lg-panel-bg: linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.22)), var(--panel);
-  --lg-card-bg: linear-gradient(180deg, rgba(255,255,255,.70), rgba(255,255,255,.22)), var(--card);
-  --lg-control-bg: var(--card);
-  --lg-control-hover-bg: var(--raised);
-  --lg-input-bg: #ffffff;
-  --lg-modal-bg: #ffffff;
-  --lg-table-head-bg: var(--surface);
-  --lg-major-shadow: 0 2px 10px rgba(15,23,42,.09);
-}
-
-html[data-glass="true"],
-html[data-glass="true"] *,
-html[data-glass="true"] *::before,
-html[data-glass="true"] *::after {
-  animation: none !important;
-  transition: none !important;
-  scroll-behavior: auto !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-  filter: none !important;
-  text-shadow: none !important;
-}
-
-html[data-glass="true"] body {
-  background: var(--lg-page-bg) !important;
-  color: var(--text) !important;
-}
-html[data-glass="true"] .main { background: transparent !important; }
-html[data-glass="true"] body::after { display: none !important; }
-
-html[data-glass="true"] .sidebar,
-html[data-glass="true"] .sidebar-brand,
-html[data-glass="true"] .sync-bar,
-html[data-glass="true"] .modal-box,
-html[data-glass="true"] #ccDashLibraryModal .modal-box,
-html[data-glass="true"] .stats-collapsed-flyout {
-  background: var(--lg-surface-bg) !important;
-  color: var(--text) !important;
-  border-color: var(--lg-border) !important;
-  box-shadow: var(--lg-major-shadow) !important;
-}
-
-html[data-glass="true"] .sidebar-section,
 html[data-glass="true"] .metric-card,
 html[data-glass="true"] .profile-card,
 html[data-glass="true"] .field-box,
@@ -4923,9 +4338,8 @@ html[data-glass="true"] .cc-dash-widget,
 html[data-glass="true"] .cc-dash-empty,
 html[data-glass="true"] .cc-interview-selected-date {
   background: var(--lg-panel-bg) !important;
-  color: var(--text) !important;
   border-color: var(--lg-border) !important;
-  box-shadow: var(--lg-minor-shadow) !important;
+  box-shadow: var(--lg-shadow-soft) !important;
 }
 
 html[data-glass="true"] .profile-card,
@@ -4935,7 +4349,7 @@ html[data-glass="true"] .cc-dash-widget,
 html[data-glass="true"] .target-list-panel,
 html[data-glass="true"] .month,
 html[data-glass="true"] .modal-box {
-  box-shadow: var(--lg-major-shadow) !important;
+  box-shadow: var(--lg-shadow) !important;
 }
 
 html[data-glass="true"] .tl-row,
@@ -4944,6 +4358,7 @@ html[data-glass="true"] .interview-meta,
 html[data-glass="true"] .appt-inline-row,
 html[data-glass="true"] .survey-answer-line,
 html[data-glass="true"] .survey-answer-person-line,
+html[data-glass="true"] .survey-category-card,
 html[data-glass="true"] .mm-card,
 html[data-glass="true"] .cc-dash-row,
 html[data-glass="true"] .cc-dash-mini,
@@ -4972,28 +4387,6 @@ html[data-glass="true"] .weekly-figures-table th:first-child {
   border-color: var(--lg-border) !important;
 }
 
-html[data-glass="true"] .stats-table td,
-html[data-glass="true"] .weekly-figures-table td {
-  color: var(--text) !important;
-  border-color: var(--lg-border) !important;
-}
-
-html[data-glass="true"] .stats-table tr:hover td,
-html[data-glass="true"] .weekly-figures-table tbody tr:hover td,
-html[data-glass="true"] .tl-row:hover,
-html[data-glass="true"] .cc-dash-row:hover,
-html[data-glass="true"] .survey-answer-person-line:hover,
-html[data-glass="true"] .profile-card:hover,
-html[data-glass="true"] .survey-card:hover,
-html[data-glass="true"] .interview-card:hover,
-html[data-glass="true"] .day-cell:hover {
-  background: var(--lg-control-hover-bg) !important;
-  color: var(--text) !important;
-  border-color: var(--lg-border-strong) !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
 html[data-glass="true"] button,
 html[data-glass="true"] .btn-ghost,
 html[data-glass="true"] .nav-tab,
@@ -5013,8 +4406,7 @@ html[data-glass="true"] .org-pill {
   background: var(--lg-control-bg) !important;
   color: var(--text) !important;
   border: 1px solid var(--lg-border) !important;
-  box-shadow: none !important;
-  opacity: 1 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12) !important;
 }
 
 html[data-glass="true"] button:hover,
@@ -5024,20 +4416,33 @@ html[data-glass="true"] .slist-item:hover,
 html[data-glass="true"] .person-item:hover,
 html[data-glass="true"] .profile-subtabs button:hover,
 html[data-glass="true"] .cc-interview-day-btn:hover,
-html[data-glass="true"] .calendar-badge:hover {
+html[data-glass="true"] .calendar-badge:hover,
+html[data-glass="true"] .profile-card:hover,
+html[data-glass="true"] .survey-card:hover,
+html[data-glass="true"] .interview-card:hover,
+html[data-glass="true"] .cc-dash-row:hover,
+html[data-glass="true"] .survey-answer-person-line:hover,
+html[data-glass="true"] .day-cell:hover {
   background: var(--lg-control-hover-bg) !important;
   color: var(--text) !important;
   border-color: var(--lg-border-strong) !important;
   transform: none !important;
-  box-shadow: none !important;
+}
+
+html[data-glass="true"] .nav-tab.active,
+html[data-glass="true"] .slist-item.active,
+html[data-glass="true"] .person-item.active,
+html[data-glass="true"] .profile-subtabs button.active,
+html[data-glass="true"] .cc-interview-day-btn.active,
+html[data-glass="true"] .stats-collapsed-flyout-item.active {
+  background: var(--accent-dim) !important;
+  color: var(--accent-light) !important;
+  border-color: var(--accent-glow) !important;
+  box-shadow: inset 3px 0 0 var(--trim), 0 0 0 1px var(--accent-glow) !important;
 }
 
 html[data-glass="true"] .btn-primary,
-html[data-glass="true"] button.btn-primary,
-html[data-glass="true"] #btnModernMode.btn-primary,
-html[data-glass="true"] #btnLiquidGlassMode.btn-primary,
-html[data-glass="true"] #btnBareMode.btn-primary,
-html[data-glass="true"] #btnClassicMode.btn-primary {
+html[data-glass="true"] button.btn-primary {
   background: var(--accent) !important;
   border-color: var(--accent) !important;
   color: #ffffff !important;
@@ -5057,13 +4462,6 @@ html[data-glass="true"] button.btn-success {
   color: #ffffff !important;
   font-weight: 800 !important;
 }
-html[data-glass="true"] .btn-success:hover,
-html[data-glass="true"] button.btn-success:hover {
-  background: var(--success) !important;
-  border-color: var(--success) !important;
-  color: #ffffff !important;
-}
-
 html[data-glass="true"] .btn-danger,
 html[data-glass="true"] button.btn-danger {
   background: var(--danger) !important;
@@ -5071,13 +4469,6 @@ html[data-glass="true"] button.btn-danger {
   color: #ffffff !important;
   font-weight: 800 !important;
 }
-html[data-glass="true"] .btn-danger:hover,
-html[data-glass="true"] button.btn-danger:hover {
-  background: var(--danger) !important;
-  border-color: var(--danger) !important;
-  color: #ffffff !important;
-}
-
 html[data-glass="true"] .btn-warning,
 html[data-glass="true"] button.btn-warning {
   background: var(--warning) !important;
@@ -5085,151 +4476,12 @@ html[data-glass="true"] button.btn-warning {
   color: #2d1a00 !important;
   font-weight: 800 !important;
 }
-html[data-glass="true"] .btn-warning:hover,
-html[data-glass="true"] button.btn-warning:hover {
-  background: var(--warning) !important;
-  border-color: var(--warning) !important;
-  color: #2d1a00 !important;
-}
-
 html[data-glass="true"] .btn-purple,
 html[data-glass="true"] button.btn-purple {
   background: var(--purple) !important;
   border-color: var(--purple) !important;
   color: #ffffff !important;
   font-weight: 800 !important;
-}
-html[data-glass="true"] .btn-purple:hover,
-html[data-glass="true"] button.btn-purple:hover {
-  background: var(--purple) !important;
-  border-color: var(--purple) !important;
-  color: #ffffff !important;
-}
-
-html[data-glass="true"] .nav-tab.active,
-html[data-glass="true"] .slist-item.active,
-html[data-glass="true"] .person-item.active,
-html[data-glass="true"] .profile-subtabs button.active,
-html[data-glass="true"] .cc-interview-day-btn.active,
-html[data-glass="true"] .stats-collapsed-flyout-item.active {
-  background: var(--accent-dim) !important;
-  color: var(--accent-light) !important;
-  border-color: var(--accent-glow) !important;
-  box-shadow: inset 3px 0 0 var(--trim) !important;
-}
-
-html[data-glass="true"] .btn-primary svg,
-html[data-glass="true"] .btn-success svg,
-html[data-glass="true"] .btn-danger svg,
-html[data-glass="true"] .btn-warning svg,
-html[data-glass="true"] .btn-purple svg,
-html[data-glass="true"] button svg.icon {
-  color: currentColor !important;
-  fill: currentColor !important;
-}
-
-html[data-glass="true"] input,
-html[data-glass="true"] select,
-html[data-glass="true"] textarea,
-html[data-glass="true"] .cc-dash-note,
-html[data-glass="true"] .interview-note-edit,
-html[data-glass="true"] .cc-interview-board-card textarea,
-html[data-glass="true"] .interview-meta input,
-html[data-glass="true"] .interview-meta .iv-name-wrap input {
-  background: var(--lg-input-bg) !important;
-  color: var(--text) !important;
-  border: 1px solid var(--lg-border) !important;
-  box-shadow: none !important;
-  opacity: 1 !important;
-}
-html[data-glass="true"] input::placeholder,
-html[data-glass="true"] textarea::placeholder { color: var(--text-3) !important; }
-html[data-glass="true"] input[type="date"] { color: var(--text) !important; }
-html[data-glass="true"] select option {
-  background: var(--surface) !important;
-  color: var(--text) !important;
-}
-
-html[data-glass="true"] input:focus,
-html[data-glass="true"] select:focus,
-html[data-glass="true"] textarea:focus,
-html[data-glass="true"] button:focus-visible,
-html[data-glass="true"] .nav-tab:focus-visible,
-html[data-glass="true"] .person-item:focus-visible,
-html[data-glass="true"] .slist-item:focus-visible {
-  outline: 2px solid var(--accent-light) !important;
-  outline-offset: 2px !important;
-  box-shadow: none !important;
-}
-
-html[data-glass="true"] .modal-overlay {
-  background: rgba(0,0,0,.58) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-html[data-glass="true"][data-tone="light"] .modal-overlay { background: rgba(15,23,42,.32) !important; }
-html[data-glass="true"] .modal-actions {
-  background: var(--lg-modal-bg) !important;
-  border-top-color: var(--lg-border) !important;
-}
-
-html[data-glass="true"] .prospect-suggest,
-html[data-glass="true"] .iv-name-suggest {
-  background: var(--lg-modal-bg) !important;
-  color: var(--text) !important;
-  border-color: var(--lg-border-strong) !important;
-  box-shadow: var(--lg-major-shadow) !important;
-}
-html[data-glass="true"] .prospect-suggest-item,
-html[data-glass="true"] .iv-name-suggest div {
-  color: var(--text) !important;
-  background: transparent !important;
-}
-html[data-glass="true"] .prospect-suggest-item:hover,
-html[data-glass="true"] .iv-name-suggest div:hover {
-  background: var(--lg-control-hover-bg) !important;
-  color: var(--text) !important;
-}
-
-html[data-glass="true"] .metric-card .metric-value,
-html[data-glass="true"] .ux-person-stat .v,
-html[data-glass="true"] .weekly-figures-value,
-html[data-glass="true"] .cc-dash-mini strong,
-html[data-glass="true"] .cc-board-week-label strong,
-html[data-glass="true"] .cc-appt-day-head strong {
-  color: var(--trim-light) !important;
-}
-html[data-glass="true"] .graph-container svg text { fill: var(--text) !important; }
-html[data-glass="true"] .graph-container svg text[font-size="9"],
-html[data-glass="true"] .graph-container svg text[font-size="10"] { fill: var(--text-3) !important; }
-
-html[data-glass="true"] .metric-card.danger,
-html[data-glass="true"] .profile-card.overdue,
-html[data-glass="true"] .target-row.is-overdue,
-html[data-glass="true"] .tl-row.overdue,
-html[data-glass="true"] .calendar-badge.overdue {
-  background: var(--danger-dim) !important;
-  color: var(--text) !important;
-  border-color: var(--danger) !important;
-}
-html[data-glass="true"] .calendar-badge {
-  background: var(--accent-dim) !important;
-  color: var(--accent-light) !important;
-  border-color: var(--accent-glow) !important;
-}
-html[data-glass="true"] .day-cell.today {
-  border-color: var(--trim) !important;
-  box-shadow: inset 0 0 0 2px var(--trim-dim) !important;
-}
-html[data-glass="true"] .target-row.completed,
-html[data-glass="true"] .tl-row.completed,
-html[data-glass="true"] button:disabled,
-html[data-glass="true"] button[disabled] {
-  background: var(--lg-disabled-bg) !important;
-  color: var(--lg-disabled-text) !important;
-  border-color: var(--lg-border) !important;
-  opacity: .65 !important;
-  cursor: not-allowed !important;
 }
 
 html[data-glass="true"][data-theme="blackwhite"][data-tone="dark"] .btn-primary,
@@ -5251,6 +4503,404 @@ html[data-glass="true"][data-theme="terminal"][data-tone="dark"] button.btn-succ
   color: #001b08 !important;
 }
 
+html[data-glass="true"] input,
+html[data-glass="true"] select,
+html[data-glass="true"] textarea,
+html[data-glass="true"] .cc-dash-note,
+html[data-glass="true"] .interview-note-edit,
+html[data-glass="true"] .cc-interview-board-card textarea,
+html[data-glass="true"] .interview-meta input,
+html[data-glass="true"] .interview-meta .iv-name-wrap input {
+  background: var(--lg-input-bg) !important;
+  color: var(--text) !important;
+  border-color: var(--lg-border) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+html[data-glass="true"] input::placeholder,
+html[data-glass="true"] textarea::placeholder {
+  color: var(--text-3) !important;
+}
+html[data-glass="true"] select option {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+html[data-glass="true"] input:focus,
+html[data-glass="true"] select:focus,
+html[data-glass="true"] textarea:focus,
+html[data-glass="true"] button:focus-visible,
+html[data-glass="true"] .nav-tab:focus-visible,
+html[data-glass="true"] .person-item:focus-visible,
+html[data-glass="true"] .slist-item:focus-visible {
+  outline: 2px solid var(--accent-light) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px var(--lg-focus) !important;
+}
+
+html[data-glass="true"] .modal-overlay {
+  background: var(--lg-modal-overlay) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html[data-glass="true"] .modal-box,
+html[data-glass="true"] #ccDashLibraryModal .modal-box,
+html[data-glass="true"] .prospect-suggest,
+html[data-glass="true"] .iv-name-suggest,
+html[data-glass="true"] .survey-category-suggest,
+html[data-glass="true"] .stats-collapsed-flyout {
+  background: var(--lg-modal-bg) !important;
+  border-color: var(--lg-border-strong) !important;
+  box-shadow: var(--lg-shadow) !important;
+}
+html[data-glass="true"] .modal-actions {
+  background: var(--lg-modal-bg) !important;
+  border-top-color: var(--lg-border) !important;
+}
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  html[data-glass="true"] .modal-box,
+  html[data-glass="true"] #ccDashLibraryModal .modal-box,
+  html[data-glass="true"] .prospect-suggest,
+  html[data-glass="true"] .iv-name-suggest,
+  html[data-glass="true"] .survey-category-suggest,
+  html[data-glass="true"] .stats-collapsed-flyout {
+    -webkit-backdrop-filter: blur(6px) saturate(112%);
+    backdrop-filter: blur(6px) saturate(112%);
+  }
+}
+
+html[data-glass="true"] .graph-container svg text { fill: var(--text) !important; }
+html[data-glass="true"] .graph-container svg text[font-size="9"],
+html[data-glass="true"] .graph-container svg text[font-size="10"] { fill: var(--text-3) !important; }
+
+html[data-glass="true"] .metric-card .metric-value,
+html[data-glass="true"] .ux-person-stat .v,
+html[data-glass="true"] .weekly-figures-value,
+html[data-glass="true"] .cc-dash-mini strong,
+html[data-glass="true"] .cc-board-week-label strong,
+html[data-glass="true"] .cc-appt-day-head strong {
+  color: var(--trim-light) !important;
+}
+
+html[data-glass="true"] .metric-card.danger,
+html[data-glass="true"] .profile-card.overdue,
+html[data-glass="true"] .target-row.is-overdue,
+html[data-glass="true"] .tl-row.overdue,
+html[data-glass="true"] .calendar-badge.overdue {
+  background: var(--danger-dim) !important;
+  border-color: var(--danger) !important;
+}
+html[data-glass="true"] .calendar-badge {
+  background: var(--accent-dim) !important;
+  color: var(--accent-light) !important;
+  border-color: var(--accent-glow) !important;
+}
+html[data-glass="true"] .day-cell.today {
+  border-color: var(--trim) !important;
+  box-shadow: inset 0 0 0 2px var(--trim-dim) !important;
+}
+html[data-glass="true"] button:disabled,
+html[data-glass="true"] button[disabled] {
+  background: var(--raised) !important;
+  color: var(--text-3) !important;
+  border-color: var(--lg-border) !important;
+  opacity: .68 !important;
+  cursor: not-allowed !important;
+}
+
+/* ------------------------------------------
+   BUTTON AND ACTION FIT HARDENING — LEGACY EDGE SAFE
+   Uses compact spacing, selective icon-only helpers, and constrained rows without blunt global wrapping.
+------------------------------------------ */
+button,
+.btn-primary,
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-purple,
+.btn-ghost,
+.nav-tab,
+.slist-item,
+.person-item {
+  box-sizing: border-box !important;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 34px;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+button {
+  white-space: nowrap;
+}
+
+button svg,
+button svg.icon,
+.nav-tab svg,
+.nav-tab svg.icon {
+  flex: 0 0 auto;
+}
+
+.btn-icon,
+button.btn-icon,
+.elite-icon-only {
+  width: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+.btn-icon svg,
+button.btn-icon svg,
+.elite-icon-only svg {
+  width: 15px !important;
+  height: 15px !important;
+  margin: 0 !important;
+}
+
+.page-actions,
+.section-action-row,
+.modal-actions,
+.mm-actions,
+.survey-toggle-row,
+.survey-cat-actions,
+.profile-subtabs,
+.interview-panel-header,
+.cc-dash-edit-tools,
+.cc-dash-toolbar,
+.cc-dash-widget-actions,
+.cc-interview-day-strip,
+.filter-bar,
+.dash-filter-bar,
+.sidebar-data {
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.page-actions button,
+.section-action-row button,
+.modal-actions button,
+.mm-actions button,
+.survey-toggle-row button,
+.survey-cat-actions button,
+.profile-subtabs button,
+.interview-panel-header button,
+.cc-dash-edit-tools button,
+.cc-dash-toolbar button,
+.cc-dash-widget-actions button,
+.filter-bar button,
+.dash-filter-bar button,
+.sidebar-data button {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.sidebar,
+.sidebar-brand,
+.sidebar-section,
+.sidebar-data,
+.nav-tabs,
+.sidebar-list,
+.main,
+.page-header,
+.graph-card,
+.metric-card,
+.profile-card,
+.field-box,
+.target-row,
+.target-list-panel,
+.stats-table,
+.survey-row,
+.survey-answer-line,
+.survey-cat-answer-line,
+.survey-cat-read-row,
+.interview-card,
+.interview-topline,
+.appt-inline-row,
+.cc-dash-widget,
+.cc-dash-row,
+.cc-appt-card,
+.cc-interview-board-card {
+  min-width: 0;
+}
+
+.nav-tab,
+.slist-item,
+.person-item {
+  overflow-wrap: normal;
+}
+.nav-tab span,
+.person-item .name,
+.slist-item,
+.pc-name,
+.survey-answer-text,
+.survey-category-title,
+.cc-dash-row strong,
+.cc-appt-main strong {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.sidebar-data button,
+.profile-subtabs button,
+.mode-switch-row button,
+.mm-actions button,
+.survey-cat-actions button,
+.cc-dash-edit-tools button,
+.cc-dash-widget-actions button,
+.interview-actions button,
+.appt-inline-row button,
+.target-row button,
+.stats-table button {
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 12px;
+}
+
+.mode-switch-row {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+.mode-switch-row button {
+  width: 100%;
+  justify-content: center;
+}
+
+.target-row {
+  grid-template-columns: minmax(0,1fr) minmax(118px,150px) minmax(88px,110px) 34px 34px !important;
+}
+#newTargetRow {
+  grid-template-columns: minmax(0,1fr) minmax(118px,150px) minmax(88px,110px) 34px !important;
+}
+.target-row input[type="date"] {
+  width: 100% !important;
+  max-width: 150px;
+}
+.target-row select {
+  width: 100%;
+  min-width: 0;
+}
+.target-row .target-autogrow,
+#newTargetRow .new-target-textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.tl-row {
+  grid-template-columns: minmax(130px,180px) minmax(0,1fr) minmax(112px,145px) minmax(70px,82px) minmax(58px,70px) !important;
+}
+.survey-row {
+  grid-template-columns: minmax(0,1fr) repeat(3, minmax(34px, auto)) !important;
+}
+.survey-answer-line,
+.survey-cat-answer-line,
+.survey-cat-read-row {
+  grid-template-columns: minmax(0,1fr) minmax(150px,260px) auto !important;
+}
+.survey-category-cell {
+  min-width: 0 !important;
+}
+.interview-topline {
+  grid-template-columns: repeat(3, minmax(0,1fr)) auto !important;
+}
+.appt-inline-row {
+  grid-template-columns: minmax(0,1fr) auto 28px 28px !important;
+}
+.stats-table th,
+.stats-table td {
+  min-width: 0;
+}
+.stats-table td button {
+  min-height: 30px;
+  padding: 5px 8px;
+  font-size: 11.5px;
+}
+
+.calendar-badge,
+.appt-inline-name {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar.is-collapsed .nav-tab,
+.sidebar.is-collapsed .sidebar-data button,
+.sidebar.is-collapsed .sidebar-brand button {
+  text-overflow: clip !important;
+}
+
+@media (max-width: 980px) {
+  .mode-switch-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .graph-grid-4,
+  .stats-print-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  button {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  .btn-icon,
+  button.btn-icon,
+  .elite-icon-only {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+  }
+  .page-actions,
+  .modal-actions,
+  .section-action-row,
+  .survey-toggle-row,
+  .profile-subtabs,
+  .filter-bar,
+  .dash-filter-bar {
+    align-items: stretch;
+  }
+  .page-actions button,
+  .modal-actions button,
+  .section-action-row button,
+  .survey-toggle-row button,
+  .profile-subtabs button,
+  .filter-bar button,
+  .dash-filter-bar button {
+    flex: 1 1 0;
+    min-width: 116px;
+  }
+  .target-row,
+  #newTargetRow,
+  .tl-row,
+  .survey-row,
+  .survey-answer-line,
+  .survey-cat-answer-line,
+  .survey-cat-read-row,
+  .interview-topline,
+  .appt-inline-row {
+    grid-template-columns: 1fr !important;
+  }
+  .target-row input[type="date"],
+  #newTargetRow input[type="date"] {
+    width: 100% !important;
+    max-width: none;
+  }
+  .mode-switch-row {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
 @media print {
   html[data-glass="true"] *,
   html[data-glass="true"] *::before,
@@ -5259,12 +4909,13 @@ html[data-glass="true"][data-theme="terminal"][data-tone="dark"] button.btn-succ
     color: black !important;
     box-shadow: none !important;
     text-shadow: none !important;
-    filter: none !important;
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
   }
+  .elite-icon-only {
+    display: none !important;
+  }
 }
-
 </style>
 
 
@@ -5285,11 +4936,7 @@ html[data-glass="true"][data-theme="terminal"][data-tone="dark"] button.btn-succ
 .survey-category-title{font-weight:850;color:var(--text);font-size:14px;line-height:1.25;margin-bottom:4px;overflow-wrap:anywhere;}
 .survey-wide-categories{margin:0 0 18px;}
 .survey-categorised-details{margin-top:14px;}
-html[data-glass="true"] .survey-category-card,
-html[data-glass="true"] .survey-category-suggest,
-html[data-glass="true"] .survey-category-suggest-item{background:var(--lg-card-bg,var(--card)) !important;border-color:var(--lg-border,var(--border-2)) !important;color:var(--text) !important;box-shadow:none !important;}
-html[data-glass="true"] .survey-category-card:hover,
-html[data-glass="true"] .survey-category-suggest-item:hover{background:var(--lg-control-hover-bg,var(--hover)) !important;border-color:var(--lg-border-strong,var(--accent-glow)) !important;}
+
 @media (max-width:760px){
   .survey-cat-answer-line,.survey-cat-read-row{grid-template-columns:1fr !important;}
   .survey-category-cell{min-width:0;width:100%;}
@@ -16041,6 +15688,694 @@ function printStatsGraphsView(){
 </script>
 
 
+
+<script id="ELITE_STABLE_PERSON_LINKAGE_FINAL_PATCH">
+(function(){
+  if(window.__eliteStablePersonLinkageFinalPatchInstalled)return;
+  window.__eliteStablePersonLinkageFinalPatchInstalled=true;
+
+  function byId(id){return document.getElementById(id);}
+  function arr(v){return Array.isArray(v)?v:[];}
+  function norm(s){return String(s||'').toLowerCase().replace(/\s+/g,' ').trim();}
+  function html(s){return (typeof escHtml==='function')?escHtml(s):String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+  function attr(s){return html(s).replace(/`/g,'&#96;');}
+  function q(s){return (typeof jsQ==='function')?jsQ(s):encodeURIComponent(String(s==null?'':s));}
+  function dq(s){try{return (typeof jsD==='function')?jsD(s):decodeURIComponent(String(s==null?'':s));}catch(e){return String(s==null?'':s);}}
+  function nowId(prefix){return prefix+'_'+Date.now().toString(36)+'_'+Math.floor(Math.random()*1e9).toString(36);}
+  function todayISO(){return (typeof toLocalISO==='function')?toLocalISO(new Date()):new Date().toISOString().slice(0,10);}
+  function weekForDate(d){try{return (typeof pickWEForDate==='function')?pickWEForDate(d):((typeof getWeekKey==='function')?getWeekKey(d):d);}catch(e){return d;}}
+  function fmt(d){try{return (typeof fmtDate==='function')?fmtDate(d):String(d||'');}catch(e){return String(d||'');}}
+  function saveSoon(){try{if(typeof autoSave==='function')autoSave();else if(typeof saveData==='function')saveData();}catch(e){}}
+  function markInterviewDirty(iv){try{if(iv&&iv.id!=null&&typeof dirtyInterviewIds==='object'){dirtyInterviewIds[iv.id]=true;if(typeof deletedInterviewIds==='object')delete deletedInterviewIds[iv.id];}}catch(e){}}
+  function ensureRecruiterSafe(r){try{if(typeof ensureRecruiter==='function')ensureRecruiter(r||'TBA');}catch(e){}}
+
+  function peopleList(type){return type==='profile'?arr(window.profiles||profiles):arr(window.prospects||prospects);}
+  function allPeople(){
+    var out=[];
+    peopleList('profile').forEach(function(p,i){if(p)out.push({type:'profile',idx:i,person:p,id:getPersonId(p,'profile'),name:p.fullName||''});});
+    peopleList('prospect').forEach(function(p,i){if(p)out.push({type:'prospect',idx:i,person:p,id:getPersonId(p,'prospect'),name:p.fullName||''});});
+    return out;
+  }
+  function getPersonId(p,type){
+    if(!p||typeof p!=='object')return '';
+    var existing=p.personId||p.elitePersonId||p._elitePersonId||p.stableId||'';
+    if(!existing){existing=nowId(type==='profile'?'prof':'pros');}
+    p.personId=existing;
+    p.elitePersonId=existing;
+    return existing;
+  }
+  function ensurePersonIds(){
+    peopleList('profile').forEach(function(p){getPersonId(p,'profile');});
+    peopleList('prospect').forEach(function(p){getPersonId(p,'prospect');});
+  }
+  function refFromPerson(x){return x?{type:x.type,id:x.id,name:x.name,person:x.person,idx:x.idx}:null;}
+  function findPersonById(type,id){
+    if(!id)return null;ensurePersonIds();
+    var hits=allPeople().filter(function(x){return (!type||x.type===type)&&String(x.id)===String(id);});
+    return refFromPerson(hits[0]||null);
+  }
+  function findPersonByName(name,type){
+    var n=norm(name);if(!n)return null;ensurePersonIds();
+    var hits=allPeople().filter(function(x){return (!type||x.type===type)&&norm(x.name)===n;});
+    if(hits.length)return refFromPerson(hits[0]);
+    hits=allPeople().filter(function(x){return norm(x.name)===n;});
+    if(type){
+      var exact=hits.filter(function(x){return x.type===type;})[0];
+      if(exact)return refFromPerson(exact);
+    }
+    var profile=hits.filter(function(x){return x.type==='profile';})[0];
+    return refFromPerson(profile||hits[0]||null);
+  }
+  function resolvePerson(name,type,id){
+    var ref=findPersonById(type,id)||findPersonById('',id)||findPersonByName(name,type)||findPersonByName(name,'');
+    return ref||null;
+  }
+  function currentPersonRefForName(name){
+    try{
+      if(currentIndex!==null){
+        var type=currentMode==='prospects'?'prospect':'profile';
+        var list=peopleList(type), p=list[currentIndex];
+        if(p&&(!name||norm(p.fullName)===norm(name)))return {type:type,id:getPersonId(p,type),name:p.fullName||'',person:p,idx:currentIndex};
+      }
+    }catch(e){}
+    return null;
+  }
+  function refFromInterview(iv){
+    if(!iv)return null;
+    return resolvePerson(iv.prospectName||iv.personName||iv.name||'',iv.personType||'',iv.personId||iv.profileId||iv.prospectId||'');
+  }
+  function applyInterviewRef(iv,ref){
+    if(!iv||!ref)return;
+    iv.personType=ref.type;
+    iv.personId=ref.id;
+    iv.prospectName=ref.name;
+    iv.personName=ref.name;
+    if(ref.type==='profile'){iv.profileId=ref.id;}
+    else if(ref.type==='prospect'){iv.prospectId=ref.id;}
+  }
+  function applySurveyRef(r,ref){
+    if(!r||!ref)return;
+    r.personType=ref.type;
+    r.personId=ref.id;
+    r.personName=ref.name;
+  }
+  function applyAppointmentRef(a,ref){
+    if(!a||!ref)return;
+    a.personType=ref.type;
+    a.personId=ref.id;
+    a.name=ref.name;
+  }
+  function createProspectForName(name,rec){
+    var clean=String(name||'').trim();if(!clean)return null;
+    var data={};
+    arr(window.SCHEMA||SCHEMA).forEach(function(k){data[k]=k==='ORG?'?'ABE':'';});
+    var p={fullName:clean,data:data,targets:[],recruiter:rec||'TBA'};
+    getPersonId(p,'prospect');
+    peopleList('prospect').push(p);
+    try{if(typeof markDirty==='function')markDirty(clean);}catch(e){}
+    return {type:'prospect',id:p.personId,name:p.fullName,person:p,idx:peopleList('prospect').length-1};
+  }
+  function migrateInterviewRefs(){
+    ensurePersonIds();
+    arr(window.interviews||interviews).forEach(function(iv){
+      if(!iv||typeof iv!=='object')return;
+      if(iv.id==null)iv.id=Date.now()+Math.floor(Math.random()*1000000);
+      if(!Object.prototype.hasOwnProperty.call(iv,'ppInterview'))iv.ppInterview=false;
+      var ref=refFromInterview(iv);
+      if(ref)applyInterviewRef(iv,ref);
+      else if(!iv.personName&&iv.prospectName)iv.personName=iv.prospectName;
+      if(iv.date&&!iv.we)iv.we=weekForDate(iv.date);
+    });
+  }
+  function migrateSurveyRefs(){
+    ensurePersonIds();
+    arr(window.surveyResponses||surveyResponses).forEach(function(r){
+      if(!r||typeof r!=='object')return;
+      var ref=resolvePerson(r.personName||r.name||'',r.personType||'',r.personId||'');
+      if(ref)applySurveyRef(r,ref);
+    });
+  }
+  function migrateAppointmentRefs(){
+    ensurePersonIds();
+    arr(window.appointments||appointments).forEach(function(a){
+      if(!a||typeof a!=='object')return;
+      var ref=resolvePerson(a.name||a.personName||'',a.personType||'',a.personId||'');
+      if(ref)applyAppointmentRef(a,ref);
+    });
+  }
+  function eliteEnsurePersonLinks(){migrateInterviewRefs();migrateSurveyRefs();migrateAppointmentRefs();}
+  window.eliteEnsurePersonLinks=eliteEnsurePersonLinks;
+
+  function updateLinkedRecordsForPerson(oldName,type,id,newName){
+    ensurePersonIds();
+    var ref=findPersonById(type,id)||findPersonByName(newName,type);
+    if(!ref)return;
+    arr(window.interviews||interviews).forEach(function(iv){
+      if(!iv)return;
+      var match=(iv.personId&&String(iv.personId)===String(ref.id))||(!iv.personId&&norm(iv.prospectName||iv.personName)===norm(oldName));
+      if(match){applyInterviewRef(iv,ref);markInterviewDirty(iv);}
+    });
+    arr(window.surveyResponses||surveyResponses).forEach(function(r){
+      if(!r)return;
+      var match=(r.personId&&String(r.personId)===String(ref.id))||(!r.personId&&r.personType===type&&norm(r.personName)===norm(oldName))||(!r.personId&&!r.personType&&norm(r.personName)===norm(oldName));
+      if(match)applySurveyRef(r,ref);
+    });
+    arr(window.appointments||appointments).forEach(function(a){
+      if(!a)return;
+      var match=(a.personId&&String(a.personId)===String(ref.id))||(!a.personId&&norm(a.name||a.personName)===norm(oldName));
+      if(match)applyAppointmentRef(a,ref);
+    });
+  }
+
+  var oldLoadArrays=window.loadArrays;
+  if(typeof oldLoadArrays==='function'&&!oldLoadArrays.__stablePersonWrapped){
+    window.loadArrays=function(d){var r=oldLoadArrays.apply(this,arguments);eliteEnsurePersonLinks();return r;};
+    window.loadArrays.__stablePersonWrapped=true;
+  }
+  ['applyData','applyDataSilent'].forEach(function(fn){
+    var old=window[fn];
+    if(typeof old==='function'&&!old.__stablePersonWrapped){
+      window[fn]=function(d){var r=old.apply(this,arguments);eliteEnsurePersonLinks();return r;};
+      window[fn].__stablePersonWrapped=true;
+    }
+  });
+  ['fileSave','splitBuildPayloadFromMemory','espBuildSplitPayload','currentFullState','buildFullBackupPayload'].forEach(function(fn){
+    var old=window[fn];
+    if(typeof old==='function'&&!old.__stablePersonSaveWrapped){
+      window[fn]=function(){eliteEnsurePersonLinks();return old.apply(this,arguments);};
+      window[fn].__stablePersonSaveWrapped=true;
+    }
+  });
+
+  window.getPersonInterviews=function(name){
+    eliteEnsurePersonLinks();
+    var ref=currentPersonRefForName(name)||resolvePerson(name,'','');
+    var n=norm(name);
+    return arr(window.interviews||interviews).filter(function(iv){
+      if(!iv)return false;
+      if(ref&&iv.personId)return String(iv.personId)===String(ref.id);
+      return norm(iv.prospectName||iv.personName)===n;
+    }).sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));});
+  };
+
+  window.uxSurveyStatus=function(personName,personType){
+    eliteEnsurePersonLinks();
+    var ref=currentPersonRefForName(personName)||resolvePerson(personName,personType,'');
+    var count=arr(window.surveyResponses||surveyResponses).filter(function(r){
+      if(ref&&r.personId)return String(r.personId)===String(ref.id);
+      return r.personType===personType&&norm(r.personName)===norm(personName);
+    }).length;
+    if(typeof uxBadge==='function')return count?uxBadge('Survey Complete','success'):uxBadge('Survey Needed','warning');
+    return count?'<span>Survey Complete</span>':'<span>Survey Needed</span>';
+  };
+
+  window.renderPersonSurveySection=function(personName,personType){
+    if(typeof normalizeSurveyData==='function')normalizeSurveyData();
+    eliteEnsurePersonLinks();
+    var ref=currentPersonRefForName(personName)||resolvePerson(personName,personType,'');
+    var rs=arr(window.surveyResponses||surveyResponses).filter(function(r){
+      if(ref&&r.personId)return String(r.personId)===String(ref.id);
+      return r.personType===personType&&norm(r.personName)===norm(personName);
+    }).sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));});
+    var body=rs.length?rs.map(function(r){return renderPersonSurveyResponseCard(r);}).join(''):'<div class="iv-empty">No surveys recorded yet.</div>';
+    var safeName=q(personName||'');
+    return '<div class="survey-section">'
+      +'<div class="survey-section-header" onclick="toggleSurveySection(this)"><h3>Surveys ('+rs.length+')</h3><div style="display:flex;gap:8px;align-items:center;">'
+      +'<button onclick="event.stopPropagation();showSurveyResponseModal(null,null,\''+personType+'\',jsD(\''+safeName+'\'))" class="btn-primary" style="padding:5px 10px;font-size:11px;">'+((typeof svgI==='function')?svgI('i-plus'):'+')+' Log</button>'
+      +'<span style="font-size:11px;color:var(--text-3);">Show</span></div></div>'
+      +'<div class="survey-section-body">'+body+'</div></div>';
+  };
+
+  var oldShowProfile=window.showProfile;
+  if(typeof oldShowProfile==='function'&&!oldShowProfile.__stablePersonWrapped){
+    window.showProfile=function(idx){eliteEnsurePersonLinks();return oldShowProfile.apply(this,arguments);};
+    window.showProfile.__stablePersonWrapped=true;
+  }
+
+  window.renamePerson=function(){
+    if(currentIndex===null)return;
+    eliteEnsurePersonLinks();
+    var type=currentMode==='prospects'?'prospect':'profile';
+    var list=peopleList(type);
+    var p=list[currentIndex];if(!p)return;
+    var oldName=p.fullName||'';
+    var newName=prompt('Rename:\n\nCurrent: '+oldName+'\n\nNew name:',oldName);
+    if(!newName||!newName.trim()||newName.trim()===oldName)return;
+    var trimmed=newName.trim();
+    var duplicate=allPeople().some(function(x){return x.person!==p&&norm(x.name)===norm(trimmed);});
+    if(duplicate){alert('That name already exists. Please choose a different name.');return;}
+    var id=getPersonId(p,type);
+    p.fullName=trimmed;
+    updateLinkedRecordsForPerson(oldName,type,id,trimmed);
+    try{if(typeof deletedNames!=='undefined'&&deletedNames.indexOf(oldName)<0)deletedNames.push(oldName);}catch(e){}
+    try{if(typeof markDirty==='function')markDirty(trimmed);}catch(e){}
+    try{suppressPollUntil=Date.now()+5000;clearTimeout(autoSaveTimer);autoSaveTimer=null;}catch(e){}
+    saveSoon();
+    try{renderSidebarList();}catch(e){}
+    try{showProfile(currentIndex);}catch(e){}
+  };
+
+  function setModalPPForName(name,force){
+    var pp=byId('ivPPInterview');if(!pp)return;
+    var ref=resolvePerson(name,'','');
+    if(ref&&ref.type==='profile')pp.checked=true;
+    else if(force)pp.checked=false;
+  }
+  var oldShowLogInterview=window.showLogInterview;
+  if(typeof oldShowLogInterview==='function'&&!oldShowLogInterview.__stablePersonWrapped){
+    window.showLogInterview=function(presetName,presetDate){
+      eliteEnsurePersonLinks();
+      window.__eliteIvPPManual=false;
+      var r=oldShowLogInterview.apply(this,arguments);
+      setTimeout(function(){setModalPPForName(presetName||((byId('ivProspect')||{}).value||''),true);},20);
+      return r;
+    };
+    window.showLogInterview.__stablePersonWrapped=true;
+  }
+  window.selectProspect=function(name){
+    name=dq(name);
+    var inp=byId('ivProspect'), box=byId('ivSuggest');
+    if(inp)inp.value=name;
+    if(box)box.style.display='none';
+    window.__eliteIvPPManual=false;
+    setModalPPForName(name,false);
+    setTimeout(function(){var r=byId('ivRecText');if(r){r.focus();if(r.select)r.select();}},30);
+  };
+  document.addEventListener('change',function(e){if(e.target&&e.target.id==='ivPPInterview')window.__eliteIvPPManual=true;},true);
+  document.addEventListener('blur',function(e){if(e.target&&e.target.id==='ivProspect')setModalPPForName(e.target.value,false);},true);
+
+  window.saveInterview=function(date,rec,pName,notes,ppInterview){
+    eliteEnsurePersonLinks();
+    pName=String(pName||'').trim();if(!pName)return;
+    rec=String(rec||'').trim()||'TBA';ensureRecruiterSafe(rec);
+    var ref=resolvePerson(pName,'','');
+    if(!ref)ref=createProspectForName(pName,rec);
+    if(ref&&ref.type==='prospect'&&ref.person)ref.person.recruiter=rec;
+    var pp=!!ppInterview;
+    var iv={id:Date.now()+Math.floor(Math.random()*10000),date:date||todayISO(),we:weekForDate(date||todayISO()),recruiter:rec,prospectName:ref?ref.name:pName,personName:ref?ref.name:pName,notes:notes||'',ppInterview:pp};
+    if(ref)applyInterviewRef(iv,ref);
+    iv.ppInterview=pp||iv.ppInterview===true;
+    arr(window.interviews||interviews).push(iv);markInterviewDirty(iv);saveSoon();
+    try{if(currentIndex!==null){var cur=currentPersonRefForName(ref?ref.name:pName);if(cur&&ref&&String(cur.id)===String(ref.id))showProfile(currentIndex);}}
+    catch(e){}
+  };
+
+  window.submitInterview=function(){
+    eliteEnsurePersonLinks();
+    var date=(byId('ivDate')||{}).value||todayISO();
+    var weEl=byId('ivWEDisplay');
+    var we=(weEl&&weEl.dataset&&weEl.dataset.we)||weekForDate(date);
+    var rec=String((byId('ivRecText')||{}).value||'').trim()||'TBA';
+    var pName=String((byId('ivProspect')||{}).value||'').trim();
+    var notes=String((byId('ivNotes')||{}).value||'').trim();
+    if(!pName){alert('Please enter a prospect or profile name.');var pf=byId('ivProspect');if(pf)pf.focus();return;}
+    ensureRecruiterSafe(rec);
+    var ref=resolvePerson(pName,'','');
+    if(!ref)ref=createProspectForName(pName,rec);
+    if(ref&&ref.type==='prospect'&&ref.person)ref.person.recruiter=rec;
+    var pp=!!(byId('ivPPInterview')&&byId('ivPPInterview').checked);
+    var iv={id:Date.now()+Math.floor(Math.random()*10000),date:date,we:we,recruiter:rec,prospectName:ref?ref.name:pName,personName:ref?ref.name:pName,notes:notes,ppInterview:pp};
+    if(ref)applyInterviewRef(iv,ref);
+    iv.ppInterview=pp||iv.ppInterview===true;
+    arr(window.interviews||interviews).push(iv);markInterviewDirty(iv);
+    try{if(typeof ivSessionEntries!=='undefined')ivSessionEntries.push(iv);}catch(e){}
+    saveSoon();
+    var log=byId('ivSessionLog');
+    if(log){
+      var list=(typeof ivSessionEntries!=='undefined'?ivSessionEntries:[iv]);
+      var hdr=list.length?'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-3);margin-bottom:6px;">Logged this session</div>':'';
+      log.innerHTML=hdr+list.slice().reverse().map(function(x){return '<div style="font-size:12px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:4px;background:var(--card);"><strong style="color:var(--accent-light);">'+html(x.prospectName||x.personName)+'</strong> <span style="color:var(--text-3);font-size:10px;">'+fmt(x.date)+' · '+html(x.recruiter)+'</span> '+(x.ppInterview?'<span class="pp-pill on">PP Interview</span>':'')+(x.notes?'<div style="font-size:11px;color:var(--text-2);margin-top:2px;">'+html(x.notes)+'</div>':'')+'</div>';}).join('');
+    }
+    ['ivProspect','ivRecText','ivNotes'].forEach(function(id){var el=byId(id);if(el)el.value='';});
+    ['ivSuggest','ivRecBox'].forEach(function(id){var el=byId(id);if(el)el.style.display='none';});
+    var ppEl=byId('ivPPInterview');if(ppEl)ppEl.checked=false;window.__eliteIvPPManual=false;
+    setTimeout(function(){var p=byId('ivProspect');if(p){p.focus();if(p.select)p.select();}},20);
+    try{if(currentMode==='dashboard'&&typeof ccDashRender==='function')setTimeout(function(){ccDashRender(true);},30);}catch(e){}
+    try{if(currentIndex!==null){var cur=currentPersonRefForName(ref?ref.name:pName);if(cur&&ref&&String(cur.id)===String(ref.id))showProfile(currentIndex);}}catch(e){}
+  };
+
+  function findInterview(id){id=parseInt(id,10);return arr(window.interviews||interviews).filter(function(iv){return iv&&parseInt(iv.id,10)===id;})[0]||null;}
+  window.setInterviewFieldValue=function(id,field,val){
+    eliteEnsurePersonLinks();
+    var iv=findInterview(id);if(!iv)return null;
+    if(field==='date'){iv.date=String(val||'');iv.we=weekForDate(iv.date);}
+    else if(field==='prospectName'||field==='personName'||field==='name'){
+      var ref=resolvePerson(val,'','');
+      if(ref)applyInterviewRef(iv,ref);
+      else{iv.prospectName=String(val||'').trim();iv.personName=iv.prospectName;delete iv.personId;delete iv.profileId;delete iv.prospectId;delete iv.personType;}
+    }
+    else if(field==='recruiter'){iv.recruiter=String(val||'').trim()||'TBA';ensureRecruiterSafe(iv.recruiter);}
+    else if(field==='notes'){iv.notes=String(val||'');}
+    else if(field==='ppInterview'){iv.ppInterview=!!val;}
+    else{iv[field]=val;}
+    markInterviewDirty(iv);return iv;
+  };
+  var interviewLiveTimers={};
+  window.updateInterviewLive=function(id,field,val,forName){
+    var iv=window.setInterviewFieldValue(id,field,val);if(!iv)return;
+    var key=String(id)+'::'+String(field);if(interviewLiveTimers[key])clearTimeout(interviewLiveTimers[key]);
+    interviewLiveTimers[key]=setTimeout(function(){delete interviewLiveTimers[key];saveSoon();},300);
+  };
+  window.updateInterview=function(id,field,val,forName){
+    var iv=window.setInterviewFieldValue(id,field,val);if(!iv)return;saveSoon();
+    try{if(currentMode==='dashboard'&&typeof ccDashRender==='function')setTimeout(function(){ccDashRender(true);},20);}catch(e){}
+  };
+  window.toggleInterviewPP=function(id,checked,context){
+    var iv=window.setInterviewFieldValue(id,'ppInterview',!!checked);if(!iv)return;saveSoon();
+    try{if(context==='dashboard'||currentMode==='dashboard')setTimeout(function(){if(typeof ccDashRender==='function')ccDashRender(true);},20);}catch(e){}
+    try{if(currentMode==='stats'&&typeof refreshStatsPage==='function')setTimeout(refreshStatsPage,20);}catch(e){}
+  };
+
+  function injectPastePPOption(){
+    var count=byId('pastePreviewCount');if(!count||byId('pastePPInterviewWrap'))return;
+    var wrap=document.createElement('div');
+    wrap.id='pastePPInterviewWrap';
+    wrap.className='pp-toggle-row';
+    wrap.style.margin='0 0 12px 0';
+    wrap.innerHTML='<label class="elite-switch" title="Only explicitly marks imported rows as PP Interviews."><input type="checkbox" id="pastePPInterview"><span class="elite-switch-track"></span><span>Mark imported interviews as PP Interviews</span></label><div style="font-size:11px;color:var(--text-3);margin-top:5px;">Profile rows are not automatically marked unless this option is selected.</div>';
+    count.parentNode.insertBefore(wrap,count.nextSibling);
+  }
+  window.pasteInterviewData=function(){
+    if(!navigator.clipboard||!navigator.clipboard.readText){alert('Clipboard access is not available.');return;}
+    navigator.clipboard.readText().then(function(text){
+      var lines=String(text||'').trim().split(/\r?\n/);window.pastePreviewRows=[];
+      lines.forEach(function(line){
+        if(!line.trim())return;
+        var cols=line.split('\t');if(cols.length<3)return;
+        var date=cols[0].trim();var pw=new Date(date);if(!isNaN(pw))date=(typeof toLocalISO==='function')?toLocalISO(pw):pw.toISOString().slice(0,10);
+        var rec=cols[1].trim(), pName=cols[2].trim(), notes=cols[3]?cols.slice(3).join('\t').trim():'';if(!pName)return;
+        var match=(typeof pasteFindPerson==='function')?pasteFindPerson(pName):findPersonByName(pName,'');
+        window.pastePreviewRows.push({date:date,rec:rec,pName:pName,notes:notes,exists:!!match,type:match?match.type:''});
+      });
+      if(!window.pastePreviewRows.length){alert('No valid rows found. Expected: Date, Recruiter, Prospect/Profile, Notes');return;}
+      var rows=window.pastePreviewRows.map(function(r,i){return (typeof pastePreviewRowHTML==='function')?pastePreviewRowHTML(r,i):'';}).join('');
+      var modal=byId('pastePreviewModal');
+      if(byId('pastePreviewBody'))byId('pastePreviewBody').innerHTML=rows;
+      if(byId('pastePreviewCount'))byId('pastePreviewCount').textContent=window.pastePreviewRows.length+' interview(s) ready to import — edit any name before importing';
+      injectPastePPOption();
+      if(modal)modal.classList.add('open');
+    }).catch(function(){alert('Could not read clipboard.');});
+  };
+  window.confirmPasteImport=function(){
+    eliteEnsurePersonLinks();
+    var rows=arr(window.pastePreviewRows||pastePreviewRows);
+    var globalPP=!!(byId('pastePPInterview')&&byId('pastePPInterview').checked);
+    var added=0;
+    rows.forEach(function(r,i){
+      var el=byId('pasteName_'+i);if(el)r.pName=String(el.value||'').trim();if(!r.pName)return;
+      var ref=resolvePerson(r.pName,'','');var pp=globalPP;
+      window.saveInterview(r.date,r.rec,r.pName,r.notes,pp);added++;
+    });
+    var m=byId('pastePreviewModal');if(m)m.classList.remove('open');
+    alert('Added '+added+' interview(s).');
+    window.pastePreviewRows=[];try{pastePreviewRows=[];}catch(e){}
+  };
+
+  var oldSurveyPersonSelect=window.surveyPersonSelect;
+  window.surveyPersonSelect=function(type,nameEncoded){
+    var name=dq(nameEncoded);var n=byId('surveyRespPersonName'),t=byId('surveyRespPersonType'),b=byId('surveyPersonBox');
+    if(n)n.value=name;if(t)t.value=type;if(b)b.style.display='none';
+    var ref=resolvePerson(name,type,'');var h=byId('surveyRespPersonId');if(!h&&n&&n.form!==null){h=document.createElement('input');h.type='hidden';h.id='surveyRespPersonId';n.parentNode.appendChild(h);}if(h)h.value=ref?ref.id:'';
+  };
+  var oldShowSurveyResponseModal=window.showSurveyResponseModal;
+  if(typeof oldShowSurveyResponseModal==='function'&&!oldShowSurveyResponseModal.__stablePersonWrapped){
+    window.showSurveyResponseModal=function(responseId,templateId,personType,personName){
+      eliteEnsurePersonLinks();var r=oldShowSurveyResponseModal.apply(this,arguments);
+      setTimeout(function(){var inp=byId('surveyRespPersonName');if(!inp)return;var ref=null;var existing=responseId&&typeof getSurveyResponse==='function'?getSurveyResponse(responseId):null;if(existing)ref=resolvePerson(existing.personName,existing.personType,existing.personId);else ref=resolvePerson(inp.value,personType||'', '');var h=byId('surveyRespPersonId');if(!h){h=document.createElement('input');h.type='hidden';h.id='surveyRespPersonId';inp.parentNode.appendChild(h);}h.value=ref?ref.id:'';},10);
+      return r;
+    };
+    window.showSurveyResponseModal.__stablePersonWrapped=true;
+  }
+  window.surveyInferPersonType=function(name){var ref=resolvePerson(name,'','');return ref?ref.type:'';};
+  window.saveSurveyResponseFromModal=function(){
+    if(typeof normalizeSurveyData==='function')normalizeSurveyData();eliteEnsurePersonLinks();
+    var id=(byId('surveyRespId')||{}).value||'';
+    var sid=parseInt((byId('surveyRespSurvey')||{}).value,10);
+    var t=(typeof getSurveyTemplate==='function')?getSurveyTemplate(sid):null;if(!t){alert('Choose a survey.');return;}
+    var pName=String((byId('surveyRespPersonName')||{}).value||'').trim();if(!pName){alert('Choose a name.');return;}
+    var pType=(byId('surveyRespPersonType')||{}).value||'';
+    var pId=(byId('surveyRespPersonId')||{}).value||'';
+    var ref=resolvePerson(pName,pType,pId);if(!ref){alert('Choose an existing Profile or Prospect from the name dropdown.');var ni=byId('surveyRespPersonName');if(ni)ni.focus();return;}
+    var date=(byId('surveyRespDate')||{}).value||((typeof surveyToday==='function')?surveyToday():todayISO());
+    var answers={};var fields=document.querySelectorAll('#surveyModal .modal-field[data-qid]');
+    for(var i=0;i<fields.length;i++){var f=fields[i],qid=f.getAttribute('data-qid');var inp=f.querySelector('.survey-answer');answers[qid]=inp?inp.value:'';}
+    var existing=id&&typeof getSurveyResponse==='function'?getSurveyResponse(id):null;
+    if(existing){existing.surveyId=t.id;existing.surveyName=t.name;existing.date=date;existing.answers=answers;applySurveyRef(existing,ref);if(!existing.answerCategories)existing.answerCategories={};if(existing.notes===undefined)existing.notes='';}
+    else{var nr={id:(typeof surveyNewId==='function')?surveyNewId():Date.now(),surveyId:t.id,surveyName:t.name,date:date,answers:answers,answerCategories:{},notes:''};applySurveyRef(nr,ref);arr(window.surveyResponses||surveyResponses).push(nr);}
+    if(typeof surveyCloseModal==='function')surveyCloseModal();saveSoon();
+    if(currentMode==='surveys'&&typeof showSurveyReview==='function')showSurveyReview(t.id);else if(currentIndex!==null&&typeof showProfile==='function')showProfile(currentIndex);
+  };
+
+  var oldCcDashEdit=window.ccDashEditInterviewField;
+  window.ccDashEditInterviewField=function(id,field,val){
+    if(field==='ppInterview'){window.toggleInterviewPP(id,!!val,'dashboard');return;}
+    var iv=window.setInterviewFieldValue(id,field,val);if(!iv)return;
+    saveSoon();
+    try{if(currentMode==='dashboard'&&typeof ccDashRender==='function')setTimeout(function(){ccDashRender(true);},20);}catch(e){}
+  };
+  function decorateDashboardPP(){
+    arr(document.querySelectorAll('.cc-interview-board-card')).forEach(function(card){
+      if(card.getAttribute('data-stable-pp')==='true')return;
+      var m=(card.outerHTML||'').match(/ccDashDeleteInterview\((\d+)\)/)|| (card.outerHTML||'').match(/ccDashEditInterviewField\((\d+),/);if(!m)return;
+      var id=parseInt(m[1],10),iv=findInterview(id);if(!iv)return;
+      var top=card.querySelector('.cc-interview-board-top');if(!top)return;
+      var cell=document.createElement('div');
+      cell.innerHTML='<label>PP Interview</label><label class="pp-toggle-mini"><input type="checkbox" '+(iv.ppInterview?'checked':'')+' onchange="toggleInterviewPP('+id+',this.checked,\'dashboard\')"><span class="pp-pill '+(iv.ppInterview?'on':'')+'">PP Interview</span></label>';
+      var actions=top.querySelector('.cc-interview-board-actions');if(actions)top.insertBefore(cell,actions);else top.appendChild(cell);
+      card.setAttribute('data-stable-pp','true');
+    });
+  }
+  var oldCcDashRender=window.ccDashRender;
+  if(typeof oldCcDashRender==='function'&&!oldCcDashRender.__stablePersonWrapped){
+    window.ccDashRender=function(){eliteEnsurePersonLinks();var r=oldCcDashRender.apply(this,arguments);setTimeout(decorateDashboardPP,0);return r;};
+    window.ccDashRender.__stablePersonWrapped=true;
+  }
+
+  function installStyle(){
+    if(byId('ELITE_STABLE_PERSON_LINKAGE_STYLES'))return;
+    var st=document.createElement('style');st.id='ELITE_STABLE_PERSON_LINKAGE_STYLES';
+    st.textContent='html[data-glass="true"] .graph-container svg text.graph-value-bubble-text,.graph-container svg text.graph-value-bubble-text{fill:#111827 !important;color:#111827 !important;font-weight:900 !important;text-shadow:none !important;}html[data-glass="true"] .graph-container svg rect.graph-value-bubble,.graph-container svg rect.graph-value-bubble{fill:#ffffff !important;stroke:rgba(15,23,42,.32) !important;stroke-width:1 !important;}@media print{.graph-container svg text.graph-value-bubble-text{fill:#111 !important;color:#111 !important;}.graph-container svg rect.graph-value-bubble{fill:#fff !important;stroke:#999 !important;}}';
+    document.head.appendChild(st);
+  }
+  installStyle();
+  eliteEnsurePersonLinks();
+  setTimeout(function(){try{decorateDashboardPP();}catch(e){}},0);
+})();
+</script>
+
+<script>
+/* ------------------------------------------
+   LEGACY EDGE BUTTON FIT / ICON SAFETY PASS
+   Keeps handlers intact while shortening repeated labels and making tight row actions icon-only.
+------------------------------------------ */
+(function(){
+  if(window.__eliteLegacyButtonFitInstalled)return;
+  window.__eliteLegacyButtonFitInstalled=true;
+
+  var SHORT_LABELS={
+    'Liquid Glass':'Glass',
+    'Bare Minimum':'Bare',
+    '8-Bit Classic':'Classic',
+    'Backup All Data':'Backup',
+    'Import Backup':'Import',
+    'Recover Interview Backup':'Recover',
+    'Mass Merge Duplicates':'Merge Duplicates',
+    'Paste from Excel (Date, Recruiter, Prospect, Notes)':'Paste Excel',
+    'Paste PHS/Signups (Excel)':'Paste Stats',
+    'Add PHS/Signup Row':'Add Row',
+    'Connect Shared Folder':'Connect',
+    'Connect / Reconnect':'Reconnect',
+    'Reconnect Shared Folder':'Reconnect',
+    'Reset to Current W/E':'Current W/E',
+    '← Previous 12 Weeks':'← Previous',
+    'Next 12 Weeks →':'Next →',
+    'Exact Answer View':'Answers',
+    '← Back to Survey':'← Survey',
+    'Export Interviews':'Export',
+    'Export Surveys':'Export',
+    'Export as CSV':'Export CSV',
+    'Log an Interview':'Interview',
+    'New Appointment':'Appointment',
+    'New Prospect':'Prospect',
+    'New Profile':'Profile',
+    'View Appointments':'Appointments',
+    'View Prospects':'Prospects',
+    'View Profiles':'Profiles',
+    'Save Appointment':'Save',
+    'Merge & Delete':'Merge',
+    'Merge Into…':'Merge',
+    'Clear filters':'Clear'
+  };
+
+  var ICONS={
+    'Add':'i-plus',
+    'New':'i-plus',
+    'Profile':'i-users',
+    'Prospect':'i-prospect',
+    'Appointment':'i-appt',
+    'Interview':'i-edit',
+    'Log':'i-edit',
+    'Delete':'i-trash',
+    'Remove':'i-trash',
+    'Clear':'i-trash',
+    'Save':'i-save',
+    'Backup':'i-save',
+    'Import':'i-upload',
+    'Export':'i-download',
+    'Export CSV':'i-download',
+    'Print':'i-print',
+    'Edit':'i-edit',
+    'Close':'i-check',
+    'Cancel':'i-check',
+    'Open':'i-folder',
+    'Connect':'i-folder',
+    'Reconnect':'i-folder',
+    'Merge':'i-merge',
+    'Answers':'i-survey',
+    'Survey':'i-survey',
+    'Stats':'i-stats',
+    'Dashboard':'i-dash',
+    'Current':'i-check',
+    'Today':'i-cal'
+  };
+
+  function trimText(s){
+    return (s||'').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');
+  }
+
+  function buttonText(btn){
+    var clone=btn.cloneNode(true);
+    var svgs=clone.querySelectorAll ? clone.querySelectorAll('svg') : [];
+    for(var i=0;i<svgs.length;i++){
+      if(svgs[i].parentNode)svgs[i].parentNode.removeChild(svgs[i]);
+    }
+    return trimText(clone.textContent||'');
+  }
+
+  function hasOnlySimpleChildren(btn){
+    for(var i=0;i<btn.childNodes.length;i++){
+      var n=btn.childNodes[i];
+      if(n.nodeType===1){
+        var tag=(n.tagName||'').toLowerCase();
+        if(tag!=='svg' && tag!=='use')return false;
+      }
+    }
+    return true;
+  }
+
+  function iconNameFor(label){
+    if(!label)return '';
+    if(ICONS[label])return ICONS[label];
+    var first=label.split(' ')[0];
+    return ICONS[first]||'';
+  }
+
+  function ensureIcon(btn, iconName){
+    if(!iconName || btn.querySelector('svg'))return;
+    var ns='http://www.w3.org/2000/svg';
+    var svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('class','icon');
+    svg.setAttribute('aria-hidden','true');
+    var use=document.createElementNS(ns,'use');
+    use.setAttributeNS('http://www.w3.org/1999/xlink','href','#'+iconName);
+    use.setAttribute('href','#'+iconName);
+    svg.appendChild(use);
+    btn.insertBefore(svg, btn.firstChild);
+  }
+
+  function replaceText(btn, label){
+    if(!hasOnlySimpleChildren(btn))return;
+    var nodes=[];
+    for(var i=0;i<btn.childNodes.length;i++){
+      var n=btn.childNodes[i];
+      if(n.nodeType===3)nodes.push(n);
+    }
+    for(var j=0;j<nodes.length;j++){
+      if(nodes[j].parentNode)nodes[j].parentNode.removeChild(nodes[j]);
+    }
+    btn.appendChild(document.createTextNode(' '+label));
+  }
+
+  function iconOnly(btn, label, iconName){
+    if(!hasOnlySimpleChildren(btn))return;
+    ensureIcon(btn, iconName);
+    var nodes=[];
+    for(var i=0;i<btn.childNodes.length;i++){
+      var n=btn.childNodes[i];
+      if(n.nodeType===3)nodes.push(n);
+    }
+    for(var j=0;j<nodes.length;j++){
+      if(nodes[j].parentNode)nodes[j].parentNode.removeChild(nodes[j]);
+    }
+    btn.classList.add('elite-icon-only');
+    btn.classList.add('btn-icon');
+    btn.setAttribute('title', btn.getAttribute('title') || label);
+    btn.setAttribute('aria-label', btn.getAttribute('aria-label') || label);
+  }
+
+  function isTightAction(btn){
+    return !!(btn.closest && btn.closest(
+      '.target-row,.appt-inline-row,.interview-actions,.cc-dash-widget-actions,.cc-dash-edit-tools,.survey-cat-actions,.mm-actions,.stats-table td,.calendar-badge'
+    ));
+  }
+
+  function processButton(btn){
+    if(!btn || btn.nodeType!==1 || btn.getAttribute('data-elite-button-fit')==='done')return;
+    var original=buttonText(btn);
+    if(!original)return;
+    var shortened=SHORT_LABELS[original] || original;
+    var labelForAccess=original;
+
+    if(!btn.getAttribute('title'))btn.setAttribute('title', labelForAccess);
+    if(!btn.getAttribute('aria-label'))btn.setAttribute('aria-label', labelForAccess);
+
+    var iconName=iconNameFor(shortened) || iconNameFor(original);
+
+    if(isTightAction(btn) && iconName && original.length<=24){
+      iconOnly(btn, labelForAccess, iconName);
+      btn.setAttribute('data-elite-button-fit','done');
+      return;
+    }
+
+    if(shortened!==original && hasOnlySimpleChildren(btn)){
+      ensureIcon(btn, iconName);
+      replaceText(btn, shortened);
+    } else if(iconName && btn.querySelector('svg') && hasOnlySimpleChildren(btn)) {
+      /* Preserve existing icon/text buttons, but ensure accessible name is present. */
+    }
+
+    btn.setAttribute('data-elite-button-fit','done');
+  }
+
+  function scan(root){
+    root=root||document;
+    var list=[];
+    if(root.nodeType===1 && root.tagName && root.tagName.toLowerCase()==='button')list=[root];
+    else list=root.querySelectorAll ? root.querySelectorAll('button') : [];
+    for(var i=0;i<list.length;i++)processButton(list[i]);
+  }
+
+  function runSoon(){
+    if(runSoon._t)return;
+    runSoon._t=setTimeout(function(){
+      runSoon._t=null;
+      scan(document);
+    },80);
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){scan(document);});
+  else scan(document);
+
+  if(window.MutationObserver && document.body){
+    var obs=new MutationObserver(runSoon);
+    obs.observe(document.body,{childList:true,subtree:true});
+  } else {
+    setInterval(function(){scan(document);},1500);
+  }
+
+  window.eliteRefreshButtonFit=function(){scan(document);};
+})();
+</script>
 </body>
 
 </html>
