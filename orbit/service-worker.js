@@ -1,5 +1,5 @@
 /* Orbit 3D Studio v1.0 — cache app assets only. NEVER touch browser databases. */
-const CACHE='orbit-3d-sculpt-v2.1.0';const PREFIX='orbit-3d-';
+const CACHE='orbit-3d-sculpt-v2.1-5x';const PREFIX='orbit-3d-';
 const FILES=['./','./index.html','./styles.css','./app.mjs','./renderer.mjs','./rig.mjs','./manifest.webmanifest','./assets/orbit-icon.svg','./assets/Orbit_Master_Sculpt_Four_Piece.glb','./assets/sculpt-meshes.json','./assets/sculpt-meshes.bin','./assets/approved-orbit-reference.png','./PRODUCTION_SPEC.md'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith(PREFIX)&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim();})()));

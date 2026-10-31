@@ -1,0 +1,11 @@
+{
+  "sitePath": "orbit/5x/",
+  "emotes": 28,
+  "transitions": 31,
+  "frames": 2424,
+  "compression": "WebP quality 94, 4:4:4 / alpha preserved, not bit-perfect RGB",
+  "source": "ORBIT_5X_Animation_Library",
+  "originalBytes": 318940022,
+  "optimizedBytes": 84894134,
+  "layout": "All frames carried in 59 ordered atlases; individually accessible through viewer export"
+}
