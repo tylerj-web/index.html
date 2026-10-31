@@ -1,0 +1,62 @@
+name: Install Orbit Emote Atlas v1
+on:
+  push:
+    paths:
+      - ".github/workflows/install-orbit-emotes-v1.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish-emotes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout existing Pages site
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download and checksum-verify release
+        env:
+          SOURCE_URL: "https://at.adobe.com/cyOnc6p9sfuGFaz4"
+          EXPECTED_SHA256: "47fb90c4c9517dc20b0902460d113722491867896fe173de16d71f57b85d6a8a"
+        run: |
+          set -euo pipefail
+          curl --fail --location --show-error --retry 3 --max-time 240 --output /tmp/orbit-emotes.zip "$SOURCE_URL"
+          printf '%s  %s\n' "$EXPECTED_SHA256" /tmp/orbit-emotes.zip | sha256sum --check
+          python3 - <<'PY'
+          import json
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          dest=Path('/tmp/orbit-emotes-stage')
+          dest.mkdir(parents=True,exist_ok=True)
+          with ZipFile('/tmp/orbit-emotes.zip') as archive:
+              names=set()
+              for entry in archive.infolist():
+                  name=entry.filename
+                  p=PurePosixPath(name)
+                  assert name and not name.startswith('/') and '..' not in p.parts, name
+                  assert not entry.is_dir() or name.endswith('/'), name
+                  assert not (entry.external_attr >> 16) & 0o170000 == 0o120000, name
+                  assert entry.file_size < 20_000_000, name
+                  assert name not in names, name
+                  names.add(name)
+              assert len([p for p in names if p.startswith('atlases/') and p.endswith('.png')])==28
+              assert 'index.html' in names and 'manifest.json' in names
+              archive.extractall(dest)
+          manifest=json.loads((dest/'manifest.json').read_text())
+          assert len(manifest['emotes'])==28
+          for key,config in manifest['emotes'].items():
+              assert (dest/config['atlas']).is_file(),key
+          print('28 Orbit emote atlases verified')
+          PY
+      - name: Install under separate Orbit emotes directory
+        run: |
+          set -euo pipefail
+          mkdir -p orbit/emotes
+          cp -a /tmp/orbit-emotes-stage/. orbit/emotes/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add orbit/emotes/
+          if ! git diff --cached --quiet; then
+            git commit -m "Add Orbit 28-emote transparent sprite atlas and viewer"
+            git push
+          fi
