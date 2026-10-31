@@ -1,172 +1,76 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#050B12" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Orbit" />
-  <meta name="description" content="Orbit 3.2 — The Fixer. A fluid, customisable offline-first assistant." />
-  <meta name="color-scheme" content="dark" />
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" href="./assets/icon-192.png" />
-  <link rel="stylesheet" href="./orbit-core.css" />
-  <link rel="stylesheet" href="./gesture-rig.css" />
-  <link rel="stylesheet" href="./fluid.css" />
-  <title>Orbit 3.2 — The Fixer</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080e17">
+  <meta name="description" content="Orbit Character Animation Studio — a local-first motion development and review playground for Orbit, The Fixer.">
+  <title>Orbit · Character Animation Studio</title>
+  <link rel="icon" type="image/png" href="./assets/orbit-master-hd.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./studio.css?v=1.0.0">
+  <script src="./studio.js?v=1.0.0" defer></script>
 </head>
 <body>
-<svg xmlns="http://www.w3.org/2000/svg" class="icon-defs" aria-hidden="true">
-  <symbol id="i-orbit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4.8" transform="rotate(-32 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.8" transform="rotate(32 12 12)"/></symbol>
-  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></symbol>
-  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
-  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M8 7h8M8 11h6"/></symbol>
-  <symbol id="i-command" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="16" y="16" width="6" height="6" rx="1"/><path d="M12 8v4M5 16v-4h14v4"/></symbol>
-  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol>
-  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.6 1.6 0 0 0 .32 1.77l.06.06-1.95 1.95-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-1 1.48V20h-2.76v-.12a1.6 1.6 0 0 0-1-1.48 1.6 1.6 0 0 0-1.77.32l-.06.06-1.95-1.95.06-.06A1.6 1.6 0 0 0 7.84 15a1.6 1.6 0 0 0-1.48-1H6.2v-2.76h.16a1.6 1.6 0 0 0 1.48-1 1.6 1.6 0 0 0-.32-1.77l-.06-.06 1.95-1.95.06.06a1.6 1.6 0 0 0 1.77.32 1.6 1.6 0 0 0 1-1.48V5.2H15v.16a1.6 1.6 0 0 0 1 1.48 1.6 1.6 0 0 0 1.77-.32l.06-.06 1.95 1.95-.06.06a1.6 1.6 0 0 0-.32 1.77 1.6 1.6 0 0 0 1.48 1H21v2.76h-.12a1.6 1.6 0 0 0-1.48 1Z" transform="translate(-.3 -.4) scale(.97)"/></symbol>
-  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
-  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="7"/><path d="m16 16 5 5"/></symbol>
-  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></symbol>
-  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
-  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5m-4 0h8"/></symbol>
-  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></symbol>
-  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
-  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2 8.8a16 16 0 0 1 20 0M5 12.6a10.5 10.5 0 0 1 14 0M8.5 16.4a5 5 0 0 1 7 0M12 21h.01"/></symbol>
-  <symbol id="i-offline" viewBox="0 0 24 24"><path d="M2 8.8a16 16 0 0 1 7.4-3M15.5 5.8A16 16 0 0 1 22 8.8M5 12.6a10.5 10.5 0 0 1 7.1-2.4M16 11a10.5 10.5 0 0 1 3 1.6M8.5 16.4a5 5 0 0 1 7 0M12 21h.01M2 2l20 20"/></symbol>
-  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="12" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3M12 15v2"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></symbol>
-  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-5L3 9m0-6v6h6M4 13a8 8 0 0 0 14 5l3-3m0 6v-6h-6"/></symbol>
-  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
-  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v13m-5-5 5 5 5-5M4 19v2h16v-2"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
-  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m12 3 10 18H2L12 3ZM12 9v5M12 18h.01"/></symbol>
-  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7h.01"/></symbol>
-  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
-  <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2L12 2Z"/></symbol>
-  <symbol id="i-edit" viewBox="0 0 24 24"><path d="m15 5 4 4M3 21l5.5-1 12-12a2.8 2.8 0 0 0-4-4l-12 12L3 21Z"/></symbol>
-  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15M10 10v7M14 10v7"/></symbol>
-  <symbol id="i-volume" viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3ZM16 9a5 5 0 0 1 0 6M19 6a9 9 0 0 1 0 12"/></symbol>
-  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.3 16.2A9 9 0 0 1 7.8 3.7 9 9 0 1 0 20.3 16.2Z"/></symbol>
-  <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="18" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 12h6m-6 4h6"/></symbol>
-  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m7 12 3 3 7-7"/></symbol>
-</svg>
-<div id="app" class="app" data-mode="offline" data-accent="teal" data-orbit-mood="idle">
-  <div class="glow glow-a" aria-hidden="true"></div><div class="glow glow-b" aria-hidden="true"></div>
-  <aside class="sidebar" aria-label="Primary navigation">
-    <div class="side-brand"><div class="brand-mark"><img src="./assets/orbit-robot.png" alt="" class="brand-robot" /></div><div><strong>ORBIT<span class="brand-period">.</span></strong><span>THE FIXER</span></div></div>
-    <div class="sidebar-caption">YOUR WORKSPACE</div>
-    <div id="desktop-nav" class="sidebar-nav"></div>
-    <div class="sidebar-bottom">
-      <div class="side-divider"></div>
-      <button class="side-utility" data-action="open-search"><svg class="icon"><use href="#i-search"/></svg>Search anything <kbd>⌘ K</kbd></button>
-      <button class="side-utility" data-page="settings"><svg class="icon"><use href="#i-settings"/></svg>Settings <svg class="icon small trailing"><use href="#i-chevron"/></svg></button>
-      <div class="side-session"><div class="avatar-circle"><img src="./assets/orbit-robot.png" alt="" /></div><div><strong>Orbit Mobile</strong><small>Local-first • Unpaired</small></div></div>
-    </div>
-  </aside>
-  <div class="work-column">
+  <div class="app" id="app">
     <header class="topbar">
-      <div class="mobile-brand"><div class="mini-orbit"><img src="./assets/orbit-robot.png" alt="" class="brand-robot" /></div><div><strong>ORBIT<span class="brand-period">.</span></strong><span>THE FIXER</span></div></div>
-      <div class="desktop-heading" id="header-title">Orbit overview</div>
-      <div class="top-actions">
-        <div id="orbit-companion-dock" class="orbit-companion-dock" aria-label="Orbit companion"></div>
-        <button type="button" class="ui-header-settings" title="Appearance and settings" aria-label="Appearance and settings" data-page="settings"><svg class="icon"><use href="#i-settings"/></svg></button>
-        <button class="header-status" id="mode-toggle" aria-label="View current connection status"><span class="status-light"></span><span id="header-status-text">OFFLINE</span><span class="status-mini">NO GATEWAY</span></button>
-        <button class="icon-button" title="Search" aria-label="Search" data-action="open-search"><svg class="icon"><use href="#i-search"/></svg></button>
-        <button class="icon-button" title="Notifications" aria-label="Notifications" data-action="open-notices"><svg class="icon"><use href="#i-bell"/></svg><span id="notice-dot" class="notice-dot"></span></button>
-      </div>
+      <div class="brand-lockup"><div class="brand-icon"><span class="orb-dot"></span><span class="orb-eye left"></span><span class="orb-eye right"></span></div><div><div class="brand-name">ORBIT <span class="brand-suffix">/ THE FIXER</span></div><div class="brand-caption">CHARACTER ANIMATION STUDIO</div></div></div>
+      <div class="topbar-center"><span class="header-dash"></span><span>DESKTOP MOTION SYSTEM</span><span class="header-dash"></span><span class="topbar-version">BUILD 1.0</span></div>
+      <div class="topbar-actions"><span class="build-state"><i></i> LIVE PREVIEW</span><button id="theater-toggle" class="icon-button theater-toggle" type="button" title="Enter showcase mode" aria-label="Enter showcase mode"><svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg></button></div>
     </header>
-    <main class="main-content" id="main-content" tabindex="-1">
-      <section id="page-home" class="page page-home active" aria-label="Orbit home">
-        <div id="home-idle" class="home-idle">
-          <div class="home-topline"><span class="eyebrow"><span class="hairline"></span> YOUR PRIVATE SPACE WITH ORBIT</span><span class="tiny-metadata" id="home-clock"></span></div>
-          <div class="orbit-zone">
-            <button type="button" class="orbit-art robot-stage" id="orbit-art" data-action="pet-wave" aria-label="Tap Orbit to make him wave">
-              <span class="robot-aurora" aria-hidden="true"></span><span class="robot-ring robot-ring-one" aria-hidden="true"></span><span class="robot-ring robot-ring-two" aria-hidden="true"></span><span class="robot-ring robot-ring-three" aria-hidden="true"></span>
-              <span class="robot-particle particle-1" aria-hidden="true"></span><span class="robot-particle particle-2" aria-hidden="true"></span><span class="robot-particle particle-3" aria-hidden="true"></span><span class="robot-particle particle-4" aria-hidden="true"></span>
-              <span class="robot-sparks" aria-hidden="true"></span><span class="robot-hover-wrap">
-    <img class="orbit-robot-image" id="orbit-robot-image" src="./assets/orbit-robot.png" alt="Orbit, your small floating black-and-gold robot with glowing cyan eyes and a chest core" draggable="false" />
-    <svg class="orbit-gesture-rig" viewBox="0 0 589 760" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <clipPath id="orbit-body-clip" clipPathUnits="userSpaceOnUse"><path d="M0 0 H589 V447 H413 L404 457 L414 476 L421 504 L430 538 L438 573 L444 615 L445 653 L443 700 L448 760 L140 760 L145 700 L143 653 L144 615 L150 573 L158 538 L167 504 L174 476 L184 457 L175 447 H0 Z"/></clipPath>
-        <clipPath id="orbit-right-arm-clip" clipPathUnits="userSpaceOnUse"><path d="M405 461 L425 463 L448 472 L479 495 L513 532 L537 574 L549 607 L554 644 L549 668 L533 695 L507 718 L481 724 L465 712 L460 699 L457 675 L455 642 L450 600 L445 558 L437 531 L423 498 L405 480 Z"/></clipPath>
-        <clipPath id="orbit-left-arm-clip" clipPathUnits="userSpaceOnUse"><path d="M405 461 L425 463 L448 472 L479 495 L513 532 L537 574 L549 607 L554 644 L549 668 L533 695 L507 718 L481 724 L465 712 L460 699 L457 675 L455 642 L450 600 L445 558 L437 531 L423 498 L405 480 Z" transform="translate(588 0) scale(-1 1)"/></clipPath>
-        <radialGradient id="orbit-core-pulse"><stop offset="0" stop-color="#83fbff" stop-opacity=".33"/><stop offset="1" stop-color="#12aaff" stop-opacity="0"/></radialGradient>
-      </defs>
-      <image class="orbit-rig-torso" href="./assets/orbit-robot.png" width="589" height="760" clip-path="url(#orbit-body-clip)"/>
-      <g class="orbit-rig-left" aria-hidden="true"><image href="./assets/orbit-robot.png" width="589" height="760" clip-path="url(#orbit-left-arm-clip)"/></g>
-      <g class="orbit-rig-right" aria-hidden="true"><image href="./assets/orbit-robot.png" width="589" height="760" clip-path="url(#orbit-right-arm-clip)"/></g>
-      <circle class="orbit-core-halo" cx="294" cy="582" r="90" fill="url(#orbit-core-pulse)"/>
-    </svg>
-  </span>
-              <span class="robot-floor-light" aria-hidden="true"></span><span class="orbit-interaction-glow" aria-hidden="true"></span>
-            </button>
-            <div class="orbit-greeting"><span class="robot-hello"><span class="hello-led"></span> ORBIT <span class="small-sep">/</span> THE FIXER</span><h1>Hey, I'm Orbit<span class="gradient-dot">.</span></h1><p id="home-context">Your little robot, ready when you are.</p><div class="orbit-emotion" id="orbit-emotion" role="status" aria-live="polite"><span class="emotion-light"></span><span id="orbit-mood-label">Here with you</span><span class="emotion-hint">· Tap Orbit to wave</span></div></div>
-            <div class="system-strip"><span><svg class="icon"><use href="#i-shield"/></svg> Policy not loaded</span><i></i><span><svg class="icon"><use href="#i-offline"/></svg> Framework not paired</span></div>
-          </div>
-          <button type="button" class="home-tools-button" data-action="open-more"><svg class="icon small"><use href="#i-menu"/></svg> Workspaces</button>
-          <div class="home-bottom">
-            <div class="prompt-head"><div><span class="prompt-eyebrow">JUMP RIGHT IN</span><div class="prompt-label">What should we do?</div></div><span class="prompt-subtle">QUICK START</span></div>
-            <div class="prompt-row prompt-grid">
-              <button class="prompt-chip" data-prompt="Give me an Orbit briefing"><span class="quick-icon"> <svg class="icon"><use href="#i-spark"/></svg></span><span class="quick-copy"><strong>Ask Orbit</strong><small>Quick briefing</small></span><svg class="icon small quick-arrow"><use href="#i-chevron"/></svg></button>
-              <button class="prompt-chip" data-page="audits"><span class="quick-icon"> <svg class="icon"><use href="#i-shield"/></svg></span><span class="quick-copy"><strong>Inspections</strong><small>Review templates</small></span><svg class="icon small quick-arrow"><use href="#i-chevron"/></svg></button>
-              <button class="prompt-chip" data-page="knowledge"><span class="quick-icon"> <svg class="icon"><use href="#i-book"/></svg></span><span class="quick-copy"><strong>Knowledge</strong><small>Notes &amp; references</small></span><svg class="icon small quick-arrow"><use href="#i-chevron"/></svg></button>
-              <button class="prompt-chip" data-page="reports"><span class="quick-icon"> <svg class="icon"><use href="#i-file"/></svg></span><span class="quick-copy"><strong>Reports</strong><small>Local drafts</small></span><svg class="icon small quick-arrow"><use href="#i-chevron"/></svg></button>
-            </div>
-          </div>
+    <div class="shell">
+      <aside class="library" id="library" aria-label="Motion library">
+        <div class="sidebar-head"><span class="eyebrow">PERFORMANCE LIBRARY</span><span class="library-count" id="behavior-count">14 STATES</span></div>
+        <div class="library-scroll" id="behavior-list"></div>
+        <div class="library-footer"><div class="footer-gem">✦</div><div><b>Original Orbit</b><span>High-definition articulated rig</span></div></div>
+      </aside>
+      <main class="main" id="main">
+        <div class="stage-toolbar"><div><div class="eyebrow stage-overline">01 / LIVE CHARACTER</div><h1>Make Orbit <em>come alive.</em></h1><p>A dedicated environment for developing movement, expression and personality.</p></div><div class="stage-toolbar-right"><button id="run-sequence" class="button outline" type="button"><svg viewBox="0 0 24 24"><path d="M5 5l14 7-14 7V5z"/></svg><span>Play showreel</span></button><button id="capture" class="button primary" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3"/><path d="M8 6l1-2h6l1 2"/></svg><span>Capture frame</span></button></div></div>
+        <section class="stage-frame" id="stage-frame" aria-label="Live Orbit animation preview">
+          <div class="stage-bg" aria-hidden="true"><div class="orbit-halo halo-one"></div><div class="orbit-halo halo-two"></div><div class="orbit-halo halo-three"></div><div class="stage-grid"></div></div>
+          <div class="stage-info-top"><span class="stage-state"><i></i><span id="stage-behavior">IDLE / BREATHING</span></span><span class="stage-index" id="stage-index">01 / 14</span></div>
+          <canvas id="orbit-canvas" role="img" tabindex="0" aria-label="Orbit, the original black-and-gold robot, performs articulated movements. Click or press Enter to wave."></canvas>
+          <div class="stage-well" aria-hidden="true"><div class="well-outer"></div><div class="well-inner"></div><div class="well-light"></div></div>
+          <div class="stage-corner-bl"><span class="mini-dot"></span><span>REAL-TIME RIG / NO FRAME SWAPPING</span></div>
+          <div class="stage-corner-br" id="fps-stage">RENDERING · — FPS</div>
+          <div class="stage-interaction"><span>CLICK ORBIT TO WAVE</span><span class="separator">·</span><span>MOVE CURSOR TO SHIFT HIS GAZE</span></div>
+        </section>
+        <section class="playback" aria-label="Animation playback controls">
+          <div class="transport"><button id="prev" type="button" class="control-icon" aria-label="Previous behaviour" title="Previous behavior"><svg viewBox="0 0 24 24"><path d="M6 4v16M19 5l-11 7 11 7V5z"/></svg></button><button id="play-pause" type="button" class="transport-play" aria-label="Pause playback"><svg id="pause-icon" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button><button id="next" type="button" class="control-icon" aria-label="Next behaviour" title="Next behavior"><svg viewBox="0 0 24 24"><path d="M18 4v16M5 5l11 7-11 7V5z"/></svg></button></div>
+          <div class="timeline-block"><div class="timeline-meta"><span id="timeline-action">Idle hover</span><span class="timeline-clock" id="timeline-clock">00:00 / LOOP</span></div><input id="seek" class="timeline" type="range" min="0" max="1000" value="0" aria-label="Seek within animation"/><div class="timeline-under"><span id="timeline-description">Subtle secondary motion and organic idle variation</span><span id="loop-status">LOOP ACTIVE</span></div></div>
+          <button id="loop-button" class="loop-toggle active" type="button" aria-pressed="true" title="Toggle loop"><svg viewBox="0 0 24 24"><path d="m17 2 4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></svg><span>Loop</span></button>
+        </section>
+        <div class="understage"><section class="detail-panel"><div class="panel-topline"><span class="eyebrow">BEHAVIOUR PROFILE</span><span class="tiny-tag" id="detail-kind">CONTINUOUS</span></div><h2 id="detail-title">Idle breathing</h2><p id="detail-text">Orbit feels present, alert and ready without constantly performing exaggerated motions.</p><div class="feature-tags" id="detail-features"></div></section><section class="detail-panel technical"><div class="panel-topline"><span class="eyebrow">RIG & RENDER DIAGNOSTICS</span><span class="small-good"><i></i> ASSETS LOADED</span></div><div class="metric-grid"><div><span>FRAME RATE</span><strong id="fps-metric">— <small>FPS</small></strong></div><div><span>PIXEL DENSITY</span><strong id="pixel-metric">— <small>×</small></strong></div><div><span>IMAGE SOURCE</span><strong>HD <small>RGBA</small></strong></div><div><span>ACTIVE JOINTS</span><strong>4 <small>+ gaze</small></strong></div></div></section></div>
+        <div class="stage-footer"><span>Built from Orbit’s original authorised artwork. All animation is rendered locally in your browser.</span><span>ANIMATION ENGINE 1.0.0</span></div>
+      </main>
+      <aside class="inspector" id="inspector" aria-label="Motion inspector">
+        <div class="inspector-head"><div><span class="eyebrow">CHARACTER CONTROLS</span><h2>Motion inspector</h2></div><span class="setting-status" id="settings-status">LOCAL</span></div>
+        <div class="inspector-scroll">
+          <section class="inspector-section"><div class="section-heading"><span>01</span><h3>Performance</h3></div>
+            <label for="speed">Playback speed <output id="speed-value">1.00×</output></label><input id="speed" type="range" min="0.4" max="1.8" step="0.05" value="1">
+            <label for="expressiveness">Expressiveness <output id="expressiveness-value">80%</output></label><input id="expressiveness" type="range" min="0" max="150" step="5" value="80">
+            <label for="float">Hover amplitude <output id="float-value">65%</output></label><input id="float" type="range" min="0" max="125" step="5" value="65">
+            <label for="gaze">Gaze response <output id="gaze-value">75%</output></label><input id="gaze" type="range" min="0" max="150" step="5" value="75">
+          </section>
+          <section class="inspector-section"><div class="section-heading"><span>02</span><h3>Look & environment</h3></div><div class="select-label">Stage environment</div><div class="segmented" id="stage-theme" role="group" aria-label="Stage background"><button data-theme="nebula" class="selected" type="button">Nebula</button><button data-theme="studio" type="button">Studio</button><button data-theme="transparent" type="button">Clean</button></div>
+            <label for="glow">Core luminosity <output id="glow-value">85%</output></label><input id="glow" type="range" min="0" max="150" step="5" value="85">
+            <div class="toggle-row"><div><strong>Interactive gaze</strong><small>Follow cursor movement</small></div><label class="switch"><input type="checkbox" id="interactive-gaze" checked><span aria-hidden="true"></span></label></div>
+            <div class="toggle-row"><div><strong>Ambient particles</strong><small>Soft environment accents</small></div><label class="switch"><input type="checkbox" id="particles" checked><span aria-hidden="true"></span></label></div>
+            <div class="toggle-row"><div><strong>Reduced motion</strong><small>Show still, accessible poses</small></div><label class="switch"><input type="checkbox" id="reduce-motion"><span aria-hidden="true"></span></label></div>
+          </section>
+          <section class="inspector-section"><div class="section-heading"><span>03</span><h3>Development tools</h3></div>
+            <div class="select-label">Render quality</div><select id="quality"><option value="auto">Automatic · Recommended</option><option value="high">High resolution</option><option value="balanced">Balanced</option><option value="eco">Battery saver</option></select>
+            <div class="button-grid"><button id="record" class="button subtle" type="button"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg> Record clip</button><button id="export-settings" class="button subtle" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></svg> Export profile</button></div>
+            <div class="button-grid"><button id="import-settings" class="button subtle" type="button"><svg viewBox="0 0 24 24"><path d="M12 21V9m-5 5 5-5 5 5M4 7V3h16v4"/></svg> Import profile</button><button id="reset" class="button subtle" type="button"><svg viewBox="0 0 24 24"><path d="M3 11a9 9 0 1 1 2 6M3 4v7h7"/></svg> Reset studio</button></div>
+            <input type="file" id="profile-file" accept="application/json,.json" hidden>
+            <p class="tool-note">Profiles change appearance only. No AI model, account connection or Framework data is used in this studio.</p>
+          </section>
+          <section class="inspector-section shortcuts"><div class="section-heading"><span>04</span><h3>Shortcuts</h3></div><div><span>Play / pause</span><kbd>SPACE</kbd></div><div><span>Next behaviour</span><kbd>→</kbd></div><div><span>Previous behaviour</span><kbd>←</kbd></div><div><span>Wave</span><kbd>W</kbd></div><div><span>Showreel</span><kbd>R</kbd></div></section>
         </div>
-        <div id="chat-view" class="chat-view" hidden>
-          <div class="chat-heading">
-            <div class="chat-identity"><span class="chat-buddy"><img src="./assets/orbit-robot.png" alt=""/></span>
-              <div><span class="eyebrow">TALKING WITH ORBIT</span><h2 id="chat-current-title">Conversation</h2><small>Saved locally · Not synchronised</small></div>
-            </div>
-            <div class="chat-utilities"><button class="ghost-button" id="chat-history" aria-label="Browse saved conversations">History <svg class="icon"><use href="#i-file"/></svg></button><button class="ghost-button" id="chat-new">New chat <svg class="icon"><use href="#i-plus"/></svg></button></div>
-          </div>
-          <div class="message-list" id="message-list" aria-live="polite"></div>
-        </div>
-        <div class="composer-area">
-          <div class="composer-presence" id="composer-presence"><span class="composer-bot"><img src="./assets/orbit-robot.png" alt="" /></span><span class="composer-presence-copy"><strong id="orbit-presence-title">Orbit is here</strong><small id="orbit-presence-detail">Independent mode · local preview</small></span><span class="composer-presence-pulse" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
-          <div id="privacy-flag" class="privacy-flag"><svg class="icon"><use href="#i-info"/></svg> Local records are not encrypted. Framework Command is not connected; avoid confidential data.</div>
-          <form id="chat-form" class="composer" autocomplete="off"><textarea id="chat-input" name="message" rows="1" maxlength="5000" placeholder="Message Orbit…" aria-label="Message Orbit"></textarea><button type="button" id="mic-button" class="composer-mic" title="Voice input (browser capability)" aria-label="Voice input"><svg class="icon"><use href="#i-mic"/></svg></button><button type="submit" class="composer-send" aria-label="Send message"><svg class="icon"><use href="#i-arrow"/></svg></button></form>
-          <div class="composer-foot"><span><span class="foot-pulse"></span><span id="engine-label">LOCAL AI NOT LOADED</span></span><span>NOT LINKED TO FRAMEWORK COMMAND</span></div>
-        </div>
-      </section>
-      <section id="page-audits" class="page" aria-label="Audits"><div id="audits-content"></div></section>
-      <section id="page-knowledge" class="page" aria-label="Knowledge"><div id="knowledge-content"></div></section>
-      <section id="page-command" class="page" aria-label="Command"><div id="command-content"></div></section>
-      <section id="page-reports" class="page" aria-label="Reports"><div id="reports-content"></div></section>
-      <section id="page-settings" class="page" aria-label="Settings"><div id="settings-content"></div></section>
-    </main>
-    <button class="robot-buddy" id="robot-buddy" data-action="buddy" aria-label="Return to Orbit"><img src="./assets/orbit-robot.png" alt=""/><span class="buddy-glow"></span><span class="buddy-label">Talk to Orbit</span></button>
-    <nav class="mobile-nav" aria-label="Bottom navigation" id="mobile-nav"></nav>
+        <div class="inspector-footer"><span class="inspector-foot-dot"></span><span>All rendering runs on this device</span></div>
+      </aside>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
-  <aside class="context-rail" aria-label="System overview">
-    <div class="rail-top"><span class="eyebrow">SYSTEM STATUS</span><div class="rail-ring"><img src="./assets/orbit-robot.png" alt="Orbit" /></div></div>
-    <div class="rail-state"><span class="rail-status-light"></span><strong id="rail-connection">Independent mode</strong><span>NO SECURE GATEWAY</span></div>
-    <div class="rail-divider"></div>
-    <div class="rail-section-head">AUTHORITY</div>
-    <div class="rail-policy"><svg class="icon"><use href="#i-lock"/></svg><div><strong>Governing policy</strong><span>No policy bundle loaded</span></div></div>
-    <div class="rail-section-head">WORKSPACE</div>
-    <div class="rail-metric"><span>Local drafts</span><strong id="rail-drafts">0</strong></div>
-    <div class="rail-metric"><span>Last sync</span><strong>Never</strong></div>
-    <div class="rail-metric"><span>Framework gateway</span><strong>Not paired</strong></div>
-    <div class="rail-divider"></div>
-    <div class="rail-section-head">QUICK ACCESS</div>
-    <button class="rail-link" data-page="knowledge"><svg class="icon"><use href="#i-book"/></svg> Knowledge vault <svg class="icon last"><use href="#i-chevron"/></svg></button>
-    <button class="rail-link" data-action="create-report"><svg class="icon"><use href="#i-plus"/></svg> New local report <svg class="icon last"><use href="#i-chevron"/></svg></button>
-    <button class="rail-link" data-page="settings"><svg class="icon"><use href="#i-settings"/></svg> Device settings <svg class="icon last"><use href="#i-chevron"/></svg></button>
-    <div class="rail-bottom"><svg class="icon"><use href="#i-info"/></svg><p>Orbit is operating locally. Framework Command is not paired; no operational data is available.</p></div>
-  </aside>
-  <div id="modal-layer" class="modal-layer" hidden><div class="modal-backdrop" data-action="close-modal"></div><div class="sheet" id="modal-body" role="dialog" aria-modal="true" aria-label="Orbit dialog"></div></div>
-  <input id="knowledge-import" type="file" accept=".txt,.md,.markdown,text/plain,text/markdown" multiple hidden aria-label="Import local reference notes" /><input id="restore-input" type="file" accept="application/json,.json" hidden aria-label="Import Orbit backup" /><div id="toast" class="toast" role="status" aria-live="polite"></div>
-</div>
-<script src="./orbit-store.js" defer></script>
-<script src="./offline-brain.js" defer></script>
-<script src="./orbit-behavior.js" defer></script>
-<script src="./appearance-studio.js" defer></script>
-<script src="./fluid-ui.js" defer></script>
-<script src="./app.js" defer></script>
 </body>
 </html>

@@ -1,12 +1,9 @@
-# Orbit 3.2 — Rollback and recovery
+# Rollback — animation studio to previous Orbit 3.2
 
-1. **Back up your records first.** In Orbit Settings → Privacy & local data → Backup, export `Orbit_Backup_v3_<date>.json`. Store it privately because exports are not encrypted.
-2. To roll back the UI, restore the Orbit `/orbit/` directory from the previous known-good GitHub commit or the `ORBIT_Mobile_3.1.1_HD_True_Wave.zip` release. Do not clear device storage, IndexedDB or localStorage.
-3. Publish the corresponding old application files as a consistent set, including that release's `service-worker.js`. The versioned cache will refresh on the next online load.
-4. Open the site in Safari and refresh it online; close and reopen the Home Screen app. If an old cached shell persists, allow the service-worker update to finish and reopen again. Do **not** use "Clear local data" as a cache-repair mechanism; that deletes records.
-5. Appearance settings are separate from documents and conversations. Older Orbit versions ignore `orbit.appearance.v3.2`; they do not need to delete it.
-6. If records are missing after any migration, stop editing and restore the exported data using Orbit's existing Restore command. Backups replace current records, so export current data before restoring.
+The animation studio intentionally replaces only `/orbit/` in the `tylerj-web/index.html` GitHub Pages repository, leaving the rest of the website untouched.
 
-## Release boundaries
+To restore the earlier assistant interface, restore the `/orbit/` files from the Git commit immediately preceding the installation of the animation studio, or redeploy the previously archived `ORBIT_Mobile_3.2_Fluid_UI_RELEASE.zip` to `/orbit/`.
 
-The Orbit source is publicly hosted. Never commit individual user records, approved policy texts, credentials or private backups to this repository. Local browser records are not included in the release ZIP or automatically uploaded to GitHub. The app's local records are not end-to-end encrypted.
+After restoring, reload the page so the prior service worker takes over. The animation studio's independent cache may be cleared safely if needed. **Do not clear all Safari website data**: earlier Orbit conversations and reports may still be in IndexedDB or localStorage. This studio does not erase them, and a domain-wide storage reset would be a separate destructive action.
+
+When authoring a new animation release, increment the `orbit-animation-studio-...` service-worker cache version and update `index.html` resource version query strings.
