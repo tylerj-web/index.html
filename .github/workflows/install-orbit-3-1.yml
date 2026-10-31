@@ -1,0 +1,59 @@
+name: Publish Orbit 3.1 articulated HD animations
+on:
+  push:
+    paths:
+      - ".github/workflows/install-orbit-3-1.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install-orbit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout existing site
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch and verify Orbit 3.1 release
+        env:
+          SOURCE_URL: "https://at.adobe.com/JwhkgWB5Wz2rgZ5u"
+          EXPECTED_SHA256: "a595a27a6f07776b9df3590dd1f6220083064b55ffb7da9200336fc69dc4102a"
+        run: |
+          set -euo pipefail
+          curl --fail --location --show-error --retry 3 --max-time 150 --output /tmp/orbit-3-1.zip "$SOURCE_URL"
+          printf '%s  %s\n' "$EXPECTED_SHA256" /tmp/orbit-3-1.zip | sha256sum --check
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          package=Path('/tmp/orbit-3-1.zip')
+          destination=Path('/tmp/orbit-stage')
+          destination.mkdir(exist_ok=True)
+          with ZipFile(package) as archive:
+              names=set()
+              for entry in archive.infolist():
+                  path=PurePosixPath(entry.filename)
+                  assert entry.filename and not entry.filename.startswith('/') and '..' not in path.parts, entry.filename
+                  assert not entry.is_dir() or entry.filename.endswith('/')
+                  assert entry.file_size < 10_000_000, entry.filename
+                  assert entry.filename not in names, entry.filename
+                  names.add(entry.filename)
+              archive.extractall(destination)
+          assert (destination/'index.html').is_file()
+          assert (destination/'gesture-rig.css').is_file()
+          assert (destination/'service-worker.js').is_file()
+          assert (destination/'assets/orbit-robot.png').is_file()
+          assert 'orbit-gesture-rig' in (destination/'index.html').read_text()
+          assert 'orbit-shell-v3.1.0' in (destination/'service-worker.js').read_text()
+          PY
+      - name: Install upgrade without replacing other site content
+        run: |
+          set -euo pipefail
+          mkdir -p orbit
+          cp -a /tmp/orbit-stage/. orbit/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add orbit/
+          if ! git diff --cached --quiet; then
+            git commit -m "Orbit 3.1: restore articulated HD wave and character gestures"
+            git push
+          fi
