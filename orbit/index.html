@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#071017" />
+  <meta name="theme-color" content="#050B12" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Orbit" />
-  <meta name="description" content="Orbit — Framework Command Establishment Officer. Offline-capable interface prototype." />
+  <meta name="description" content="Orbit — The Fixer. Framework Command mobile prototype with an optional on-device AI model." />
   <meta name="color-scheme" content="dark" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
   <link rel="icon" type="image/png" href="./assets/icon-192.png" />
   <link rel="stylesheet" href="./styles.css" />
-  <title>Orbit — Establishment Officer</title>
+  <link rel="stylesheet" href="./rework.css" />
+  <title>Orbit — The Fixer</title>
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" class="icon-defs" aria-hidden="true">
@@ -51,11 +52,11 @@
   <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="18" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 12h6m-6 4h6"/></symbol>
   <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m7 12 3 3 7-7"/></symbol>
 </svg>
-<div id="app" class="app" data-mode="offline" data-accent="teal">
+<div id="app" class="app" data-mode="offline" data-accent="teal" data-orbit-mood="idle">
   <div class="glow glow-a" aria-hidden="true"></div><div class="glow glow-b" aria-hidden="true"></div>
   <aside class="sidebar" aria-label="Primary navigation">
-    <div class="side-brand"><div class="brand-mark"><img src="./assets/orbit-robot.png" alt="" class="brand-robot" /></div><div><strong>ORBIT<span class="brand-period">.</span></strong><span>ESTABLISHMENT OFFICER</span></div></div>
-    <div class="sidebar-caption">WORKSPACE</div>
+    <div class="side-brand"><div class="brand-mark"><img src="./assets/orbit-robot.png" alt="" class="brand-robot" /></div><div><strong>ORBIT<span class="brand-period">.</span></strong><span>THE FIXER</span></div></div>
+    <div class="sidebar-caption">YOUR WORKSPACE</div>
     <div id="desktop-nav" class="sidebar-nav"></div>
     <div class="sidebar-bottom">
       <div class="side-divider"></div>
@@ -66,10 +67,10 @@
   </aside>
   <div class="work-column">
     <header class="topbar">
-      <div class="mobile-brand"><div class="mini-orbit"><img src="./assets/orbit-robot.png" alt="" class="brand-robot" /></div><div><strong>ORBIT<span class="brand-period">.</span></strong><span>ESTABLISHMENT OFFICER</span></div></div>
-      <div class="desktop-heading" id="header-title">Establishment overview</div>
+      <div class="mobile-brand"><div class="mini-orbit"><img src="./assets/orbit-robot.png" alt="" class="brand-robot" /></div><div><strong>ORBIT<span class="brand-period">.</span></strong><span>THE FIXER</span></div></div>
+      <div class="desktop-heading" id="header-title">Orbit overview</div>
       <div class="top-actions">
-        <button class="header-status" id="mode-toggle" aria-label="Change demonstration connection mode"><span class="status-light"></span><span id="header-status-text">OFFLINE</span><span class="status-mini">DEMO</span></button>
+        <button class="header-status" id="mode-toggle" aria-label="Change demonstration connection mode"><span class="status-light"></span><span id="header-status-text">OFFLINE</span><span class="status-mini">PREVIEW</span></button>
         <button class="icon-button" title="Search" aria-label="Search" data-action="open-search"><svg class="icon"><use href="#i-search"/></svg></button>
         <button class="icon-button" title="Notifications" aria-label="Notifications" data-action="open-notices"><svg class="icon"><use href="#i-bell"/></svg><span id="notice-dot" class="notice-dot"></span></button>
       </div>
@@ -77,28 +78,39 @@
     <main class="main-content" id="main-content" tabindex="-1">
       <section id="page-home" class="page page-home active" aria-label="Orbit home">
         <div id="home-idle" class="home-idle">
-          <div class="home-topline"><span class="eyebrow"><span class="hairline"></span> DIRECT CHANNEL · ORBIT</span><span class="tiny-metadata" id="home-clock"></span></div>
+          <div class="home-topline"><span class="eyebrow"><span class="hairline"></span> YOUR PRIVATE SPACE WITH ORBIT</span><span class="tiny-metadata" id="home-clock"></span></div>
           <div class="orbit-zone">
             <button type="button" class="orbit-art robot-stage" id="orbit-art" data-action="pet-wave" aria-label="Tap Orbit to make him wave">
-              <span class="robot-aurora" aria-hidden="true"></span><span class="robot-ring robot-ring-one" aria-hidden="true"></span><span class="robot-ring robot-ring-two" aria-hidden="true"></span>
-              <span class="robot-sparks" aria-hidden="true"></span><img class="orbit-robot-image" id="orbit-robot-image" src="./assets/orbit-robot.png" alt="Orbit, a small floating black-and-gold robot with glowing cyan eyes and chest core" draggable="false" />
-              <span class="robot-floor-light" aria-hidden="true"></span>
+              <span class="robot-aurora" aria-hidden="true"></span><span class="robot-ring robot-ring-one" aria-hidden="true"></span><span class="robot-ring robot-ring-two" aria-hidden="true"></span><span class="robot-ring robot-ring-three" aria-hidden="true"></span>
+              <span class="robot-particle particle-1" aria-hidden="true"></span><span class="robot-particle particle-2" aria-hidden="true"></span><span class="robot-particle particle-3" aria-hidden="true"></span><span class="robot-particle particle-4" aria-hidden="true"></span>
+              <span class="robot-sparks" aria-hidden="true"></span><span class="robot-hover-wrap"><img class="orbit-robot-image" id="orbit-robot-image" src="./assets/orbit-robot.png" alt="Orbit, your small floating black-and-gold robot with glowing cyan eyes and a chest core" draggable="false" /></span>
+              <span class="robot-floor-light" aria-hidden="true"></span><span class="orbit-interaction-glow" aria-hidden="true"></span>
             </button>
-            <div class="orbit-greeting"><span class="robot-hello"><span class="hello-led"></span> YOUR LITTLE ROBOT ESTABLISHMENT OFFICER</span><h1>At your service<span class="gradient-dot">.</span></h1><p id="home-context">Independent oversight, whenever you need it.</p><span class="robot-hint">Tap me — I'll wave hello</span></div>
-            <div class="system-strip"><span><svg class="icon"><use href="#i-shield"/></svg> Policy not loaded</span><i></i><span><svg class="icon"><use href="#i-clock"/></svg> Never synced</span></div>
+            <div class="orbit-greeting"><span class="robot-hello"><span class="hello-led"></span> ORBIT <span class="small-sep">/</span> THE FIXER</span><h1>Hey, I'm Orbit<span class="gradient-dot">.</span></h1><p id="home-context">Your little robot, ready when you are.</p><div class="orbit-emotion" id="orbit-emotion" role="status" aria-live="polite"><span class="emotion-light"></span><span id="orbit-mood-label">Here with you</span><span class="emotion-hint">· Tap Orbit to wave</span></div></div>
+            <div class="system-strip"><span><svg class="icon"><use href="#i-shield"/></svg> Policy not loaded</span><i></i><span><svg class="icon"><use href="#i-offline"/></svg> Framework not paired</span></div>
           </div>
           <div class="home-bottom">
-            <div class="prompt-label">SUGGESTED ACTIONS</div>
-            <div class="prompt-row">
-              <button class="prompt-chip" data-prompt="Give me an establishment briefing"><svg class="icon"><use href="#i-spark"/></svg> Establishment briefing</button>
-              <button class="prompt-chip" data-prompt="Prepare a compliance inspection"><svg class="icon"><use href="#i-shield"/></svg> Prepare inspection</button>
-              <button class="prompt-chip" data-prompt="Review pending reports"><svg class="icon"><use href="#i-file"/></svg> My reports</button>
+            <div class="prompt-head"><div><span class="prompt-eyebrow">JUMP RIGHT IN</span><div class="prompt-label">What should we do?</div></div><span class="prompt-subtle">QUICK START</span></div>
+            <div class="prompt-row prompt-grid">
+              <button class="prompt-chip" data-prompt="Give me an Orbit briefing"><span class="quick-icon"> <svg class="icon"><use href="#i-spark"/></svg></span><span class="quick-copy"><strong>Ask Orbit</strong><small>Quick briefing</small></span><svg class="icon small quick-arrow"><use href="#i-chevron"/></svg></button>
+              <button class="prompt-chip" data-page="audits"><span class="quick-icon"> <svg class="icon"><use href="#i-shield"/></svg></span><span class="quick-copy"><strong>Inspections</strong><small>Review templates</small></span><svg class="icon small quick-arrow"><use href="#i-chevron"/></svg></button>
+              <button class="prompt-chip" data-page="knowledge"><span class="quick-icon"> <svg class="icon"><use href="#i-book"/></svg></span><span class="quick-copy"><strong>Knowledge</strong><small>Notes &amp; references</small></span><svg class="icon small quick-arrow"><use href="#i-chevron"/></svg></button>
+              <button class="prompt-chip" data-page="reports"><span class="quick-icon"> <svg class="icon"><use href="#i-file"/></svg></span><span class="quick-copy"><strong>Reports</strong><small>Local drafts</small></span><svg class="icon small quick-arrow"><use href="#i-chevron"/></svg></button>
             </div>
           </div>
         </div>
-        <div id="chat-view" class="chat-view" hidden><div class="chat-heading"><div><span class="eyebrow">PRIVATE CONVERSATION</span><h2>With Orbit</h2></div><button class="ghost-button" id="chat-new">New conversation <svg class="icon"><use href="#i-plus"/></svg></button></div><div class="message-list" id="message-list" aria-live="polite"></div></div>
+        <div id="chat-view" class="chat-view" hidden>
+          <div class="chat-heading">
+            <div class="chat-identity"><span class="chat-buddy"><img src="./assets/orbit-robot.png" alt=""/></span>
+              <div><span class="eyebrow">TALKING WITH ORBIT</span><h2>Conversation<span class="gradient-dot">.</span></h2><small>Private to this browser · Not synchronised</small></div>
+            </div>
+            <button class="ghost-button" id="chat-new">New chat <svg class="icon"><use href="#i-plus"/></svg></button>
+          </div>
+          <div class="message-list" id="message-list" aria-live="polite"></div>
+        </div>
         <div class="composer-area">
-          <div id="privacy-flag" class="privacy-flag"><svg class="icon"><use href="#i-info"/></svg> Prototype. Responses are simulated; do not enter confidential information.</div>
+          <div class="composer-presence" id="composer-presence"><span class="composer-bot"><img src="./assets/orbit-robot.png" alt="" /></span><span class="composer-presence-copy"><strong id="orbit-presence-title">Orbit is here</strong><small id="orbit-presence-detail">Independent mode · local preview</small></span><span class="composer-presence-pulse" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+          <div id="privacy-flag" class="privacy-flag"><svg class="icon"><use href="#i-info"/></svg> Prototype. Install a local AI model in Settings for real offline responses. Do not enter confidential information.</div>
           <form id="chat-form" class="composer" autocomplete="off"><textarea id="chat-input" name="message" rows="1" maxlength="5000" placeholder="Message Orbit…" aria-label="Message Orbit"></textarea><button type="button" id="mic-button" class="composer-mic" title="Voice input (browser capability)" aria-label="Voice input"><svg class="icon"><use href="#i-mic"/></svg></button><button type="submit" class="composer-send" aria-label="Send message"><svg class="icon"><use href="#i-arrow"/></svg></button></form>
           <div class="composer-foot"><span><span class="foot-pulse"></span><span id="engine-label">LOCAL PREVIEW ENGINE</span></span><span>NOT LINKED TO FRAMEWORK COMMAND</span></div>
         </div>
@@ -109,7 +121,7 @@
       <section id="page-reports" class="page" aria-label="Reports"><div id="reports-content"></div></section>
       <section id="page-settings" class="page" aria-label="Settings"><div id="settings-content"></div></section>
     </main>
-    <button class="robot-buddy" id="robot-buddy" data-action="buddy" aria-label="Return to Orbit"><img src="./assets/orbit-robot.png" alt=""/><span class="buddy-glow"></span><span class="buddy-label">Ask Orbit</span></button>
+    <button class="robot-buddy" id="robot-buddy" data-action="buddy" aria-label="Return to Orbit"><img src="./assets/orbit-robot.png" alt=""/><span class="buddy-glow"></span><span class="buddy-label">Talk to Orbit</span></button>
     <nav class="mobile-nav" aria-label="Bottom navigation" id="mobile-nav"></nav>
   </div>
   <aside class="context-rail" aria-label="System overview">
@@ -132,6 +144,8 @@
   <div id="modal-layer" class="modal-layer" hidden><div class="modal-backdrop" data-action="close-modal"></div><div class="sheet" id="modal-body" role="dialog" aria-modal="true" aria-label="Orbit dialog"></div></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </div>
+<script src="./offline-brain.js" defer></script>
+<script src="./orbit-behavior.js" defer></script>
 <script src="./app.js" defer></script>
 </body>
 </html>

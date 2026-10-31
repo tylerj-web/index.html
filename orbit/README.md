@@ -1,57 +1,32 @@
-# Orbit Mobile — Robot Edition 2.0
+# Orbit Mobile — The Fixer | Version 2.4 (Robot Personality & UI Rework)
 
-**The user’s original Orbit robot is now the face of the app.** This release uses the original black-and-gold floating robot artwork and transparent animation atlas, including his cyan eyes and chest core.
+Orbit's actual black-and-gold/cyan original character remains the mascot. This release rebuilds the interface with richer responsive cards, a calmer home screen, full on-device presence indicators and reactive animation states. No separate character was generated.
 
-## What is included
+## What is new
 
-- Home screen: Orbit himself, floating and responding when you tap him (waving animation).
-- Chat: Orbit’s robot avatar accompanies each simulated response. Stored chat history uses browser LocalStorage.
-- Audits: Sample inspection templates; optional conversion to saved local report drafts.
-- Knowledge: A few demonstration dictionary entries and local notes; authoritative governing policy is **not loaded**.
-- Command: The authorised organisational relationship between Orbit and Commander (informational only).
-- Reports: Local report editor, export and deletion.
-- Settings: Colour controls, reduced animation, optional browser text-to-speech, demo connectivity status, export and reset.
-- A small floating Orbit companion on non-chat screens; tapping him returns you to your conversation.
-- Robot Home Screen icon, PWA manifest and offline application caching.
+- Redesigned Home: compact four-tile launchpad (Ask Orbit, Inspections, Knowledge, Reports), holographic rings, interactive particles, dark glass surfaces and a character-centred greeting.
+- Reworked chat: Orbit's permanent presence indicator above the composer and clearer conversation header.
+- Unified workspaces: new card styling, visual hierarchy, active navigation, color system and mobile layouts.
+- Robot personality states, powered by the **original supplied sprite frames**: idle breathing/hovering, wave, thinking, reviewing, waiting, listening, talking, happy and error. These react to actual UI events: sending chat, launching the local model, saving drafts, opening inspection templates, browser speech input, and optional text-to-speech.
+- Optional reduced motion and native reduced-motion respect; animations pause when the document is hidden.
+- UI remains fully functional without downloading the language model; chats remain scripted until the model is loaded successfully.
+- All local reports, notes and existing conversations remain under the existing LocalStorage key; this release does not migrate or erase user data.
 
-## Important limitations
+## Installing
 
-**This is a fully packaged and interactive design prototype, not a connected AI assistant.** All chat answers are scripted examples. There is no Framework Command server, no local LLM, no synced authority/policy, no secure device pairing, and no application-level encryption. The online/offline toggle is a visual demonstration. Live iPhone speech recognition depends on Safari/browser support and may send audio to a service; it is not guaranteed to function offline. Do not store sensitive/confidential material.
+For GitHub Pages, upload the **contents** of this archive inside `orbit/` in the `tylerj-web/index.html` repository, preserving subfolders and without replacing the repository root `index.html`.
 
-## Install for free on an iPhone
+Open `https://tylerj-web.github.io/index.html/orbit/` in Safari → Share → Add to Home Screen. The service worker caches the interface files; first open online. For on-device AI go to Settings → Offline intelligence → Install model and allow time for its weights and runtime to download; then test with Airplane Mode on your actual device.
 
-1. Unzip this folder. Upload **the folder contents** (`index.html`, `app.js`, `styles.css`, `assets`, etc.) to an HTTPS website you control, such as a GitHub Pages repository. Do not upload just the HTML file without its assets.
-2. Open the resulting `https://` URL in Safari on iPhone. Verify the little robot appears on the Home screen.
-3. In Safari, choose **Share → Add to Home Screen**, and turn on **Open as Web App** if that option appears.
-4. Open the Orbit icon. Visit once while connected to allow the site’s service worker to cache the app. You can then launch the cached interface offline. Offline launch is subject to available browser storage and iOS cache retention.
-5. To update a hosted copy, replace the files with the new release. The app’s service worker uses a different cache identifier to update offline assets. You may need to reopen Orbit with network access once to obtain the new files.
+## Truthful status
 
-The bundle can be opened locally on a computer for casual preview, but installation/offline service-worker functionality requires an HTTPS origin (localhost works for development). `file://` URLs and directly opening an HTML file from iPhone Files do not provide standard PWA installation.
+- This package is a **working UI prototype with optional experimental local text AI**, not a connected Framework Command client. The Connected mode is simulated. There is **no configured laptop gateway, sync, authentic policy store, or approved authority**.
+- Model: Qwen2.5-0.5B-Instruct-q4f16_1-MLC via WebLLM. Weights are not included in the ZIP, require download and compatible WebGPU; model memory / browser cache constraints may prevent use on iOS. There is **no cloud AI fallback**.
+- SpeechRecognition is browser-provided and may require internet or third-party processing; optional text-to-speech uses the browser's available voices. Offline *text* inference is distinct from offline *voice*.
+- Local reports, notes and conversations are stored via browser localStorage **without app-level encryption**; do not enter sensitive or confidential material.
+- Browser syntax, navigation and layouts can be tested here; until tested on the device, no iPhone/iPad inference compatibility is guaranteed.
+- The user-facing name is **Orbit**; optional title **The Fixer**. The functions, authority limits and relationship with Commander remain unchanged.
 
-## Interaction test
+## Files
 
-- Tap the large robot: he waves with his original sprite frames.
-- Send a message: Orbit replies with **SIMULATED RESPONSE** clearly indicated and performs a short work animation.
-- Browse Audits, Knowledge, Command and Reports through the bottom navigation.
-- On any other tab, tap the little robot at lower right to return to Orbit.
-- Create a local report in Reports and export it. It is saved only in your browser and not shared with Framework Command.
-- In Settings, turn off Ambient animation to disable reactions.
-
-## Technical layout
-
-- Vanilla HTML/CSS/JavaScript, zero external libraries or CDNs.
-- Robot artwork: `assets/orbit-robot.png` (keyed transparent version of the user's supplied character).
-- Character animation: `assets/orbit-wave-*.png`, `orbit-working-*.png`, `orbit-waiting-*.png`, `orbit-review-*.png`, etc., extracted from the original sprite atlas.
-- `manifest.webmanifest`: installability and device icons.
-- `service-worker.js`: versioned app-shell and robot-frame cache, no connection to a server beyond fetching hosted files.
-- Local browser persistence only; existing v1.1 prototype drafts are preserved using the same storage key when installing as an upgrade on the same origin.
-
-## Production pathway (not yet implemented)
-
-1. Authentic Framework Command gateway and explicit device authorisation.
-2. Verified, signed offline policy snapshots and access-controlled evidence.
-3. Genuine local AI/remote AI routing, with clear network status.
-4. Reliable speech and background limitations evaluated for iPhone.
-5. Encrypted storage, controlled sync, operational audit logs, user-approved actions and proper testing.
-
-**Version:** 2.0 · Orbit Robot Edition · 31 October 2026
+Core: `index.html`, `styles.css`, `rework.css`, `app.js`, `offline-brain.js`, `orbit-behavior.js`, `manifest.webmanifest`, `service-worker.js`, and `assets/` with the original robot frames/icons. Preview PNGs (if included) are optional.

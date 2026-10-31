@@ -1,16 +1,16 @@
 {
   "id": "./",
-  "name": "Orbit \u2014 Your Robot Establishment Officer",
+  "name": "Orbit \u2014 The Fixer",
   "short_name": "Orbit",
-  "description": "Orbit Mobile \u2014 black-and-gold robot companion for the Framework Command prototype. Offline-capable demonstration.",
+  "description": "Orbit, your little robot. Independent local assistance, audits, knowledge and reports.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "display_override": [
     "standalone"
   ],
-  "background_color": "#071017",
-  "theme_color": "#071017",
+  "background_color": "#050b12",
+  "theme_color": "#050b12",
   "orientation": "portrait-primary",
   "icons": [
     {
