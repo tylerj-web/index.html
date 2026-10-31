@@ -1,32 +1,47 @@
-# Orbit Mobile — The Fixer | Version 2.4 (Robot Personality & UI Rework)
+# Orbit — The Fixer
 
-Orbit's actual black-and-gold/cyan original character remains the mascot. This release rebuilds the interface with richer responsive cards, a calmer home screen, full on-device presence indicators and reactive animation states. No separate character was generated.
+## Mobile 3.0 (local-first PWA release)
 
-## What is new
+This is a standalone, installable PWA for iPhone and iPad, designed to use the original Orbit robot art. The HD character image (589 × 760 px) remains rendered for **every animation state**. Motion is applied with CSS transforms and lighting, with reduced-motion support; the former 160 × 192 px animation frames are not used.
 
-- Redesigned Home: compact four-tile launchpad (Ask Orbit, Inspections, Knowledge, Reports), holographic rings, interactive particles, dark glass surfaces and a character-centred greeting.
-- Reworked chat: Orbit's permanent presence indicator above the composer and clearer conversation header.
-- Unified workspaces: new card styling, visual hierarchy, active navigation, color system and mobile layouts.
-- Robot personality states, powered by the **original supplied sprite frames**: idle breathing/hovering, wave, thinking, reviewing, waiting, listening, talking, happy and error. These react to actual UI events: sending chat, launching the local model, saving drafts, opening inspection templates, browser speech input, and optional text-to-speech.
-- Optional reduced motion and native reduced-motion respect; animations pause when the document is hidden.
-- UI remains fully functional without downloading the language model; chats remain scripted until the model is loaded successfully.
-- All local reports, notes and existing conversations remain under the existing LocalStorage key; this release does not migrate or erase user data.
+### What's actually working
 
-## Installing
+- Optimized mobile and tablet layout, five-tab mobile navigation with More menu, and Orbit's HD motion behaviour for listening, waiting, speaking, considering, waving, completing and error states.
+- Independent local working features: **multiple conversations**, renaming, deleting, searching, backup and restore.
+- Structured local inspection records: scope, referenced evidence, findings, proposed follow-up, and review status (always unverified unless a future authoritative gateway validates it).
+- Reports editor with saved **revision history**, Markdown export, local importable `.txt` / `.md` reference notes and local search.
+- IndexedDB structured local storage with migration from the former v2.4 `orbit.mobile.prototype.v1` localStorage key, without deleting the old data automatically.
+- Optional WebLLM model installer for Qwen2.5 0.5B (baseline) or 1.5B (experimental), with model-status progress and streamed answers if the hardware/runtime supports WebGPU.
+- Versioned service-worker cache for offline app-shell support. The model has a separate cache and must be explicitly installed and tested.
 
-For GitHub Pages, upload the **contents** of this archive inside `orbit/` in the `tylerj-web/index.html` repository, preserving subfolders and without replacing the repository root `index.html`.
+### What is **not** yet working / available
 
-Open `https://tylerj-web.github.io/index.html/orbit/` in Safari → Share → Add to Home Screen. The service worker caches the interface files; first open online. For on-device AI go to Settings → Offline intelligence → Install model and allow time for its weights and runtime to download; then test with Airplane Mode on your actual device.
+- The app does not contain the Framework Command Windows gateway, authenticated pairing, live coordination with Commander, agent actions or synced authoritative policy. The UI must always show **unpaired** until those services are supplied and tested.
+- No user-approved policy codes have been loaded or signed. General English entries, imported notes and locally drafted audits have **no governing-policy authority**.
+- This PWA does not have native iOS-level Face ID enforcement, encrypted application records, silent background microphone access, guaranteed offline speech recognition, or reliable native push without permissions and infrastructure.
+- The AI model files are not bundled in this 1–3 MB PWA. They require a separate first-time download, WebGPU device support and enough Safari memory/storage. Safari may evict caches. **Offline AI on physical iPhone/iPad has not been validated in this release.**
+- The small local model has limited reasoning and context capabilities. It must not be treated as an accurate replacement for a powerful connected AI.
 
-## Truthful status
+### Installation on iPhone/iPad
 
-- This package is a **working UI prototype with optional experimental local text AI**, not a connected Framework Command client. The Connected mode is simulated. There is **no configured laptop gateway, sync, authentic policy store, or approved authority**.
-- Model: Qwen2.5-0.5B-Instruct-q4f16_1-MLC via WebLLM. Weights are not included in the ZIP, require download and compatible WebGPU; model memory / browser cache constraints may prevent use on iOS. There is **no cloud AI fallback**.
-- SpeechRecognition is browser-provided and may require internet or third-party processing; optional text-to-speech uses the browser's available voices. Offline *text* inference is distinct from offline *voice*.
-- Local reports, notes and conversations are stored via browser localStorage **without app-level encryption**; do not enter sensitive or confidential material.
-- Browser syntax, navigation and layouts can be tested here; until tested on the device, no iPhone/iPad inference compatibility is guaranteed.
-- The user-facing name is **Orbit**; optional title **The Fixer**. The functions, authority limits and relationship with Commander remain unchanged.
+1. Publish the **contents** of this ZIP to `https://tylerj-web.github.io/index.html/orbit/` (not the ZIP itself).
+2. In Safari, open the site, Share → Add to Home Screen → Add.
+3. Open Orbit and go to **More → Settings & Offline AI**, choose the baseline model, then tap **Install model** on Wi-Fi.
+4. Confirm that a brief local AI response works; close and reopen Orbit, enable Airplane Mode and test again. If the model cannot reload, the device/browser is not yet reliably compatible.
+5. Use **More → Settings → Backup** to export local records regularly. The exported file is **unencrypted**; keep it private. Use Restore if needed.
 
-## Files
+### Migration and data safety
 
-Core: `index.html`, `styles.css`, `rework.css`, `app.js`, `offline-brain.js`, `orbit-behavior.js`, `manifest.webmanifest`, `service-worker.js`, and `assets/` with the original robot frames/icons. Preview PNGs (if included) are optional.
+v2.4 localStorage is read on the first launch in the same browser origin. The new IndexedDB database stores conversations, reports, notes, inspections, revisions and settings separately. It will not delete old data automatically. The app can fall back to legacy localStorage if IndexedDB is unavailable, but storage size may be limited.
+
+Do not use this app for confidential operational records yet. Never upload private policy or data to the public GitHub repository. Website code is public; local database contents are not published by the PWA.
+
+### Update and testing
+
+The service worker uses version `orbit-shell-v3.0.0` for the app shell and clears obsolete Orbit caches; WebLLM model cache is separate. On iPhone, reopen in Safari after deployment; a second reload may be necessary to activate the new service worker.
+
+Automated checks validate the JavaScript syntax, XML/JSON/asset integrity, PWA file references and ZIP extraction. Browser automation in this environment is blocked from navigating to local pages, and real device testing remains required.
+
+### Development status
+
+**Orbit Mobile 3.0 is a local-first functional release, not a fully paired hybrid assistant.** The protected Framework Command gateway and signed policy integration are separately gated on laptop infrastructure and authorised policy source files.

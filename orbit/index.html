@@ -7,13 +7,15 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Orbit" />
-  <meta name="description" content="Orbit — The Fixer. Framework Command mobile prototype with an optional on-device AI model." />
+  <meta name="description" content="Orbit — The Fixer. Local-first iPhone and iPad assistant with an optional on-device AI." />
   <meta name="color-scheme" content="dark" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
   <link rel="icon" type="image/png" href="./assets/icon-192.png" />
   <link rel="stylesheet" href="./styles.css" />
   <link rel="stylesheet" href="./rework.css" />
+  <link rel="stylesheet" href="./hd-motion.css" />
+  <link rel="stylesheet" href="./v3.css" />
   <title>Orbit — The Fixer</title>
 </head>
 <body>
@@ -62,7 +64,7 @@
       <div class="side-divider"></div>
       <button class="side-utility" data-action="open-search"><svg class="icon"><use href="#i-search"/></svg>Search anything <kbd>⌘ K</kbd></button>
       <button class="side-utility" data-page="settings"><svg class="icon"><use href="#i-settings"/></svg>Settings <svg class="icon small trailing"><use href="#i-chevron"/></svg></button>
-      <div class="side-session"><div class="avatar-circle"><img src="./assets/orbit-robot.png" alt="" /></div><div><strong>Orbit Mobile</strong><small>Private prototype • Local data</small></div></div>
+      <div class="side-session"><div class="avatar-circle"><img src="./assets/orbit-robot.png" alt="" /></div><div><strong>Orbit Mobile</strong><small>Local-first • Unpaired</small></div></div>
     </div>
   </aside>
   <div class="work-column">
@@ -70,7 +72,7 @@
       <div class="mobile-brand"><div class="mini-orbit"><img src="./assets/orbit-robot.png" alt="" class="brand-robot" /></div><div><strong>ORBIT<span class="brand-period">.</span></strong><span>THE FIXER</span></div></div>
       <div class="desktop-heading" id="header-title">Orbit overview</div>
       <div class="top-actions">
-        <button class="header-status" id="mode-toggle" aria-label="Change demonstration connection mode"><span class="status-light"></span><span id="header-status-text">OFFLINE</span><span class="status-mini">PREVIEW</span></button>
+        <button class="header-status" id="mode-toggle" aria-label="View current connection status"><span class="status-light"></span><span id="header-status-text">OFFLINE</span><span class="status-mini">NO GATEWAY</span></button>
         <button class="icon-button" title="Search" aria-label="Search" data-action="open-search"><svg class="icon"><use href="#i-search"/></svg></button>
         <button class="icon-button" title="Notifications" aria-label="Notifications" data-action="open-notices"><svg class="icon"><use href="#i-bell"/></svg><span id="notice-dot" class="notice-dot"></span></button>
       </div>
@@ -102,17 +104,17 @@
         <div id="chat-view" class="chat-view" hidden>
           <div class="chat-heading">
             <div class="chat-identity"><span class="chat-buddy"><img src="./assets/orbit-robot.png" alt=""/></span>
-              <div><span class="eyebrow">TALKING WITH ORBIT</span><h2>Conversation<span class="gradient-dot">.</span></h2><small>Private to this browser · Not synchronised</small></div>
+              <div><span class="eyebrow">TALKING WITH ORBIT</span><h2 id="chat-current-title">Conversation</h2><small>Saved locally · Not synchronised</small></div>
             </div>
-            <button class="ghost-button" id="chat-new">New chat <svg class="icon"><use href="#i-plus"/></svg></button>
+            <div class="chat-utilities"><button class="ghost-button" id="chat-history" aria-label="Browse saved conversations">History <svg class="icon"><use href="#i-file"/></svg></button><button class="ghost-button" id="chat-new">New chat <svg class="icon"><use href="#i-plus"/></svg></button></div>
           </div>
           <div class="message-list" id="message-list" aria-live="polite"></div>
         </div>
         <div class="composer-area">
           <div class="composer-presence" id="composer-presence"><span class="composer-bot"><img src="./assets/orbit-robot.png" alt="" /></span><span class="composer-presence-copy"><strong id="orbit-presence-title">Orbit is here</strong><small id="orbit-presence-detail">Independent mode · local preview</small></span><span class="composer-presence-pulse" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
-          <div id="privacy-flag" class="privacy-flag"><svg class="icon"><use href="#i-info"/></svg> Prototype. Install a local AI model in Settings for real offline responses. Do not enter confidential information.</div>
+          <div id="privacy-flag" class="privacy-flag"><svg class="icon"><use href="#i-info"/></svg> Local-first assistant. Download an AI model in Settings to chat offline. Not connected to Framework Command; do not enter confidential data.</div>
           <form id="chat-form" class="composer" autocomplete="off"><textarea id="chat-input" name="message" rows="1" maxlength="5000" placeholder="Message Orbit…" aria-label="Message Orbit"></textarea><button type="button" id="mic-button" class="composer-mic" title="Voice input (browser capability)" aria-label="Voice input"><svg class="icon"><use href="#i-mic"/></svg></button><button type="submit" class="composer-send" aria-label="Send message"><svg class="icon"><use href="#i-arrow"/></svg></button></form>
-          <div class="composer-foot"><span><span class="foot-pulse"></span><span id="engine-label">LOCAL PREVIEW ENGINE</span></span><span>NOT LINKED TO FRAMEWORK COMMAND</span></div>
+          <div class="composer-foot"><span><span class="foot-pulse"></span><span id="engine-label">LOCAL AI NOT LOADED</span></span><span>NOT LINKED TO FRAMEWORK COMMAND</span></div>
         </div>
       </section>
       <section id="page-audits" class="page" aria-label="Audits"><div id="audits-content"></div></section>
@@ -126,7 +128,7 @@
   </div>
   <aside class="context-rail" aria-label="System overview">
     <div class="rail-top"><span class="eyebrow">SYSTEM STATUS</span><div class="rail-ring"><img src="./assets/orbit-robot.png" alt="Orbit" /></div></div>
-    <div class="rail-state"><span class="rail-status-light"></span><strong id="rail-connection">Independent mode</strong><span>PREVIEW ENVIRONMENT</span></div>
+    <div class="rail-state"><span class="rail-status-light"></span><strong id="rail-connection">Independent mode</strong><span>NO SECURE GATEWAY</span></div>
     <div class="rail-divider"></div>
     <div class="rail-section-head">AUTHORITY</div>
     <div class="rail-policy"><svg class="icon"><use href="#i-lock"/></svg><div><strong>Governing policy</strong><span>No policy bundle loaded</span></div></div>
@@ -139,11 +141,12 @@
     <button class="rail-link" data-page="knowledge"><svg class="icon"><use href="#i-book"/></svg> Knowledge vault <svg class="icon last"><use href="#i-chevron"/></svg></button>
     <button class="rail-link" data-action="create-report"><svg class="icon"><use href="#i-plus"/></svg> New local report <svg class="icon last"><use href="#i-chevron"/></svg></button>
     <button class="rail-link" data-page="settings"><svg class="icon"><use href="#i-settings"/></svg> Device settings <svg class="icon last"><use href="#i-chevron"/></svg></button>
-    <div class="rail-bottom"><svg class="icon"><use href="#i-info"/></svg><p>This preview stores only local sample content and your drafts. No operational data is connected.</p></div>
+    <div class="rail-bottom"><svg class="icon"><use href="#i-info"/></svg><p>Orbit is operating locally. Framework Command is not paired; no operational data is available.</p></div>
   </aside>
   <div id="modal-layer" class="modal-layer" hidden><div class="modal-backdrop" data-action="close-modal"></div><div class="sheet" id="modal-body" role="dialog" aria-modal="true" aria-label="Orbit dialog"></div></div>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <input id="knowledge-import" type="file" accept=".txt,.md,.markdown,text/plain,text/markdown" multiple hidden aria-label="Import local reference notes" /><input id="restore-input" type="file" accept="application/json,.json" hidden aria-label="Import Orbit backup" /><div id="toast" class="toast" role="status" aria-live="polite"></div>
 </div>
+<script src="./orbit-store.js" defer></script>
 <script src="./offline-brain.js" defer></script>
 <script src="./orbit-behavior.js" defer></script>
 <script src="./app.js" defer></script>
