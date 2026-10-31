@@ -1,0 +1,94 @@
+name: Install Orbit 5x Motion Library
+on:
+  push:
+    paths:
+      - ".github/workflows/install-orbit-5x-library.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout public website
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch and verify Orbit motion library
+        env:
+          PACKAGE_URL: "https://at.adobe.com/pIPLwZUD91B3trlh"
+          EXPECTED_SHA256: "857ed0831a1598b7d56eebb0cbcbeb2e6661579544bbf589ecd9cb2b0de99b8c"
+        run: |
+          set -euo pipefail
+          curl --fail --location --show-error --retry 3 --retry-delay 2 --max-time 300 -o /tmp/orbit-5x.zip "$PACKAGE_URL"
+          echo "$EXPECTED_SHA256  /tmp/orbit-5x.zip" | sha256sum -c -
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          p=Path('/tmp/orbit-5x.zip')
+          dst=Path('/tmp/orbit-5x-stage');dst.mkdir(exist_ok=True)
+          with ZipFile(p) as z:
+              paths=set()
+              for entry in z.infolist():
+                  name=entry.filename
+                  pure=PurePosixPath(name)
+                  assert name and not name.startswith('/') and '..' not in pure.parts, name
+                  assert name not in paths, name
+                  assert entry.file_size < 18_000_000, name
+                  paths.add(name)
+              z.extractall(dst)
+          assert (dst/'index.html').is_file()
+          assert (dst/'viewer.js').is_file()
+          assert (dst/'manifest.js').is_file()
+          assert len(list(dst.rglob('*.webp')))==59
+          import json
+          data=json.loads((dst/'manifest.json').read_text())
+          assert len(data['emotes'])==28 and len(data['transitions'])==31
+          assert sum(x['frames'] for x in data['emotes'].values())==1680
+          assert sum(x['frames'] for x in data['transitions'].values())==744
+          for section in ['emotes','transitions']:
+              for clip in data[section].values():
+                  assert (dst/clip['atlas']).is_file(),clip['atlas']
+          PY
+      - name: Install under orbit/5x without changing 3D studio
+        run: |
+          set -euo pipefail
+          mkdir -p orbit/5x
+          cp -a /tmp/orbit-5x-stage/. orbit/5x/
+          python3 - <<'PY'
+          from pathlib import Path
+          index=Path('orbit/index.html')
+          html=index.read_text(encoding='utf-8')
+          marker='<div class="workbench">'
+          if 'id="orbit5xNav"' not in html:
+              assert html.count(marker)==1, '3D studio insertion point has changed'
+              link=(
+                  '<nav id="orbit5xNav" aria-label="Orbit animation libraries" '
+                  'style="display:flex;align-items:center;justify-content:space-between;'
+                  'flex-wrap:wrap;gap:9px;padding:10px 22px;background:#0d1f2e;'
+                  'border-bottom:1px solid #2d4a5e">'
+                  '<a href="./5x/" style="display:inline-flex;align-items:center;'
+                  'min-height:38px;padding:8px 14px;border:1px solid #45849d;'
+                  'background:#14384b;border-radius:9px;color:#d9faff;'
+                  'font-weight:700;font-size:13px;text-decoration:none">'
+                  'Open 5× Animation Library &nbsp; ↗</a>'
+                  '<span style="color:#99b7c5;font-size:12px">'
+                  '28 emotes · 31 transitions · 2,424 frames</span>'
+                  '</nav>'
+              )
+              html=html.replace(marker,link+'\n'+marker)
+              index.write_text(html,encoding='utf-8')
+          worker=Path('orbit/service-worker.js')
+          js=worker.read_text(encoding='utf-8')
+          assert 'orbit-3d-sculpt-v2.1.0' in js or 'orbit-3d-sculpt-v2.1-5x' in js
+          if 'orbit-3d-sculpt-v2.1.0' in js:
+              js=js.replace('orbit-3d-sculpt-v2.1.0','orbit-3d-sculpt-v2.1-5x')
+              worker.write_text(js,encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add orbit/5x/ orbit/index.html orbit/service-worker.js
+          if ! git diff --cached --quiet; then
+            git commit -m "Orbit: install full 5x motion atlas with 28 emotes and 31 transitions"
+            git push
+          fi
