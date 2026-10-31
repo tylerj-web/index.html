@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="./rework.css" />
   <link rel="stylesheet" href="./hd-motion.css" />
   <link rel="stylesheet" href="./v3.css" />
+    <link rel="stylesheet" href="./gesture-rig.css" />
   <title>Orbit — The Fixer</title>
 </head>
 <body>
@@ -85,7 +86,21 @@
             <button type="button" class="orbit-art robot-stage" id="orbit-art" data-action="pet-wave" aria-label="Tap Orbit to make him wave">
               <span class="robot-aurora" aria-hidden="true"></span><span class="robot-ring robot-ring-one" aria-hidden="true"></span><span class="robot-ring robot-ring-two" aria-hidden="true"></span><span class="robot-ring robot-ring-three" aria-hidden="true"></span>
               <span class="robot-particle particle-1" aria-hidden="true"></span><span class="robot-particle particle-2" aria-hidden="true"></span><span class="robot-particle particle-3" aria-hidden="true"></span><span class="robot-particle particle-4" aria-hidden="true"></span>
-              <span class="robot-sparks" aria-hidden="true"></span><span class="robot-hover-wrap"><img class="orbit-robot-image" id="orbit-robot-image" src="./assets/orbit-robot.png" alt="Orbit, your small floating black-and-gold robot with glowing cyan eyes and a chest core" draggable="false" /></span>
+              <span class="robot-sparks" aria-hidden="true"></span><span class="robot-hover-wrap">
+    <img class="orbit-robot-image" id="orbit-robot-image" src="./assets/orbit-robot.png" alt="Orbit, your small floating black-and-gold robot with glowing cyan eyes and a chest core" draggable="false" />
+    <svg class="orbit-gesture-rig" viewBox="0 0 589 760" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="orbit-body-clip" clipPathUnits="userSpaceOnUse"><path clip-rule="evenodd" fill-rule="evenodd" d="M0 0 H589 V760 H0 Z M404 457 L414 476 L421 504 L430 538 L438 573 L444 615 L445 653 L443 700 L448 760 L589 760 L589 447 L413 447 Z M184 457 L174 476 L167 504 L158 538 L150 573 L144 615 L143 653 L145 700 L140 760 L-1 760 L-1 447 L175 447 Z"/></clipPath>
+        <clipPath id="orbit-right-arm-clip" clipPathUnits="userSpaceOnUse"><path d="M405 461 L425 463 L448 472 L479 495 L513 532 L537 574 L549 607 L554 644 L549 668 L533 695 L507 718 L481 724 L465 712 L460 699 L457 675 L455 642 L450 600 L445 558 L437 531 L423 498 L405 480 Z"/></clipPath>
+        <clipPath id="orbit-left-arm-clip" clipPathUnits="userSpaceOnUse"><path d="M405 461 L425 463 L448 472 L479 495 L513 532 L537 574 L549 607 L554 644 L549 668 L533 695 L507 718 L481 724 L465 712 L460 699 L457 675 L455 642 L450 600 L445 558 L437 531 L423 498 L405 480 Z" transform="translate(588 0) scale(-1 1)"/></clipPath>
+        <radialGradient id="orbit-core-pulse"><stop offset="0" stop-color="#83fbff" stop-opacity=".33"/><stop offset="1" stop-color="#12aaff" stop-opacity="0"/></radialGradient>
+      </defs>
+      <image class="orbit-rig-torso" href="./assets/orbit-robot.png" width="589" height="760" clip-path="url(#orbit-body-clip)"/>
+      <g class="orbit-rig-left" aria-hidden="true"><image href="./assets/orbit-robot.png" width="589" height="760" clip-path="url(#orbit-left-arm-clip)"/></g>
+      <g class="orbit-rig-right" aria-hidden="true"><image href="./assets/orbit-robot.png" width="589" height="760" clip-path="url(#orbit-right-arm-clip)"/></g>
+      <circle class="orbit-core-halo" cx="294" cy="582" r="90" fill="url(#orbit-core-pulse)"/>
+    </svg>
+  </span>
               <span class="robot-floor-light" aria-hidden="true"></span><span class="orbit-interaction-glow" aria-hidden="true"></span>
             </button>
             <div class="orbit-greeting"><span class="robot-hello"><span class="hello-led"></span> ORBIT <span class="small-sep">/</span> THE FIXER</span><h1>Hey, I'm Orbit<span class="gradient-dot">.</span></h1><p id="home-context">Your little robot, ready when you are.</p><div class="orbit-emotion" id="orbit-emotion" role="status" aria-live="polite"><span class="emotion-light"></span><span id="orbit-mood-label">Here with you</span><span class="emotion-hint">· Tap Orbit to wave</span></div></div>

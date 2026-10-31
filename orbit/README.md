@@ -45,3 +45,6 @@ Automated checks validate the JavaScript syntax, XML/JSON/asset integrity, PWA f
 ### Development status
 
 **Orbit Mobile 3.0 is a local-first functional release, not a fully paired hybrid assistant.** The protected Framework Command gateway and signed policy integration are separately gated on laptop infrastructure and authorised policy source files.
+
+## 3.1 animation hotfix
+Real waving and expressive gestures are back. The robot uses the same original HD character asset for a three-layer SVG rig: masked torso, independent left arm, independent right arm. It does not load the old low-resolution frame sequence. Touch Orbit on Home to trigger a full right-arm wave; speaking, listening, reviewing, thinking and success animate the arms separately. Settings > Reduce Motion continues to suppress movement. No changes to stored data or Framework Command pairing.

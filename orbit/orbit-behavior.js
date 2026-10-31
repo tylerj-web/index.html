@@ -1,4 +1,4 @@
-/* Orbit 3.0 HD-only personality: never swap the original high-resolution character for tiny sprites. */
+/* Orbit 3.1 HD articulated personality. Gesture states animate independent limbs in the SVG rig. */
 (()=>{'use strict';
 const STATES={
  idle:['Here with you','Ready when you are'],wave:['Hello!','A little wave for you'],thinking:['Thinking','Working locally on your request'],listening:['Listening','Microphone active'],speaking:['Speaking','Playing the response aloud'],reviewing:['Reviewing','Examining your local workspace'],happy:['All sorted','Your local action completed'],error:['Needs attention','Check the message on screen'],waiting:['Standing by','Awaiting the next step'],sleeping:['Resting','Conserving battery']};
