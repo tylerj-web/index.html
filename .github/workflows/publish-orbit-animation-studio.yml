@@ -1,0 +1,60 @@
+name: Publish Orbit Character Animation Studio
+on:
+  push:
+    paths:
+      - ".github/workflows/publish-orbit-animation-studio.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub Pages repository
+        uses: actions/checkout@v4
+      - name: Download and verify complete tested animation studio
+        env:
+          RELEASE_URL: "https://at.adobe.com/amqNDJ01SxZzjQBK"
+          RELEASE_SHA256: "1e10f4e438229ae7b737cd53696eb6182ff14bce4a40112a88f41f2fe992fbcf"
+        run: |
+          set -euo pipefail
+          curl --fail --location --show-error --retry 3 --max-time 150 -o /tmp/orbit-animation-studio.zip "$RELEASE_URL"
+          printf '%s  %s\n' "$RELEASE_SHA256" /tmp/orbit-animation-studio.zip | sha256sum --check
+          mkdir -p /tmp/orbit-studio-stage
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          from pathlib import Path, PurePosixPath
+          p=Path('/tmp/orbit-animation-studio.zip')
+          with ZipFile(p) as z:
+              names=set()
+              for entry in z.infolist():
+                  path=PurePosixPath(entry.filename)
+                  assert not entry.is_dir() and not entry.filename.startswith('/') and '..' not in path.parts, entry.filename
+                  assert not ((entry.external_attr >> 16)&0o170000)==0o120000, 'Symlink rejected'
+                  assert entry.file_size<12_000_000, entry.filename
+                  assert entry.filename not in names, entry.filename
+                  names.add(entry.filename)
+              for required in ['index.html','studio.css','studio.js','service-worker.js','manifest.webmanifest','assets/head.png','assets/torso.png','assets/left-arm-upper.png','assets/left-arm-lower.png','assets/right-arm-upper.png','assets/right-arm-lower.png']:
+                  assert required in names,required
+              z.extractall('/tmp/orbit-studio-stage')
+          html=Path('/tmp/orbit-studio-stage/index.html').read_text()
+          js=Path('/tmp/orbit-studio-stage/studio.js').read_text()
+          assert 'Character Animation Studio' in html
+          assert 'OrbitStudioTest' in js
+          sw=Path('/tmp/orbit-studio-stage/service-worker.js').read_text()
+          assert "orbit-animation-studio-v1.0.0" in sw
+          PY
+          node --check /tmp/orbit-studio-stage/studio.js
+          node --check /tmp/orbit-studio-stage/service-worker.js
+      - name: Publish studio at /orbit while preserving unrelated site files and user data
+        run: |
+          set -euo pipefail
+          mkdir -p orbit
+          cp -a /tmp/orbit-studio-stage/. orbit/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add orbit/
+          if ! git diff --cached --quiet; then
+            git commit -m "Orbit: install HD character motion testing ground (15 rigged behaviors)"
+            git push
+          fi
