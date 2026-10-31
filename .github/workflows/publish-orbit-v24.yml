@@ -1,0 +1,54 @@
+name: Publish Orbit Mobile 2.4
+on:
+  push:
+    paths:
+      - ".github/workflows/publish-orbit-v24.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: orbit-mobile-release
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout site
+        uses: actions/checkout@v4
+      - name: Download and validate Orbit 2.4 release
+        env:
+          ORBIT_SOURCE: "https://at.adobe.com/vGZoWwGRy7LhQBpQ"
+          EXPECTED_SHA256: "19a446c2a888a240f31200fdcf1f59a0811fbb84da367d06f4a7dcdc70180d0f"
+        run: |
+          curl --fail --show-error --location --retry 3 --max-time 150 --output /tmp/orbit-2.4.zip "$ORBIT_SOURCE"
+          printf '%s  %s\n' "$EXPECTED_SHA256" /tmp/orbit-2.4.zip | sha256sum --check
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          root=Path('orbit')
+          root.mkdir(exist_ok=True)
+          with ZipFile('/tmp/orbit-2.4.zip') as z:
+              assert z.testzip() is None
+              names=set(z.namelist())
+              required={'index.html','app.js','offline-brain.js','orbit-behavior.js','rework.css','styles.css','service-worker.js','manifest.webmanifest'}
+              assert required <= names, 'Missing release file(s)'
+              for m in z.infolist():
+                  path=PurePosixPath(m.filename)
+                  if path.is_absolute() or '..' in path.parts or not str(path):
+                      raise ValueError('Unsafe file name: '+m.filename)
+                  if m.is_dir():
+                      continue
+                  target=root.joinpath(*path.parts)
+                  target.parent.mkdir(parents=True,exist_ok=True)
+                  target.write_bytes(z.read(m))
+          print('Orbit files verified and extracted:',len(names))
+          PY
+      - name: Commit isolated Orbit app update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A orbit/
+          if ! git diff --cached --quiet; then
+            git commit -m "Deploy Orbit Mobile 2.4 UI and personality upgrade"
+            git push
+          fi
