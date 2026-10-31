@@ -1,0 +1,44 @@
+name: Install Orbit Mobile PWA
+on:
+  push:
+    paths:
+      - ".github/workflows/install-orbit.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install-orbit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout existing site
+        uses: actions/checkout@v4
+      - name: Fetch and verify Orbit Robot Edition package
+        env:
+          ORBIT_SOURCE: "https://at.adobe.com/SjjwqucybjPuEtLc"
+          EXPECTED_SHA256: "6f9f2558883fbfcd1f5cfdc1b8d4e26ef4af18952fb55e0ae67cd6d616105079"
+        run: |
+          curl --fail --show-error --location --retry 3 --max-time 150 --output /tmp/orbit.zip "$ORBIT_SOURCE"
+          printf '%s  %s\n' "$EXPECTED_SHA256" /tmp/orbit.zip | sha256sum --check
+          python3 - <<'PY'
+          import pathlib, zipfile
+          dest=pathlib.Path("orbit")
+          dest.mkdir(exist_ok=True)
+          with zipfile.ZipFile("/tmp/orbit.zip") as z:
+              for member in z.infolist():
+                  path=pathlib.PurePosixPath(member.filename)
+                  if member.filename.startswith("/") or ".." in path.parts:
+                      raise ValueError("Unsafe ZIP path")
+              z.extractall(dest)
+          assert (dest/"index.html").is_file()
+          assert (dest/"assets/orbit-robot.png").is_file()
+          assert (dest/"service-worker.js").is_file()
+          PY
+      - name: Commit Orbit assets without changing the existing site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add orbit/
+          if ! git diff --cached --quiet; then
+            git commit -m "Install Orbit Mobile Robot Edition PWA in /orbit"
+            git push
+          fi
