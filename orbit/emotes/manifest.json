@@ -1,0 +1,297 @@
+{
+  "version": "1.0",
+  "frames_per_animation": 12,
+  "frame_width": 352,
+  "frame_height": 448,
+  "columns": 12,
+  "background": "transparent",
+  "rendered_from": "user-provided Orbit sprite sheets and prior continuity references",
+  "emotes": {
+    "idle": {
+      "label": "Neutral / idle",
+      "atlas": "atlases/01_idle.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "Orbit, the cyan-core floating robot.png"
+      ]
+    },
+    "blink": {
+      "label": "Blink",
+      "atlas": "atlases/02_blink.png",
+      "frames": 12,
+      "fps": 10,
+      "loop": true,
+      "sources": [
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "happy": {
+      "label": "Happy",
+      "atlas": "atlases/03_happy.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "sad": {
+      "label": "Sad",
+      "atlas": "atlases/04_sad.png",
+      "frames": 12,
+      "fps": 8,
+      "loop": true,
+      "sources": [
+        "Orbit\u2019s Eight-Frame Slumped Failure Loop.png",
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "curious": {
+      "label": "Curious",
+      "atlas": "atlases/05_curious.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "Orbit\u2019s eight-direction helmet gaze strip.png",
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "surprised": {
+      "label": "Surprised",
+      "atlas": "atlases/06_surprised.png",
+      "frames": 12,
+      "fps": 10,
+      "loop": true,
+      "sources": [
+        "eight_neon_robot_emotions.png",
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "listening": {
+      "label": "Listening",
+      "atlas": "atlases/07_listening.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "thinking": {
+      "label": "Thinking",
+      "atlas": "atlases/08_thinking.png",
+      "frames": 12,
+      "fps": 8,
+      "loop": true,
+      "sources": [
+        "Orbit's focused processing loop.png",
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "speaking": {
+      "label": "Speaking",
+      "atlas": "atlases/09_speaking.png",
+      "frames": 12,
+      "fps": 11,
+      "loop": true,
+      "sources": [
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "focused": {
+      "label": "Focused",
+      "atlas": "atlases/10_focused.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "sleepy": {
+      "label": "Sleepy",
+      "atlas": "atlases/11_sleepy.png",
+      "frames": 12,
+      "fps": 8,
+      "loop": true,
+      "sources": [
+        "eight_neon_robot_emotions.png",
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "concerned": {
+      "label": "Concerned",
+      "atlas": "atlases/12_concerned.png",
+      "frames": 12,
+      "fps": 8,
+      "loop": true,
+      "sources": [
+        "ten_glossy_robot_mascots_on_magenta.png"
+      ]
+    },
+    "scanning": {
+      "label": "Scanning",
+      "atlas": "atlases/13_scanning.png",
+      "frames": 12,
+      "fps": 10,
+      "loop": true,
+      "sources": [
+        "eight_neon_robot_emotions.png"
+      ]
+    },
+    "caution": {
+      "label": "Yellow caution",
+      "atlas": "atlases/14_caution.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "eight_neon_robot_emotions.png"
+      ]
+    },
+    "complete": {
+      "label": "Green task complete",
+      "atlas": "atlases/15_complete.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "eight_neon_robot_emotions.png"
+      ]
+    },
+    "error": {
+      "label": "Red error",
+      "atlas": "atlases/16_error.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "eight_neon_robot_emotions.png"
+      ]
+    },
+    "processing": {
+      "label": "Processing",
+      "atlas": "atlases/17_processing.png",
+      "frames": 12,
+      "fps": 12,
+      "loop": true,
+      "sources": [
+        "eight_neon_robot_emotions.png"
+      ]
+    },
+    "wave": {
+      "label": "Wave",
+      "atlas": "atlases/18_wave.png",
+      "frames": 12,
+      "fps": 10,
+      "loop": true,
+      "sources": [
+        "Orbit's five-frame floating hop.png"
+      ]
+    },
+    "celebrate": {
+      "label": "Celebration",
+      "atlas": "atlases/19_celebrate.png",
+      "frames": 12,
+      "fps": 10,
+      "loop": true,
+      "sources": [
+        "Orbit's five-frame floating hop.png",
+        "eight_neon_robot_emotions.png"
+      ]
+    },
+    "greeting": {
+      "label": "Greeting",
+      "atlas": "atlases/20_greeting.png",
+      "frames": 12,
+      "fps": 10,
+      "loop": true,
+      "sources": [
+        "Orbit's five-frame floating hop.png"
+      ]
+    },
+    "reviewing": {
+      "label": "Reviewing",
+      "atlas": "atlases/21_reviewing.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "Orbit reviews the finished result.png"
+      ]
+    },
+    "hover": {
+      "label": "Floating / hover",
+      "atlas": "atlases/22_hover.png",
+      "frames": 12,
+      "fps": 8,
+      "loop": true,
+      "sources": [
+        "Orbit's five-frame floating hop.png"
+      ]
+    },
+    "look_around": {
+      "label": "Look around",
+      "atlas": "atlases/23_look_around.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "Orbit\u2019s eight-direction helmet gaze strip.png"
+      ]
+    },
+    "slumped": {
+      "label": "Slumped / failure",
+      "atlas": "atlases/24_slumped.png",
+      "frames": 12,
+      "fps": 8,
+      "loop": true,
+      "sources": [
+        "Orbit\u2019s Eight-Frame Slumped Failure Loop.png"
+      ]
+    },
+    "nod": {
+      "label": "Thinking nod",
+      "atlas": "atlases/25_nod.png",
+      "frames": 12,
+      "fps": 9,
+      "loop": true,
+      "sources": [
+        "Orbit's focused processing loop.png"
+      ]
+    },
+    "look_up": {
+      "label": "Looking up",
+      "atlas": "atlases/26_look_up.png",
+      "frames": 12,
+      "fps": 8,
+      "loop": true,
+      "sources": [
+        "Orbit\u2019s eight-way helmet gaze.png"
+      ]
+    },
+    "fly_left": {
+      "label": "Fly left",
+      "atlas": "atlases/27_fly_left.png",
+      "frames": 12,
+      "fps": 12,
+      "loop": true,
+      "sources": [
+        "Orbit running left animation strip.png"
+      ]
+    },
+    "fly_right": {
+      "label": "Fly right",
+      "atlas": "atlases/28_fly_right.png",
+      "frames": 12,
+      "fps": 12,
+      "loop": true,
+      "sources": [
+        "Eight Orbit sprites floating right on magenta.png"
+      ]
+    }
+  }
+}
