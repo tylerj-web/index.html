@@ -1,0 +1,58 @@
+name: Install Orbit 3D Midnight Blue Sculpt 2.1
+on:
+  push:
+    paths:
+      - ".github/workflows/install-orbit-blue-sculpt-2-1.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download verified dark blue Orbit sculpture release
+        env:
+          SOURCE_URL: "https://at.adobe.com/fojXpgrjhQhuuvTI"
+          EXPECTED_SHA256: "7e1d94d6bc88de69ab8570f3c4a959cb0b2d76bad8e31e2e082aa1de501c2114"
+        run: |
+          set -euo pipefail
+          curl -fLsS --retry 3 --max-time 180 --output /tmp/orbit-dark-blue.zip "$SOURCE_URL"
+          printf '%s  %s\n' "$EXPECTED_SHA256" /tmp/orbit-dark-blue.zip | sha256sum -c -
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          dest=Path('/tmp/orbit-blue-stage')
+          dest.mkdir(parents=True,exist_ok=True)
+          with ZipFile('/tmp/orbit-dark-blue.zip') as a:
+            seen=set()
+            for x in a.infolist():
+              p=PurePosixPath(x.filename)
+              assert x.filename and not x.filename.startswith('/') and '..' not in p.parts
+              assert not x.filename in seen and x.file_size < 12000000
+              assert (x.external_attr>>16)&0o170000 != 0o120000
+              seen.add(x.filename)
+            assert a.testzip() is None
+            a.extractall(dest)
+          must=['index.html','app.mjs','renderer.mjs','rig.mjs','styles.css','service-worker.js',
+                'assets/Orbit_Master_Sculpt_Four_Piece.glb','assets/sculpt-meshes.json',
+                'assets/sculpt-meshes.bin','assets/approved-orbit-reference.png',
+                'assets/approved-orbit-sprite-sheet.png','PRODUCTION_SPEC.md']
+          assert all((dest/p).is_file() for p in must)
+          assert 'orbit-3d-sculpt-v2.1.0' in (dest/'service-worker.js').read_text()
+          assert 'ambientGold' in (dest/'renderer.mjs').read_text()
+          PY
+      - name: Publish Orbit only, preserving website and browser records
+        run: |
+          set -euo pipefail
+          mkdir -p orbit
+          cp -a /tmp/orbit-blue-stage/. orbit/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add orbit/
+          if ! git diff --cached --quiet; then
+            git commit -m "Orbit 3D 2.1: midnight blue metal with reflected gold edge-light"
+            git push
+          fi
