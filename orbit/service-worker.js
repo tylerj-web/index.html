@@ -1,8 +1,6 @@
-/* Animation Studio shell is independent of Orbit's prior user databases. */
-const CACHE='orbit-animation-studio-v1.0.0';
-const PREFIX='orbit-animation-studio-';
-const ASSETS=['./','./index.html','./studio.css?v=1.0.0','./studio.js?v=1.0.0','./manifest.webmanifest','./assets/head.png','./assets/torso.png','./assets/left-arm-upper.png','./assets/left-arm-lower.png','./assets/right-arm-upper.png','./assets/right-arm-lower.png','./assets/icon-192.png','./assets/icon-512.png'];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const key of await caches.keys()){if(key.startsWith(PREFIX)&&key!==CACHE)await caches.delete(key)}await self.clients.claim()})())});
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=new URL(e.request.url);if(url.origin!==self.location.origin)return;
- e.respondWith((async()=>{const local=await caches.open(CACHE);const cached=await local.match(e.request);if(cached)return cached;try{const net=await fetch(e.request);return net}catch{return new Response('Orbit Motion Studio is offline and this resource is not cached.',{status:503,headers:{'Content-Type':'text/plain'}})}})())});
+/* Orbit 3D Studio v1.0 — cache app assets only. NEVER touch browser databases. */
+const CACHE='orbit-3d-studio-v1.0.0';const PREFIX='orbit-3d-studio-';
+const FILES=['./','./index.html','./styles.css','./app.mjs','./renderer.mjs','./rig.mjs','./manifest.webmanifest','./assets/orbit-icon.svg','./assets/Orbit_4Piece_Rig.glb','./PRODUCTION_SPEC.md'];
+self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith(PREFIX)&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim();})()));
+self.addEventListener('fetch',event=>{const u=new URL(event.request.url);if(event.request.method!=='GET'||u.origin!==self.location.origin||!u.pathname.includes('/orbit/'))return;event.respondWith((async()=>{const c=await caches.open(CACHE);const hit=await c.match(event.request);const fresh=fetch(event.request).then(r=>{if(r.ok)c.put(event.request,r.clone()).catch(()=>{});return r;});if(hit){fresh.catch(()=>{});return hit;}return fresh.catch(()=>c.match('./index.html'));})());});

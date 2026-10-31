@@ -1,9 +1,12 @@
-# Rollback — animation studio to previous Orbit 3.2
+# Rollback and data preservation
 
-The animation studio intentionally replaces only `/orbit/` in the `tylerj-web/index.html` GitHub Pages repository, leaving the rest of the website untouched.
+This version **replaces the `/orbit/` interface only**. It does not erase, migrate, read or write the older Orbit app's records, chats or reports. Old Orbit's browser IndexedDB and localStorage records remain in the same origin but are unused by the animation lab.
 
-To restore the earlier assistant interface, restore the `/orbit/` files from the Git commit immediately preceding the installation of the animation studio, or redeploy the previously archived `ORBIT_Mobile_3.2_Fluid_UI_RELEASE.zip` to `/orbit/`.
+To roll back:
+1. Identify the repository commit immediately before the 3D Studio publication.
+2. Restore the `/orbit/` directory to that tree. Leave the root website and other folders untouched.
+3. Commit the rollback and allow GitHub Pages to deploy.
+4. Bump the service-worker cache version in the restored page if stale cache contents prevent it from updating.
+5. Reload the app in Safari or Chrome. Do not clear site data or the browser's IndexedDB unless you already exported your important records and intentionally accept deletion.
 
-After restoring, reload the page so the prior service worker takes over. The animation studio's independent cache may be cleared safely if needed. **Do not clear all Safari website data**: earlier Orbit conversations and reports may still be in IndexedDB or localStorage. This studio does not erase them, and a domain-wide storage reset would be a separate destructive action.
-
-When authoring a new animation release, increment the `orbit-animation-studio-...` service-worker cache version and update `index.html` resource version query strings.
+The published directory must contain `index.html`, `.mjs` runtime files, `styles.css`, `manifest.webmanifest`, `service-worker.js` and the GLB and SVG under `assets/`.
