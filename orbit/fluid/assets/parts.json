@@ -1,0 +1,30 @@
+{
+  "head": {
+    "left": 0.0,
+    "top": 0.0,
+    "width": 589.0,
+    "height": 468.5,
+    "source": "approved-master-cropped"
+  },
+  "torso": {
+    "left": 133.0,
+    "top": 433.0,
+    "width": 324.5,
+    "height": 327.0,
+    "source": "approved-master-cropped"
+  },
+  "left-arm": {
+    "left": 29.0,
+    "top": 457.5,
+    "width": 160.5,
+    "height": 272.5,
+    "source": "approved-master-cropped"
+  },
+  "right-arm": {
+    "left": 399.0,
+    "top": 459.0,
+    "width": 159.5,
+    "height": 271.0,
+    "source": "approved-master-cropped"
+  }
+}

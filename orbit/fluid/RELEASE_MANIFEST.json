@@ -1,0 +1,22 @@
+{
+  "name": "Orbit Fluid Motion Studio",
+  "version": "1.0.0",
+  "mode_count": 28,
+  "sequence_count": 5,
+  "character_body_part_count": 4,
+  "renderer": "Canvas2D",
+  "transitions": "velocity-preserving critically damped spring",
+  "source": "approved Orbit artwork",
+  "files": {
+    "index.html": "3b690ab622b1fc19363f970e0da12a45cb84d6fd0551217e5cf0bf32bb163a9c",
+    "style.css": "03294cb05ca82de5463586a5911516aced4fa47ed21572422329d7751866ef3b",
+    "engine.js": "3bf6c2813ff5b797c009bb9d1d897a3bdecdc1440c8a12a868f054c094a19cbd",
+    "service-worker.js": "e2adeadbf6965c5a48d02fa7e4d67c94512fd374a5c3f5ad12491050681917e0",
+    "assets/head.png": "0be133217bef8d4d2e63147702257c5df0853479690df180ab0a619f16edac8e",
+    "assets/torso.png": "6c73dc4cfbebebe0a946512508e50f97e907b8ea24c893c565064056a44db967",
+    "assets/left-arm.png": "38756c41770b1708599fd584c40beef5fc62a77ab8731cf262751942f9395dcf",
+    "assets/right-arm.png": "57d7e363ab41379ef58dfe44abcd6bf10b3e7ae83f0f2429f5237a9df297e356",
+    "assets/parts.json": "88c24c8d7ab211f14958713f0381249e97fdb650b4753e6c0a7ac906ed5fd36b",
+    "previews/Orbit_Fluid_Motion_Test.mp4": "bd625df30e74b64319b7e124b72346996495094b58466be4899f9166068d55ca"
+  }
+}
