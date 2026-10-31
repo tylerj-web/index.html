@@ -1,6 +1,6 @@
-/* Orbit 3.0 versioned, resilient offline app-shell cache. Model weights use WebLLM's separate storage. */
-const CACHE_NAME='orbit-shell-v3.1.1', PREFIX='orbit-shell-';
-const ASSETS=['./','./index.html','./styles.css','./rework.css','./hd-motion.css','./gesture-rig.css','./v3.css','./app.js','./orbit-store.js','./orbit-behavior.js','./offline-brain.js','./manifest.webmanifest','./assets/orbit-robot.png','./assets/icon-192.png','./assets/icon-512.png','./assets/maskable-512.png','./assets/apple-touch-icon.png'];
+/* Orbit 3.2 versioned, resilient offline app-shell cache. Model weights use WebLLM's separate storage. */
+const CACHE_NAME='orbit-shell-v3.2.0', PREFIX='orbit-shell-';
+const ASSETS=['./','./index.html','./orbit-core.css','./gesture-rig.css','./fluid.css','./app.js','./orbit-store.js','./orbit-behavior.js','./offline-brain.js','./appearance-studio.js','./fluid-ui.js','./manifest.webmanifest','./assets/orbit-robot.png','./assets/icon-192.png','./assets/icon-512.png','./assets/maskable-512.png','./assets/apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>(k.startsWith(PREFIX)||k.startsWith('orbit-prototype-'))&&k!==CACHE_NAME).map(k=>caches.delete(k)))),self.clients.claim()]));});
 self.addEventListener('fetch',e=>{

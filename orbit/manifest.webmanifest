@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Orbit \u2014 The Fixer",
   "short_name": "Orbit",
-  "description": "Orbit, your little robot. Independent local assistance, audits, knowledge and reports.",
+  "description": "Orbit 3.2 Fluid UI. Independent local AI, audits, knowledge, reports and customisable appearance.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

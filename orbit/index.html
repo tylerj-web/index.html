@@ -7,17 +7,15 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Orbit" />
-  <meta name="description" content="Orbit — The Fixer. Local-first iPhone and iPad assistant with an optional on-device AI." />
+  <meta name="description" content="Orbit 3.2 — The Fixer. A fluid, customisable offline-first assistant." />
   <meta name="color-scheme" content="dark" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
   <link rel="icon" type="image/png" href="./assets/icon-192.png" />
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./rework.css" />
-  <link rel="stylesheet" href="./hd-motion.css" />
-  <link rel="stylesheet" href="./v3.css" />
-    <link rel="stylesheet" href="./gesture-rig.css" />
-  <title>Orbit — The Fixer</title>
+  <link rel="stylesheet" href="./orbit-core.css" />
+  <link rel="stylesheet" href="./gesture-rig.css" />
+  <link rel="stylesheet" href="./fluid.css" />
+  <title>Orbit 3.2 — The Fixer</title>
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" class="icon-defs" aria-hidden="true">
@@ -73,6 +71,8 @@
       <div class="mobile-brand"><div class="mini-orbit"><img src="./assets/orbit-robot.png" alt="" class="brand-robot" /></div><div><strong>ORBIT<span class="brand-period">.</span></strong><span>THE FIXER</span></div></div>
       <div class="desktop-heading" id="header-title">Orbit overview</div>
       <div class="top-actions">
+        <div id="orbit-companion-dock" class="orbit-companion-dock" aria-label="Orbit companion"></div>
+        <button type="button" class="ui-header-settings" title="Appearance and settings" aria-label="Appearance and settings" data-page="settings"><svg class="icon"><use href="#i-settings"/></svg></button>
         <button class="header-status" id="mode-toggle" aria-label="View current connection status"><span class="status-light"></span><span id="header-status-text">OFFLINE</span><span class="status-mini">NO GATEWAY</span></button>
         <button class="icon-button" title="Search" aria-label="Search" data-action="open-search"><svg class="icon"><use href="#i-search"/></svg></button>
         <button class="icon-button" title="Notifications" aria-label="Notifications" data-action="open-notices"><svg class="icon"><use href="#i-bell"/></svg><span id="notice-dot" class="notice-dot"></span></button>
@@ -106,6 +106,7 @@
             <div class="orbit-greeting"><span class="robot-hello"><span class="hello-led"></span> ORBIT <span class="small-sep">/</span> THE FIXER</span><h1>Hey, I'm Orbit<span class="gradient-dot">.</span></h1><p id="home-context">Your little robot, ready when you are.</p><div class="orbit-emotion" id="orbit-emotion" role="status" aria-live="polite"><span class="emotion-light"></span><span id="orbit-mood-label">Here with you</span><span class="emotion-hint">· Tap Orbit to wave</span></div></div>
             <div class="system-strip"><span><svg class="icon"><use href="#i-shield"/></svg> Policy not loaded</span><i></i><span><svg class="icon"><use href="#i-offline"/></svg> Framework not paired</span></div>
           </div>
+          <button type="button" class="home-tools-button" data-action="open-more"><svg class="icon small"><use href="#i-menu"/></svg> Workspaces</button>
           <div class="home-bottom">
             <div class="prompt-head"><div><span class="prompt-eyebrow">JUMP RIGHT IN</span><div class="prompt-label">What should we do?</div></div><span class="prompt-subtle">QUICK START</span></div>
             <div class="prompt-row prompt-grid">
@@ -127,7 +128,7 @@
         </div>
         <div class="composer-area">
           <div class="composer-presence" id="composer-presence"><span class="composer-bot"><img src="./assets/orbit-robot.png" alt="" /></span><span class="composer-presence-copy"><strong id="orbit-presence-title">Orbit is here</strong><small id="orbit-presence-detail">Independent mode · local preview</small></span><span class="composer-presence-pulse" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
-          <div id="privacy-flag" class="privacy-flag"><svg class="icon"><use href="#i-info"/></svg> Local-first assistant. Download an AI model in Settings to chat offline. Not connected to Framework Command; do not enter confidential data.</div>
+          <div id="privacy-flag" class="privacy-flag"><svg class="icon"><use href="#i-info"/></svg> Local records are not encrypted. Framework Command is not connected; avoid confidential data.</div>
           <form id="chat-form" class="composer" autocomplete="off"><textarea id="chat-input" name="message" rows="1" maxlength="5000" placeholder="Message Orbit…" aria-label="Message Orbit"></textarea><button type="button" id="mic-button" class="composer-mic" title="Voice input (browser capability)" aria-label="Voice input"><svg class="icon"><use href="#i-mic"/></svg></button><button type="submit" class="composer-send" aria-label="Send message"><svg class="icon"><use href="#i-arrow"/></svg></button></form>
           <div class="composer-foot"><span><span class="foot-pulse"></span><span id="engine-label">LOCAL AI NOT LOADED</span></span><span>NOT LINKED TO FRAMEWORK COMMAND</span></div>
         </div>
@@ -164,6 +165,8 @@
 <script src="./orbit-store.js" defer></script>
 <script src="./offline-brain.js" defer></script>
 <script src="./orbit-behavior.js" defer></script>
+<script src="./appearance-studio.js" defer></script>
+<script src="./fluid-ui.js" defer></script>
 <script src="./app.js" defer></script>
 </body>
 </html>

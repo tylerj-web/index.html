@@ -1,12 +1,14 @@
-# Orbit — The Fixer
+# Orbit — The Fixer | 3.2 Fluid UI
 
-## Mobile 3.0 (local-first PWA release)
+This release builds on the 3.1.1 HD articulated robot, preserves its local records and adds a minimalist, customisable interface. Open Settings → Appearance Studio to choose Minimal (default), Balanced, Workspace or Character. The animated HD robot now stays present throughout navigation in one persistent character component.
+
+**Device limitations:** iPhone Safari and actual keyboard behaviour, local model inference, IndexedDB persistence across reload, and service-worker upgrade still require physical/origin-backed testing. See `TEST_REPORT.md`. Framework Command is not connected.
 
 This is a standalone, installable PWA for iPhone and iPad, designed to use the original Orbit robot art. The HD character image (589 × 760 px) remains rendered for **every animation state**. Motion is applied with CSS transforms and lighting, with reduced-motion support; the former 160 × 192 px animation frames are not used.
 
 ### What's actually working
 
-- Optimized mobile and tablet layout, five-tab mobile navigation with More menu, and Orbit's HD motion behaviour for listening, waiting, speaking, considering, waving, completing and error states.
+- Optimized mobile and tablet layout, four-destination mobile navigation with More menu, and Orbit's HD motion behaviour for listening, waiting, speaking, considering, waving, completing and error states.
 - Independent local working features: **multiple conversations**, renaming, deleting, searching, backup and restore.
 - Structured local inspection records: scope, referenced evidence, findings, proposed follow-up, and review status (always unverified unless a future authoritative gateway validates it).
 - Reports editor with saved **revision history**, Markdown export, local importable `.txt` / `.md` reference notes and local search.
@@ -38,7 +40,7 @@ Do not use this app for confidential operational records yet. Never upload priva
 
 ### Update and testing
 
-The service worker uses version `orbit-shell-v3.0.0` for the app shell and clears obsolete Orbit caches; WebLLM model cache is separate. On iPhone, reopen in Safari after deployment; a second reload may be necessary to activate the new service worker.
+The service worker uses version `orbit-shell-v3.2.0` for the app shell and clears obsolete Orbit caches; WebLLM model cache is separate. On iPhone, reopen in Safari after deployment; a second reload may be necessary to activate the new service worker.
 
 Automated checks validate the JavaScript syntax, XML/JSON/asset integrity, PWA file references and ZIP extraction. Browser automation in this environment is blocked from navigating to local pages, and real device testing remains required.
 
@@ -48,3 +50,5 @@ Automated checks validate the JavaScript syntax, XML/JSON/asset integrity, PWA f
 
 ## 3.1 animation hotfix
 Real waving and expressive gestures are back. The robot uses the same original HD character asset for a three-layer SVG rig: masked torso, independent left arm, independent right arm. It does not load the old low-resolution frame sequence. Touch Orbit on Home to trigger a full right-arm wave; speaking, listening, reviewing, thinking and success animate the arms separately. Settings > Reduce Motion continues to suppress movement. No changes to stored data or Framework Command pairing.
+
+3.1.1: Corrected the body clip so both original arms fully retract during gestures; avoids duplicated limbs.
