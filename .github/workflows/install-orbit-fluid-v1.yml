@@ -1,0 +1,86 @@
+name: Publish Orbit Fluid Motion Lab
+on:
+  push:
+    paths:
+      - '.github/workflows/install-orbit-fluid-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout website
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download and validate release
+        env:
+          SOURCE_URL: 'https://at.adobe.com/HB2lrZW9AbosPbKh'
+          RELEASE_SHA: 'f74919bb172e51d4cea9ab087e1014cb9823a67d4ee68b7080238cf82f521b9e'
+        run: |
+          set -euo pipefail
+          curl --fail --location --show-error --retry 3 --max-time 200 --output /tmp/orbit-fluid.zip "$SOURCE_URL"
+          printf '%s  %s\n' "$RELEASE_SHA" /tmp/orbit-fluid.zip | sha256sum --check
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          from pathlib import Path, PurePosixPath
+          import stat
+          dest=Path('/tmp/orbit-fluid-stage')
+          dest.mkdir(parents=True,exist_ok=True)
+          with ZipFile('/tmp/orbit-fluid.zip') as z:
+              names=set();total=0
+              for item in z.infolist():
+                  path=PurePosixPath(item.filename)
+                  assert item.filename and not item.filename.startswith('/') and '..' not in path.parts, item.filename
+                  assert item.filename not in names,item.filename
+                  names.add(item.filename)
+                  total+=item.file_size
+                  assert item.file_size<15_000_000 and total<75_000_000,item.filename
+                  assert not stat.S_ISLNK(item.external_attr>>16),item.filename
+              z.extractall(dest)
+          required=['index.html','engine.js','style.css','service-worker.js','assets/parts.json','assets/head.png','assets/torso.png','assets/left-arm.png','assets/right-arm.png','previews/Orbit_Fluid_Motion_Test.mp4','RELEASE_MANIFEST.json']
+          for item in required:assert (dest/item).is_file(),item
+          assert 'velocity-preserving' in (dest/'engine.js').read_text().lower()
+          assert 'OrbitFluidTest' in (dest/'engine.js').read_text()
+          PY
+      - name: Install isolated Fluid Lab and navigation links
+        run: |
+          set -euo pipefail
+          mkdir -p orbit/fluid
+          cp -a /tmp/orbit-fluid-stage/. orbit/fluid/
+          python3 - <<'PY'
+          from pathlib import Path
+          original=Path('orbit/index.html')
+          old=original.read_text()
+          mark='  <div class="top-actions">'
+          assert mark in old
+          link='<a href="./fluid/" style="display:inline-flex;align-items:center;border:1px solid #398195;background:#0d3444;color:#aaf3ff;border-radius:9px;padding:8px 11px;text-decoration:none;font:600 12px system-ui" title="Test Orbit smooth gesture transitions">Fluid Motion Lab</a>'
+          if 'href="./fluid/"' not in old:
+              old=old.replace(mark,mark+link,1)
+              original.write_text(old)
+          viewer=Path('orbit/5x/index.html')
+          s=viewer.read_text()
+          anchor='<nav class="nav-return"><a href="../" class="studio-return">'
+          assert anchor in s
+          if 'href="../fluid/"' not in s:
+              # Add a direct comparison link, preserving the entire existing library.
+              s=s.replace('<span class="studio-current">5× Motion Library · All 2,424 frames</span>','<a href="../fluid/" class="studio-return" style="border-color:#287a89;background:#123b4a;color:#b6f7ff">NEW: Smooth Motion Lab</a><span class="studio-current">5× Motion Library · All 2,424 frames</span>',1)
+              viewer.write_text(s)
+          sw=Path('orbit/service-worker.js')
+          js=sw.read_text()
+          assert "const CACHE='orbit-3d-sculpt-v2.1-" in js
+          js=js.replace("const CACHE='orbit-3d-sculpt-v2.1-5x'","const CACHE='orbit-3d-sculpt-v2.1-fluid-v1'")
+          src="!u.pathname.includes('/orbit/'))return;"
+          dst="!u.pathname.includes('/orbit/')||u.pathname.includes('/orbit/5x/')||u.pathname.includes('/orbit/fluid/'))return;"
+          assert src in js
+          js=js.replace(src,dst)
+          sw.write_text(js)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add orbit/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Orbit: add fluid 28-state motion lab and comparison links'
+            git push
+          fi
