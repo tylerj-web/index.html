@@ -12,33 +12,42 @@ jobs:
     steps:
       - name: Checkout existing site
         uses: actions/checkout@v4
-      - name: Fetch and verify Orbit Robot Edition package
+        with:
+          persist-credentials: true
+      - name: Download and verify Orbit 3.0 release
         env:
-          ORBIT_SOURCE: "https://at.adobe.com/SjjwqucybjPuEtLc"
-          EXPECTED_SHA256: "6f9f2558883fbfcd1f5cfdc1b8d4e26ef4af18952fb55e0ae67cd6d616105079"
+          ORBIT_SOURCE: "https://at.adobe.com/FscjXb7hoM2JNiIO"
+          EXPECTED_SHA256: "3be96e92b7673697f666d3cb821b325c798ed68d130ead95b3dd089683b3b093"
         run: |
-          curl --fail --show-error --location --retry 3 --max-time 150 --output /tmp/orbit.zip "$ORBIT_SOURCE"
-          printf '%s  %s\n' "$EXPECTED_SHA256" /tmp/orbit.zip | sha256sum --check
+          set -euo pipefail
+          curl --fail --show-error --location --retry 3 --max-time 200 --output /tmp/orbit-v3.zip "$ORBIT_SOURCE"
+          printf '%s  %s\n' "$EXPECTED_SHA256" /tmp/orbit-v3.zip | sha256sum --check
           python3 - <<'PY'
           import pathlib, zipfile
-          dest=pathlib.Path("orbit")
+          dest=pathlib.Path("/tmp/orbit-v3-stage")
           dest.mkdir(exist_ok=True)
-          with zipfile.ZipFile("/tmp/orbit.zip") as z:
-              for member in z.infolist():
-                  path=pathlib.PurePosixPath(member.filename)
-                  if member.filename.startswith("/") or ".." in path.parts:
-                      raise ValueError("Unsafe ZIP path")
+          allowed={".js",".css",".html",".md",".webmanifest",".png"}
+          with zipfile.ZipFile("/tmp/orbit-v3.zip") as z:
+              for entry in z.infolist():
+                  p=pathlib.PurePosixPath(entry.filename)
+                  if p.is_absolute() or '..' in p.parts or entry.file_size > 10_000_000:
+                      raise ValueError("Unsafe archive member: "+entry.filename)
+                  if entry.filename and not entry.is_dir() and p.suffix not in allowed:
+                      raise ValueError("Unexpected archive type: "+entry.filename)
               z.extractall(dest)
-          assert (dest/"index.html").is_file()
-          assert (dest/"assets/orbit-robot.png").is_file()
-          assert (dest/"service-worker.js").is_file()
+          required=["index.html","app.js","offline-brain.js","orbit-behavior.js","orbit-store.js","service-worker.js","assets/orbit-robot.png"]
+          for path in required:
+              assert (dest/path).is_file(), "Required file missing: "+path
           PY
-      - name: Commit Orbit assets without changing the existing site
+          mkdir -p orbit
+          rsync -a --delete /tmp/orbit-v3-stage/ orbit/
+      - name: Commit verified Orbit release without modifying other sites
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add orbit/
+          git add -A orbit/
           if ! git diff --cached --quiet; then
-            git commit -m "Install Orbit Mobile Robot Edition PWA in /orbit"
+            git commit -m "Orbit Mobile 3.0: HD animations, local conversations, inspections, backups"
             git push
           fi
