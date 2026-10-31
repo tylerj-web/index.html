@@ -1,0 +1,9 @@
+{
+  "name": "Orbit Fluid 3D Motion Laboratory",
+  "short_name": "Orbit 3D",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#09121d",
+  "theme_color": "#09121d"
+}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#08121d"/>
+<title>Orbit — Fluid 3D Motion Studio</title>
+<link rel="stylesheet" href="style.css"/><link rel="manifest" href="manifest.webmanifest"/>
+</head>
+<body>
+<div class="shell">
+<header class="topbar"><div class="brand"><span class="brandmark">◉</span><div><strong>ORBIT</strong><small>FLUID 3D STUDIO · THE FIXER</small></div></div><nav class="header-links"><span class="chip" id="ready">INITIALISING WEBGL2</span><a href="../fluid/" class="nav-link">Previous 2D rig</a><a href="../" class="nav-link">Original 3D studio</a><a href="../5x/" class="nav-link">Old sprites</a></nav></header>
+<div class="layout">
+  <aside class="panel selector"><div class="eyebrow">BEHAVIOUR LIBRARY</div><h2>Character states</h2><p>28 gestures and emotes, driven by one permanent four-part 3D model.</p><input type="search" id="filter" placeholder="Find a state…" aria-label="Find a state"/><div id="behaviors"></div></aside>
+  <main class="center">
+    <section class="stage" id="stage"><div class="stage-header"><div><div class="eyebrow">ACTUAL 3D / FOUR ARTICULATED MESHES</div><h1 id="active">Idle presence</h1></div><span class="face-state" id="face-state">CYAN EYES</span></div>
+      <canvas id="orbit" aria-label="Interactive Orbit 3D character. Drag to rotate; click to wave." tabindex="0"></canvas>
+      <div id="webgl-error" class="error" hidden>WebGL2 unavailable. The approved artwork and downloadable model are included, but 3D animation requires a browser with WebGL2.</div>
+      <div class="stage-footer"><span id="fps">— FPS</span><span>Drag to rotate · wheel to zoom · click to wave</span></div>
+    </section>
+    <section class="panel sequences"><div class="section-top"><div><div class="eyebrow">DIRECTOR</div><h2>Continuous action tests</h2></div><span id="sequence-status">STANDALONE</span></div><div id="sequences" class="sequence-list"><button data-chain="conversation">Conversation flow</button><button data-chain="scan_result">Scan → Result</button><button data-chain="warning">Caution → Error</button><button data-chain="greeting">Wave / Greeting</button><button data-chain="interrupt">Interrupt mid-wave</button></div><p>Switch actions while Orbit is moving. Joints retain their exact current position and velocity; there are no fading sprite replacements.</p></section>
+  </main>
+  <aside class="panel inspector"><div class="eyebrow">MOTION + CAMERA</div><h2>Live controls</h2><p>Test real depth, timing and expression. Unlike the prior studio, this rotates actual 3D geometry.</p>
+  <div class="control"><label for="energy">Expressiveness <output id="energy-out">85%</output></label><input type="range" min="0" max="130" value="85" id="energy"/></div>
+  <div class="control"><label for="speed">Playback <output id="speed-out">1.00×</output></label><input type="range" min="40" max="170" value="100" id="speed"/></div>
+  <div class="control"><label for="hover">Hover <output id="hover-out">65%</output></label><input type="range" min="0" max="120" value="65" id="hover"/></div>
+  <div class="control"><label for="zoom">Camera zoom <output id="zoom-out">100%</output></label><input type="range" min="65" max="170" value="100" id="zoom"/></div>
+  <div class="control"><label for="screen">Face display</label><select id="screen"><option value="auto">Follows behaviour</option><option value="eyes">Original cyan eyes</option><option value="scan">Scanning</option><option value="caution">Yellow caution</option><option value="success">Green completion tick</option><option value="error">Red error indicator</option></select></div>
+  <div class="toggles"><label><input type="checkbox" id="turntable"/> Slow turntable (shows real depth)</label><label><input type="checkbox" id="reduced"/> Reduced motion</label></div>
+  <div class="buttons"><button id="front">Front camera</button><button id="threequarter">3/4 camera</button><button id="play">Pause</button><button id="reset">Reset to idle</button><button id="capture">Capture PNG</button><a href="assets/Orbit_FourPart_Reference3D.glb" download="Orbit_FourPart_Reference3D.glb">Download actual GLB</a></div>
+  <div class="meta"><div><span>Renderer</span><b>WebGL2 · real 3D geometry</b></div><div><span>Body roots</span><b>Head · Torso · Arms ×2</b></div><div><span>Motion</span><b>Velocity-preserving springs</b></div><div><span>Texture</span><b>Original approved artwork</b></div><div><span>Crossfades</span><b>None</b></div><div><span>Model limitations</span><b>Unseen sides inferred</b></div></div>
+  </aside>
+</div>
+<footer>ORBIT · ARTWORK-LOCKED 3D PERFORMANCE TESTING <span id="footer">3D engine initialising</span></footer>
+</div>
+<script type="module" src="app.mjs"></script>
+</body></html>
