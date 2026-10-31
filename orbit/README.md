@@ -1,29 +1,16 @@
-# Orbit — Four-Piece 3D Character Laboratory
+# ORBIT Master Sculpt — 2.1 (Dark-blue metal / reflected gold light)
 
-**Purpose:** Desktop-first browser testing ground for a genuine 3D Orbit model. This edition replaces the previous 2D animation studio at `/orbit/`, without changing the repository root site. It does not contain a live AI or Framework Command gateway.
+Open `index.html` from a local HTTP server or visit the GitHub Pages testing ground when deployed. WebGL2 is required. Internet is not required once app assets are cached. This is a 3D character testing studio, not Framework Command or a functional AI assistant.
 
-## Quick start
+**Character correction:** the suit is midnight-blue metallic. Amber/gold is light reflected along edges, **not** gold-painted metal. The GLB and the studio are built from the same 41 child meshes attached to four moving roots.
 
-- Online: use the deployed GitHub Pages `/orbit/` page.
-- Offline after a successful app-shell install: revisit the page in a browser that supports WebGL2 and allows service workers.
-- From source: in this directory, run `python -m http.server 8000`, then visit `http://localhost:8000`. Do not open the `.mjs` files directly from `file://`, because module security restrictions vary by browser.
+* Interactive studio: `index.html`, `app.mjs`, `renderer.mjs`, `rig.mjs`, `styles.css`
+* Editable model: `assets/Orbit_Master_Sculpt_Four_Piece.glb`
+* Studio mesh source: `assets/sculpt-meshes.bin`, `assets/sculpt-meshes.json`
+* Approved references: `assets/approved-orbit-reference.png`, `assets/approved-orbit-sprite-sheet.png`
+* Sculpt builder (developer package): `build_sculpt.py`, software preview script `render_sculpt.py`
+* Production details: `PRODUCTION_SPEC.md`
 
-Use **Behaviours** to select one of 16 motions, drag the character to orbit, scroll to zoom, and use timeline controls to pause and scrub. The **Face screen** tab lets you test eyes, cyan scanning, yellow caution, green complete and red error. **Output** exports PNG and WebM (where supported) or downloads a GLB model.
+User data: this testing ground contains no changes to your Framework Command databases. Service worker updates replace only app-shell caches with the `orbit-3d-` prefix, not site storage/IndexedDB.
 
-## Files
-
-- `index.html`, `styles.css` — studio shell.
-- `rig.mjs` — independent behavior curves, four moving roots and state machine.
-- `renderer.mjs` — WebGL2 rendering and dynamic curved face-screen texture.
-- `app.mjs` — UI interactions, playback, preferences, capture and optional recording.
-- `assets/Orbit_4Piece_Rig.glb` — importable Blender-ready 3D model with four transformable part parents.
-- `build_model.py` — reproducible GLB source generator.
-- `PRODUCTION_SPEC.md` — comprehensive desktop character technical specification.
-- `tests/` — browser UI (mocked GPU) and renderer integration tests.
-- `TEST_REPORT.md`, `CHANGELOG.md`, `ROLLBACK.md` — release records.
-
-## Important boundaries
-
-The studio's task-success or error buttons are *demonstrations*, not real operations. The `.glb` file has a static default face texture, while the browser screen uses a live canvas texture. The browser renders the procedural model directly and does not parse the GLB. Their major dimensions and nodes are matched.
-
-The final 3D identity must be visually approved before integration into the Framework Command desktop application. See `PRODUCTION_SPEC.md` for quality gates and remaining sculpting work.
+Offline video recording and WebGL rendering availability depend on browser/GPU support. All 3D geometry and local code are included in the release; no network library/CDN is loaded.

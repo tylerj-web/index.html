@@ -1,4 +1,4 @@
-/* ORBIT Four-piece 3D renderer. Pure WebGL2, no CDN, locally cacheable. */
+/* ORBIT sculpt v2: authored GLB-matched meshes. Same artist geometry in model and viewport. No CDN. */
 const TAU=Math.PI*2;
 function identity(){return new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);}
 function mul(a,b){const o=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++){let n=0;for(let k=0;k<4;k++)n+=a[k*4+r]*b[c*4+k];o[c*4+r]=n;}return o;}
@@ -20,7 +20,7 @@ void main(){vec4 world=uWorld*vec4(aPosition,1.);vWorld=world.xyz;vNormal=normal
 const FS=`#version 300 es
 precision highp float;
 in vec3 vNormal;in vec3 vWorld;in vec2 vUv;
-uniform vec4 uColor;uniform vec3 uEye;uniform float uGloss;uniform float uGlow;uniform bool uScreen;uniform sampler2D uTexture;
+uniform vec4 uColor;uniform vec3 uEye;uniform float uGloss;uniform float uGlow;uniform float uReflect;uniform bool uScreen;uniform sampler2D uTexture;
 out vec4 outputColor;
 void main(){
  if(uScreen){vec4 t=texture(uTexture,vUv);if(t.a<.025)discard;outputColor=t;return;}
@@ -33,6 +33,13 @@ void main(){
  float fresnel=pow(1.-max(dot(n,view),0.),2.3);
  vec3 base=uColor.rgb*(.28+.64*diff+.13*bounce);
  vec3 lit=base+spec*mix(vec3(.37,.65,.9),vec3(1.,.86,.59),uGloss)*(.42+.6*uGloss)+specB*vec3(.14,.54,.8)*.17;
+ // Amber highlights come from a virtual warm studio environment. Every physical
+ // surface remains dark blue metallic: nothing here is gold-painted.
+ vec3 envWarm=normalize(vec3(-.88,.47,.76));
+ float amberSpec=pow(max(dot(n,normalize(view+envWarm)),0.),mix(30.,150.,uGloss));
+ float amberEdge=pow(1.-max(0.,dot(n,view)),3.4);
+ vec3 ambientGold=vec3(1.,.59,.21);
+ lit+=ambientGold * (amberSpec*.68+amberEdge*.30) * uReflect;
  lit+=uColor.rgb*fresnel*.17+uColor.rgb*uGlow*1.35;
  outputColor=vec4(lit,uColor.a);
 }`;
@@ -41,42 +48,80 @@ function torus(R,r,segs=68,sides=12){const v=[],n=[],uv=[],idx=[];for(let i=0;i<
 function screenSurface(w=1.82,h=1.20){const v=[],n=[],uv=[],idx=[];const nx=32,ny=18;for(let iy=0;iy<=ny;iy++)for(let ix=0;ix<=nx;ix++){const x=(ix/nx-.5)*w,y=(iy/ny-.5)*h;const z=.740-.25*x*x-.06*y*y;v.push(x,y,z);const nxp=.60*x,nyp=.16*y;const d=Math.hypot(nxp,nyp,1);n.push(nxp/d,nyp/d,1/d);uv.push(ix/nx,iy/ny);}for(let iy=0;iy<ny;iy++)for(let ix=0;ix<nx;ix++){const a=iy*(nx+1)+ix,b=a+nx+1;idx.push(a,a+1,b,a+1,b+1,b);}return {v,n,uv,idx};}
 function mesh(gl,raw){const vao=gl.createVertexArray();gl.bindVertexArray(vao);const count=raw.v.length/3;const data=new Float32Array(count*8);for(let i=0;i<count;i++){data.set(raw.v.slice(i*3,i*3+3),i*8);data.set(raw.n.slice(i*3,i*3+3),i*8+3);data.set(raw.uv.slice(i*2,i*2+2),i*8+6);}const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);const stride=32;gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,stride,0);gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,stride,12);gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,2,gl.FLOAT,false,stride,24);const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(raw.idx),gl.STATIC_DRAW);gl.bindVertexArray(null);return {vao,count:raw.idx.length};}
 function rgba(hex,alpha=1){const m=hex.replace('#','');return [parseInt(m.slice(0,2),16)/255,parseInt(m.slice(2,4),16)/255,parseInt(m.slice(4,6),16)/255,alpha];}
-const COL={black:'#0b1421',armor:'#111c2b',gold:'#e5aa53',trim:'#e8bf74',edge:'#533c2b',silver:'#5d7e98',panel:'#010915',blue:'#24d9f7',inner:'#0c6384'};
+const COL={black:'#081122',armor:'#0e1e33',blueRim:'#0e1f34',edgeCatch:'#192f4a',shadowSteel:'#071322',steel:'#23405a',panel:'#030914',blue:'#24d9f7',inner:'#0c6384'};
 function capRound(ctx,x,y,w,h,r){const p=Math.min(r,h/2,w/2);ctx.beginPath();ctx.moveTo(x+p,y);ctx.arcTo(x+w,y,x+w,y+h,p);ctx.arcTo(x+w,y+h,x,y+h,p);ctx.arcTo(x,y+h,x,y,p);ctx.arcTo(x,y,x+w,y,p);ctx.closePath();}
 export class Orbit3DRenderer {
  constructor(canvas,faceCanvas){this.canvas=canvas;this.gl=canvas.getContext('webgl2',{antialias:true,alpha:true,premultipliedAlpha:true,preserveDrawingBuffer:true,powerPreference:'high-performance'});if(!this.gl)throw new Error('WebGL2 unavailable — use a modern desktop browser with GPU support.');this.ctx=(faceCanvas||document.createElement('canvas')).getContext('2d');this.face=this.ctx.canvas;this.face.width=1024;this.face.height=640;this.lastFace=0;this.lastFrame=0;this.yaw=-.18;this.pitch=-.05;this.zoom=1;this.quality=1.6;this.drawCalls=0;this.eyeColor='#82efff';
  const gl=this.gl;this.prog=program(gl,VS,FS);gl.useProgram(this.prog);
- this.unis={world:gl.getUniformLocation(this.prog,'uWorld'),vp:gl.getUniformLocation(this.prog,'uVP'),color:gl.getUniformLocation(this.prog,'uColor'),gloss:gl.getUniformLocation(this.prog,'uGloss'),glow:gl.getUniformLocation(this.prog,'uGlow'),screen:gl.getUniformLocation(this.prog,'uScreen'),eye:gl.getUniformLocation(this.prog,'uEye')};
- this.shape={head:mesh(gl,uvEllipsoid(1.12,.91,.67)),headGold:mesh(gl,uvEllipsoid(1.185,.958,.688)),faceBacking:mesh(gl,uvEllipsoid(.91,.61,.15,24,48)),torso:mesh(gl,uvEllipsoid(.695,.79,.53,36,60)),torsoGold:mesh(gl,uvEllipsoid(.742,.81,.548,36,60)),neck:mesh(gl,uvEllipsoid(.43,.20,.39,20,48)),armGold:mesh(gl,uvEllipsoid(.295,.56,.30,32,48)),arm:mesh(gl,uvEllipsoid(.26,.52,.295,32,48)),armInset:mesh(gl,uvEllipsoid(.22,.455,.306,24,44)),screen:mesh(gl,screenSurface()),ringOuter:mesh(gl,torus(.245,.032)),ringInner:mesh(gl,torus(.182,.031)),core:mesh(gl,uvEllipsoid(.17,.17,.055,26,46)),coreCenter:mesh(gl,uvEllipsoid(.105,.105,.07,26,46))};
+ this.unis={world:gl.getUniformLocation(this.prog,'uWorld'),vp:gl.getUniformLocation(this.prog,'uVP'),color:gl.getUniformLocation(this.prog,'uColor'),gloss:gl.getUniformLocation(this.prog,'uGloss'),glow:gl.getUniformLocation(this.prog,'uGlow'),reflect:gl.getUniformLocation(this.prog,'uReflect'),screen:gl.getUniformLocation(this.prog,'uScreen'),eye:gl.getUniformLocation(this.prog,'uEye')};
+ this.objects=[];this.ready=false;this.materials={};
  this.texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,this.texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1024,640,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
- gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);this.resize();
+ gl.enable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);this.resize();
+ }
+ /** Load the *same sculpt surface geometries* used to export the editable GLB. */
+ async loadSculpt(){
+  const [res,bin]=await Promise.all([
+    fetch('./assets/sculpt-meshes.json',{cache:'no-cache'}),
+    fetch('./assets/sculpt-meshes.bin',{cache:'no-cache'})
+  ]);
+  if(!res.ok||!bin.ok)throw new Error('Sculpt geometry unavailable — ensure both sculpt files are installed.');
+  const config=await res.json(), buffer=await bin.arrayBuffer();
+  if(config.version!==2 || config.meshes.length<20)throw new Error('Unexpected Orbit sculpt mesh version.');
+  this.materials=config.materials;this.objects=[];
+  const gl=this.gl;
+  for(const ent of config.meshes){
+    const vertexBytes=ent.vertexCount*8*4,indexBytes=ent.indexCount*4;
+    if(ent.vertexByteOffset+vertexBytes>buffer.byteLength||ent.indexByteOffset+indexBytes>buffer.byteLength)throw new Error('Incomplete sculpt geometry file: '+ent.name);
+    const vertices=new Float32Array(buffer.slice(ent.vertexByteOffset,ent.vertexByteOffset+vertexBytes));
+    const indices=new Uint32Array(buffer.slice(ent.indexByteOffset,ent.indexByteOffset+indexBytes));
+    const vao=gl.createVertexArray();gl.bindVertexArray(vao);
+    const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,32,0);
+    gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,32,12);
+    gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,2,gl.FLOAT,false,32,24);
+    const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,indices,gl.STATIC_DRAW);
+    gl.bindVertexArray(null);
+    this.objects.push({...ent,vao,vertexBuffer:vb,indexBuffer:ib,count:indices.length});
+  }
+  this.ready=true;return this.objects.length;
  }
  resize(){const b=this.canvas.getBoundingClientRect();if(b.width<1||b.height<1)return;const d=Math.min(this.quality,window.devicePixelRatio||1.6);const w=Math.max(1,Math.round(b.width*d)),h=Math.max(1,Math.round(b.height*d));if(this.canvas.width!==w||this.canvas.height!==h){this.canvas.width=w;this.canvas.height=h;this.gl.viewport(0,0,w,h);}}
- draw(pose,behavior,time,options={}){const gl=this.gl;this.resize();this.drawCalls=0;const w=this.canvas.width,h=this.canvas.height;gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(this.prog);
-  const angle=this.yaw,tilt=this.pitch,scale=1/this.zoom;
-  const camera=mul(perspective(Math.PI/4.5,w/h,.1,100),tr(0,-.05,-6.7*scale*(w/h<.75?1.13:1)));
-  gl.uniformMatrix4fv(this.unis.vp,false,camera);gl.uniform3f(this.unis.eye,0,0,6.7);
-  const stage=mul(ry(angle),rx(tilt));const body=mul(stage,mul(tr(0,pose.hover+pose.lean,0),rz(pose.torsoRoll)));
-  const torso=mul(body,tr(0,-.71,0));const head=mul(body,mul(tr(0,.77,0),mul(ry(pose.headYaw),mul(rx(pose.headPitch),rz(pose.headRoll)))));
-  const left=mul(body,mul(tr(-.73,-.37,.06),mul(rz(pose.leftArm),rx(pose.leftPitch))));const right=mul(body,mul(tr(.73,-.37,.06),mul(rz(pose.rightArm),rx(pose.rightPitch))));
-  const draw=(id,model,color,gloss=.7,glow=0,screen=false)=>{const sh=this.shape[id];gl.bindVertexArray(sh.vao);gl.uniformMatrix4fv(this.unis.world,false,model);gl.uniform4fv(this.unis.color,rgba(color));gl.uniform1f(this.unis.gloss,gloss);gl.uniform1f(this.unis.glow,glow);gl.uniform1i(this.unis.screen,screen?1:0);if(screen){gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,this.texture);}gl.drawElements(gl.TRIANGLES,sh.count,gl.UNSIGNED_SHORT,0);this.drawCalls++;};
-  // Exactly four articulated root pieces: torso, head, left arm, right arm. Details are attached surfaces.
-  draw('torsoGold',mul(torso,tr(0,0,-.14)),COL.gold,.92);draw('torso',mul(torso,tr(0,0,.04)),COL.armor,.87);
-  draw('neck',mul(body,tr(0,-.025,0)),COL.gold,.91);
-  draw('armGold',mul(left,tr(0,-.26,-.09)),COL.gold,.91);
-  draw('arm',mul(left,tr(0,-.255,.03)),COL.armor,.89);
-  draw('armInset',mul(left,tr(0,-.25,.045)),COL.black,.87);
-  draw('armGold',mul(right,tr(0,-.26,-.09)),COL.gold,.91);
-  draw('arm',mul(right,tr(0,-.255,.03)),COL.armor,.89);
-  draw('armInset',mul(right,tr(0,-.25,.045)),COL.black,.87);
-  draw('headGold',mul(head,tr(0,0,-.17)),COL.gold,.93);draw('head',mul(head,tr(0,-.018,.035)),COL.black,.95);
-  // Dynamic screen follows the curved head surface; no detached front plate.
+ draw(pose,behavior,time,options={}){
+  if(!this.ready)return;
+  const gl=this.gl;this.resize();this.drawCalls=0;
+  const w=this.canvas.width,h=this.canvas.height;
+  gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);
+  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(this.prog);
+  const ratio=w/h;
+  const projection=perspective(Math.PI/4.55,ratio,.1,100);
+  const camera=mul(projection,tr(0,-.05,-6.9/this.zoom*(ratio<.75?1.16:1)));
+  gl.uniformMatrix4fv(this.unis.vp,false,camera);
+  gl.uniform3f(this.unis.eye,0,0,6.9);
+  const stage=mul(ry(this.yaw),rx(this.pitch));
+  const body=mul(stage,mul(tr(0,pose.hover+pose.lean,0),rz(pose.torsoRoll)));
+  const groups={
+    Torso:mul(body,tr(0,-.61,0)),
+    Head:mul(body,mul(tr(0,.79,0),mul(ry(pose.headYaw),mul(rx(pose.headPitch),rz(pose.headRoll))))),
+    LeftArm:mul(body,mul(tr(-.76,-.44,.05),mul(rz(pose.leftArm),rx(pose.leftPitch)))),
+    RightArm:mul(body,mul(tr(.76,-.44,.05),mul(rz(pose.rightArm),rx(pose.rightPitch))))
+  };
   if(time-this.lastFace>=1/30||this.lastFace===0){this.renderFace(behavior,pose,time,options);this.lastFace=time;}
-  draw('screen',head,COL.panel,.2,0,true);
-  draw('ringOuter',mul(torso,tr(0,.15,.640)),COL.gold,.92);
-  draw('ringInner',mul(torso,tr(0,.15,.670)),COL.blue,.42,.65);
-  draw('core',mul(torso,tr(0,.15,.680)),COL.inner,.5,.42+pose.core*.23);
-  draw('coreCenter',mul(torso,tr(0,.15,.710)),COL.blue,.4,.4+pose.core*.65);
+  for(const obj of this.objects){
+    const cfg=this.materials[obj.material]||this.materials.black;
+    const color=cfg?.base || [255,255,255,255];
+    const screen=obj.material==='screen';
+    const point=mul(groups[obj.part],tr(...obj.offset));
+    gl.bindVertexArray(obj.vao);
+    gl.uniformMatrix4fv(this.unis.world,false,point);
+    gl.uniform4f(this.unis.color,(color[0]||0)/255,(color[1]||0)/255,(color[2]||0)/255,1);
+    gl.uniform1f(this.unis.gloss,cfg?Math.max(.05,Math.min(1,1-cfg.roughness)):0.6);
+    gl.uniform1f(this.unis.reflect,obj.material==='edgeCatch'?1.0:obj.material==='blueRim'?.73:(['armor','black','steel'].includes(obj.material)?.35:.08));
+    gl.uniform1f(this.unis.glow,(['cyan','cyanDeep','white'].includes(obj.material))?(obj.material==='white'?pose.core*.8:.12+pose.core*.55):0);
+    gl.uniform1i(this.unis.screen,screen?1:0);
+    if(screen){gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,this.texture);}
+    gl.drawElements(gl.TRIANGLES,obj.count,gl.UNSIGNED_INT,0);
+    this.drawCalls++;
+  }
   gl.bindVertexArray(null);
  }
  renderFace(behavior,pose,time,options){const ctx=this.ctx,W=1024,H=640;ctx.clearRect(0,0,W,H);const mode=options.faceOverride||({scan:'scan',success:'success',celebrate:'success',caution:'caution',error:'error',sleep:'sleep'}[behavior]||'eyes');

@@ -1,0 +1,753 @@
+{
+  "version": 2,
+  "roots": {
+    "Head": [
+      0,
+      0.79,
+      0
+    ],
+    "Torso": [
+      0,
+      -0.61,
+      0
+    ],
+    "LeftArm": [
+      -0.76,
+      -0.44,
+      0.05
+    ],
+    "RightArm": [
+      0.76,
+      -0.44,
+      0.05
+    ]
+  },
+  "meshes": [
+    {
+      "name": "Head_Helmet_Midnight_Blue_Outer",
+      "part": "Head",
+      "material": "blueRim",
+      "offset": [
+        0,
+        0,
+        -0.1
+      ],
+      "vertexByteOffset": 0,
+      "vertexCount": 14973,
+      "indexByteOffset": 479136,
+      "indexCount": 88320
+    },
+    {
+      "name": "Head_Ceramic_Black_Shell",
+      "part": "Head",
+      "material": "black",
+      "offset": [
+        0,
+        -0.02,
+        -0.035
+      ],
+      "vertexByteOffset": 832416,
+      "vertexCount": 14973,
+      "indexByteOffset": 1311552,
+      "indexCount": 88320
+    },
+    {
+      "name": "Head_Reflective_Face_Edge",
+      "part": "Head",
+      "material": "edgeCatch",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 1664832,
+      "vertexCount": 2353,
+      "indexByteOffset": 1740128,
+      "indexCount": 12960
+    },
+    {
+      "name": "Head_Dark_Face_Inner_Bevel",
+      "part": "Head",
+      "material": "shadowSteel",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 1791968,
+      "vertexCount": 2353,
+      "indexByteOffset": 1867264,
+      "indexCount": 12960
+    },
+    {
+      "name": "Head_Black_OLED_Backing",
+      "part": "Head",
+      "material": "panel",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 1919104,
+      "vertexCount": 5577,
+      "indexByteOffset": 2097568,
+      "indexCount": 32964
+    },
+    {
+      "name": "Head_Dynamic_Screen_Surface",
+      "part": "Head",
+      "material": "screen",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 2229424,
+      "vertexCount": 5577,
+      "indexByteOffset": 2407888,
+      "indexCount": 32964
+    },
+    {
+      "name": "Head_Upper_Reflected_Ambient_Light_Catch",
+      "part": "Head",
+      "material": "edgeCatch",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 2539744,
+      "vertexCount": 1690,
+      "indexByteOffset": 2593824,
+      "indexCount": 9288
+    },
+    {
+      "name": "Head_Chin_Trim",
+      "part": "Head",
+      "material": "steel",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 2630976,
+      "vertexCount": 1404,
+      "indexByteOffset": 2675904,
+      "indexCount": 7704
+    },
+    {
+      "name": "Torso_Blue_Metal_Chassis",
+      "part": "Torso",
+      "material": "blueRim",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 2706720,
+      "vertexCount": 7565,
+      "indexByteOffset": 2948800,
+      "indexCount": 44352
+    },
+    {
+      "name": "Torso_Black_Onyx_Carapace",
+      "part": "Torso",
+      "material": "armor",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 3126208,
+      "vertexCount": 7565,
+      "indexByteOffset": 3368288,
+      "indexCount": 44352
+    },
+    {
+      "name": "Torso_Neck_Collar",
+      "part": "Torso",
+      "material": "shadowSteel",
+      "offset": [
+        0,
+        0.64,
+        0.0
+      ],
+      "vertexByteOffset": 3545696,
+      "vertexCount": 3465,
+      "indexByteOffset": 3656576,
+      "indexCount": 20064
+    },
+    {
+      "name": "Torso_Neck_Reflective_Lip",
+      "part": "Torso",
+      "material": "edgeCatch",
+      "offset": [
+        0,
+        0.65,
+        -0.18
+      ],
+      "vertexByteOffset": 3736832,
+      "vertexCount": 2353,
+      "indexByteOffset": 3812128,
+      "indexCount": 12960
+    },
+    {
+      "name": "Torso_Gold_Lower_V_L",
+      "part": "Torso",
+      "material": "blueRim",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 3863968,
+      "vertexCount": 1040,
+      "indexByteOffset": 3897248,
+      "indexCount": 5688
+    },
+    {
+      "name": "Torso_Gold_Lower_V_R",
+      "part": "Torso",
+      "material": "blueRim",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 3920000,
+      "vertexCount": 1040,
+      "indexByteOffset": 3953280,
+      "indexCount": 5688
+    },
+    {
+      "name": "Core_Outer_Midnight_Gasket",
+      "part": "Torso",
+      "material": "shadowSteel",
+      "offset": [
+        0,
+        0.17,
+        0.7
+      ],
+      "vertexByteOffset": 3976032,
+      "vertexCount": 3577,
+      "indexByteOffset": 4090496,
+      "indexCount": 20736
+    },
+    {
+      "name": "Core_Blue_Metal_Housing_Ring",
+      "part": "Torso",
+      "material": "blueRim",
+      "offset": [
+        0,
+        0.17,
+        0.18
+      ],
+      "vertexByteOffset": 4173440,
+      "vertexCount": 2353,
+      "indexByteOffset": 4248736,
+      "indexCount": 12960
+    },
+    {
+      "name": "Core_Thin_Blue_Chamfer",
+      "part": "Torso",
+      "material": "edgeCatch",
+      "offset": [
+        0,
+        0.17,
+        0.18
+      ],
+      "vertexByteOffset": 4300576,
+      "vertexCount": 2353,
+      "indexByteOffset": 4375872,
+      "indexCount": 12960
+    },
+    {
+      "name": "Core_Cyan_Light_Glass",
+      "part": "Torso",
+      "material": "cyanDeep",
+      "offset": [
+        0,
+        0.17,
+        0.7629999999999999
+      ],
+      "vertexByteOffset": 4427712,
+      "vertexCount": 3577,
+      "indexByteOffset": 4542176,
+      "indexCount": 20736
+    },
+    {
+      "name": "Core_Cyan_Glow_Ring",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0.17,
+        0.18
+      ],
+      "vertexByteOffset": 4625120,
+      "vertexCount": 2353,
+      "indexByteOffset": 4700416,
+      "indexCount": 12960
+    },
+    {
+      "name": "Core_Hot_Cyan_Center",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0.17,
+        0.8089999999999999
+      ],
+      "vertexByteOffset": 4752256,
+      "vertexCount": 3577,
+      "indexByteOffset": 4866720,
+      "indexCount": 20736
+    },
+    {
+      "name": "Core_White_Power_Spot",
+      "part": "Torso",
+      "material": "white",
+      "offset": [
+        0,
+        0.17,
+        0.8739999999999999
+      ],
+      "vertexByteOffset": 4949664,
+      "vertexCount": 1815,
+      "indexByteOffset": 5007744,
+      "indexCount": 10368
+    },
+    {
+      "name": "Core_Emitter_Segment_00",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5049216,
+      "vertexCount": 104,
+      "indexByteOffset": 5052544,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_01",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5054560,
+      "vertexCount": 104,
+      "indexByteOffset": 5057888,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_02",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5059904,
+      "vertexCount": 104,
+      "indexByteOffset": 5063232,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_03",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5065248,
+      "vertexCount": 104,
+      "indexByteOffset": 5068576,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_04",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5070592,
+      "vertexCount": 104,
+      "indexByteOffset": 5073920,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_05",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5075936,
+      "vertexCount": 104,
+      "indexByteOffset": 5079264,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_06",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5081280,
+      "vertexCount": 104,
+      "indexByteOffset": 5084608,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_07",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5086624,
+      "vertexCount": 104,
+      "indexByteOffset": 5089952,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_08",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5091968,
+      "vertexCount": 104,
+      "indexByteOffset": 5095296,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_09",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5097312,
+      "vertexCount": 104,
+      "indexByteOffset": 5100640,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_10",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5102656,
+      "vertexCount": 104,
+      "indexByteOffset": 5105984,
+      "indexCount": 504
+    },
+    {
+      "name": "Core_Emitter_Segment_11",
+      "part": "Torso",
+      "material": "cyan",
+      "offset": [
+        0,
+        0,
+        0.18
+      ],
+      "vertexByteOffset": 5108000,
+      "vertexCount": 104,
+      "indexByteOffset": 5111328,
+      "indexCount": 504
+    },
+    {
+      "name": "LeftArm_Midnight_Blue_Pod_Casing",
+      "part": "LeftArm",
+      "material": "blueRim",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 5113344,
+      "vertexCount": 7565,
+      "indexByteOffset": 5355424,
+      "indexCount": 44352
+    },
+    {
+      "name": "LeftArm_Black_Onyx_Pod",
+      "part": "LeftArm",
+      "material": "black",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 5532832,
+      "vertexCount": 7565,
+      "indexByteOffset": 5774912,
+      "indexCount": 44352
+    },
+    {
+      "name": "LeftArm_Reflected_Flank_Piping",
+      "part": "LeftArm",
+      "material": "blueRim",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 5952320,
+      "vertexCount": 78,
+      "indexByteOffset": 5954816,
+      "indexCount": 360
+    },
+    {
+      "name": "LeftArm_Shoulder_Dark_Steel_Hinge",
+      "part": "LeftArm",
+      "material": "shadowSteel",
+      "offset": [
+        0,
+        -0.08,
+        -0.06
+      ],
+      "vertexByteOffset": 5956256,
+      "vertexCount": 1617,
+      "indexByteOffset": 6008000,
+      "indexCount": 9216
+    },
+    {
+      "name": "RightArm_Midnight_Blue_Pod_Casing",
+      "part": "RightArm",
+      "material": "blueRim",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 6044864,
+      "vertexCount": 7565,
+      "indexByteOffset": 6286944,
+      "indexCount": 44352
+    },
+    {
+      "name": "RightArm_Black_Onyx_Pod",
+      "part": "RightArm",
+      "material": "black",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 6464352,
+      "vertexCount": 7565,
+      "indexByteOffset": 6706432,
+      "indexCount": 44352
+    },
+    {
+      "name": "RightArm_Reflected_Flank_Piping",
+      "part": "RightArm",
+      "material": "blueRim",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "vertexByteOffset": 6883840,
+      "vertexCount": 78,
+      "indexByteOffset": 6886336,
+      "indexCount": 360
+    },
+    {
+      "name": "RightArm_Shoulder_Dark_Steel_Hinge",
+      "part": "RightArm",
+      "material": "shadowSteel",
+      "offset": [
+        0,
+        -0.08,
+        -0.06
+      ],
+      "vertexByteOffset": 6887776,
+      "vertexCount": 1617,
+      "indexByteOffset": 6939520,
+      "indexCount": 9216
+    }
+  ],
+  "materials": {
+    "black": {
+      "base": [
+        8,
+        17,
+        34,
+        255
+      ],
+      "metallic": 0.88,
+      "roughness": 0.115,
+      "emissive": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "armor": {
+      "base": [
+        14,
+        30,
+        51,
+        255
+      ],
+      "metallic": 0.91,
+      "roughness": 0.145,
+      "emissive": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "panel": {
+      "base": [
+        3,
+        9,
+        20,
+        255
+      ],
+      "metallic": 0.65,
+      "roughness": 0.125,
+      "emissive": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "blueRim": {
+      "base": [
+        14,
+        31,
+        52,
+        255
+      ],
+      "metallic": 0.98,
+      "roughness": 0.095,
+      "emissive": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "edgeCatch": {
+      "base": [
+        25,
+        47,
+        74,
+        255
+      ],
+      "metallic": 0.98,
+      "roughness": 0.075,
+      "emissive": [
+        0.11,
+        0.041,
+        0.004
+      ]
+    },
+    "shadowSteel": {
+      "base": [
+        7,
+        19,
+        34,
+        255
+      ],
+      "metallic": 0.94,
+      "roughness": 0.15,
+      "emissive": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "steel": {
+      "base": [
+        35,
+        62,
+        87,
+        255
+      ],
+      "metallic": 0.91,
+      "roughness": 0.17,
+      "emissive": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "cyan": {
+      "base": [
+        12,
+        192,
+        238,
+        255
+      ],
+      "metallic": 0.16,
+      "roughness": 0.25,
+      "emissive": [
+        0.1,
+        0.77,
+        0.95
+      ]
+    },
+    "cyanDeep": {
+      "base": [
+        12,
+        65,
+        96,
+        255
+      ],
+      "metallic": 0.14,
+      "roughness": 0.1,
+      "emissive": [
+        0.05,
+        0.2,
+        0.35
+      ]
+    },
+    "white": {
+      "base": [
+        210,
+        250,
+        255,
+        255
+      ],
+      "metallic": 0.2,
+      "roughness": 0.17,
+      "emissive": [
+        0.95,
+        0.95,
+        0.95
+      ]
+    }
+  }
+}

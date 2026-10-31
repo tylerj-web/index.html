@@ -1,13 +1,13 @@
 import {BEHAVIORS,OrbitRig,clamp} from './rig.mjs';
 import {Orbit3DRenderer} from './renderer.mjs';
 const $=id=>document.getElementById(id);
-const KEY='orbit3d.studio.prefs.v1';
+const KEY='orbit3d.studio.prefs.v2';const LEGACY_KEY='orbit3d.studio.prefs.v1';
 const GLYPHS={idle:'◌',greet:'↗',wave:'♧',listen:'◉',think:'◇',speak:'≋',curious:'?',scan:'⌗',review:'▤',focus:'⊙',celebrate:'✦',success:'✓',caution:'⚠',error:'!',sleep:'☾',wake:'☀'};
 const signals=['scan','success','caution','error'];
 const faceOptions=[['auto','Follow action','◌'],['eyes','Eyes','⌣'],['scan','Scan','⌗'],['success','Complete','✓'],['caution','Caution','⚠'],['error','Error','!'],['sleep','Resting','☾']];
 const rig=new OrbitRig();let render=null,faceOverride=null,drag=null,recording=false,showreel=false,showIndex=0,showDelay=0,toastTimer,frames=0,lastFps=0,fps=0,lastTimestamp=0,scrubbing=false,ignoredMedia=false;
 const PREFS={intensity:86,speed:100,quality:160,autoIdle:true,motionOn:true,reduceMotion:false};
-try{const saved=JSON.parse(localStorage.getItem(KEY)||'{}');for(const [k,v] of Object.entries(PREFS))if(typeof saved[k]===typeof v&&Number.isFinite(v)?Number.isFinite(saved[k]):typeof saved[k]===typeof v)PREFS[k]=saved[k];}catch{}
+try{const saved=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem(LEGACY_KEY)||'{}');for(const [k,v] of Object.entries(PREFS))if(typeof saved[k]===typeof v&&Number.isFinite(v)?Number.isFinite(saved[k]):typeof saved[k]===typeof v)PREFS[k]=saved[k];}catch{}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(PREFS));}catch{}}
 function notify(message){const box=$('toast');box.textContent=message;box.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>box.classList.remove('show'),3100);}
 function buttons(){const names=Object.keys(BEHAVIORS);const main=$('behaviorsMain'),utility=$('behaviorsSignals');for(const name of names){const b=document.createElement('button');b.type='button';b.className='behaviour-button';b.dataset.behavior=name;b.setAttribute('aria-pressed',name==='idle'?'true':'false');b.innerHTML=`<span class="behavior-glyph" aria-hidden="true">${GLYPHS[name]}</span><span class="behavior-name">${BEHAVIORS[name].name}</span>${name==='idle'?'<span class="behavior-shortcut">01</span>':''}`;b.addEventListener('click',()=>choose(name));(signals.includes(name)?utility:main).appendChild(b);}
@@ -38,10 +38,10 @@ rig.tick(dt);updateShowreel();try{render.draw(rig.pose,rig.behavior,rig.time,{fa
 frames++;if(timestamp-lastFps>=1000){fps=Math.round(frames*1000/(timestamp-lastFps||1000));$('fps').textContent=fps;frames=0;lastFps=timestamp;}
 if((frames%2)===0){const progress=rig.progress();if(!scrubbing){$('timeline').value=Math.round(progress*1000);setValueBar($('timeline'));}const d=BEHAVIORS[rig.behavior];$('timeReadout').textContent=`${fmt(d.loop?rig.elapsed%d.duration:Math.min(rig.elapsed,d.duration))} / ${fmt(d.duration)}`;}
 }
-function init(){buttons();bindTabs();bindTimeline();setupOutput();
-try{render=new Orbit3DRenderer($('orbitCanvas'),$('facePreview'));applyPrefs();bindPrefs();setupCamera();updateLabels();requestAnimationFrame(animate);window.addEventListener('resize',()=>render?.resize());}catch(error){console.error(error);$('unsupported').hidden=false;notify('WebGL2 cannot start: '+error.message);}
+async function init(){buttons();bindTabs();bindTimeline();setupOutput();
+try{render=new Orbit3DRenderer($('orbitCanvas'),$('facePreview'));await render.loadSculpt();applyPrefs();bindPrefs();setupCamera();updateLabels();requestAnimationFrame(animate);window.addEventListener('resize',()=>render?.resize());}catch(error){console.error(error);$('unsupported').hidden=false;notify('3D model could not start: '+error.message);}
 if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches&&!localStorage.getItem(KEY)){$('reduceMotion').checked=true;PREFS.reduceMotion=true;if(render)applyPrefs();}
-document.addEventListener('visibilitychange',()=>{lastTimestamp=0;});window.addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select'))return;if(e.key===' '){e.preventDefault();setTransport();}if(e.key==='Escape'){showreel=false;choose('idle');}if(e.key.toLowerCase()==='w')choose('wave');if(e.key==='ArrowLeft')render.yaw-=.08;if(e.key==='ArrowRight')render.yaw+=.08;if(e.key==='ArrowUp')render.pitch=Math.max(-.9,render.pitch-.08);if(e.key==='ArrowDown')render.pitch=Math.min(.85,render.pitch+.08);});
+document.addEventListener('visibilitychange',()=>{lastTimestamp=0;});window.addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select'))return;if(e.key===' '){e.preventDefault();setTransport();}if(e.key==='Escape'){showreel=false;choose('idle');}if(e.key.toLowerCase()==='w')choose('wave');if(e.key==='ArrowLeft'&&render)render.yaw-=.08;if(e.key==='ArrowRight'&&render)render.yaw+=.08;if(e.key==='ArrowUp'&&render)render.pitch=Math.max(-.9,render.pitch-.08);if(e.key==='ArrowDown'&&render)render.pitch=Math.min(.85,render.pitch+.08);});
 if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./service-worker.js').catch(e=>console.info('Offline cache unavailable:',e));
 }
 init();

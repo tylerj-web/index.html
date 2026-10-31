@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="theme-color" content="#07101b"/>
-<title>ORBIT — 3D Character Laboratory</title>
+<title>ORBIT — Master 3D Sculpt Studio</title>
 <link rel="icon" href="assets/orbit-icon.svg" type="image/svg+xml"/>
 <link rel="manifest" href="manifest.webmanifest"/>
 <link rel="stylesheet" href="styles.css"/>
@@ -12,7 +12,7 @@
 <body>
 <div class="shell">
  <header class="topbar">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"><span></span></span><div><strong>ORBIT</strong><small>3D CHARACTER LAB <span class="version">01 / THE FIXER</span></small></div></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"><span></span></span><div><strong>ORBIT</strong><small>MASTER SCULPT <span class="version">02.1 / THE FIXER</span></small></div></div>
   <div class="top-actions"><div class="local-badge"><span class="live-dot"></span> LOCAL RENDER ENGINE <span class="extra-badge">· NO AI CONNECTION</span></div><button type="button" class="icon-button" id="helpBtn" aria-label="About this studio" title="About"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.6 2.6 0 0 1 4.9 1.1c0 1.8-2.5 2-2.5 3.7M12 17h.01"/></svg></button></div>
  </header>
  <div class="workbench">
@@ -27,7 +27,7 @@
   <main class="main" aria-label="3D animation viewport">
    <div class="stage" id="stage">
     <div class="stage-grid" aria-hidden="true"></div><div class="stage-vignette" aria-hidden="true"></div>
-    <div class="stage-top"><div class="stage-kicker"><span class="section-number">01</span> THE CHARACTER <span class="stage-divider">/</span> <span id="currentClass">LIFE / IDLE</span></div><div class="viewport-tools"><button class="tool" id="resetCamera" title="Reset 3D camera">RESET VIEW</button><button class="tool" id="captureFrame" title="Save a PNG of the current 3D frame"> <span aria-hidden="true">↗</span> CAPTURE</button></div></div>
+    <div class="stage-top"><div class="stage-kicker"><span class="section-number">01</span> THE MASTER SCULPT <span class="stage-divider">/</span> <span id="currentClass">LIFE / IDLE</span></div><div class="viewport-tools"><button class="tool" id="resetCamera" title="Reset 3D camera">RESET VIEW</button><button class="tool" id="captureFrame" title="Save a PNG of the current 3D frame"> <span aria-hidden="true">↗</span> CAPTURE</button></div></div>
     <canvas id="orbitCanvas" aria-label="Interactive 3D Orbit robot; drag to rotate, scroll to zoom" role="img"></canvas>
     <div id="unsupported" class="unsupported" hidden><h2>3D acceleration unavailable</h2><p>This studio requires WebGL2. Try a recent Chrome, Edge, Safari or Firefox with graphics acceleration enabled.</p></div>
     <div class="stage-floor" aria-hidden="true"></div><div class="stage-orbit" aria-hidden="true"></div>
@@ -63,9 +63,9 @@
     <div class="section-heading"><span>STUDIO OUTPUT</span><span class="detail">LOCAL ONLY</span></div>
     <button id="snapshotBtn" class="action-card"><span class="action-icon">▧</span><span><strong>Save PNG frame</strong><small>Export the current canvas image</small></span><span class="chevron">↗</span></button>
     <button id="recordBtn" class="action-card"><span class="action-icon">◉</span><span><strong id="recordLabel">Record 8-second clip</strong><small id="recordSub">WebM where supported by this browser</small></span><span class="chevron">↗</span></button>
-    <a class="action-card" href="assets/Orbit_4Piece_Rig.glb" download><span class="action-icon">⬡</span><span><strong>Download 3D model</strong><small>Four-body glTF binary (.glb)</small></span><span class="chevron">↗</span></a>
-    <a class="action-card" href="PRODUCTION_SPEC.md" download><span class="action-icon">≡</span><span><strong>Production specification</strong><small>Rig, facial states & integration contract</small></span><span class="chevron">↗</span></a>
-    <div class="separation"></div><div class="section-heading"><span>SCENE DETAILS</span></div>
+    <a class="action-card" href="assets/Orbit_Master_Sculpt_Four_Piece.glb" download><span class="action-icon">⬡</span><span><strong>Download 3D model</strong><small>Artwork-matched four-part sculpt (.glb)</small></span><span class="chevron">↗</span></a>
+    <a class="action-card" href="PRODUCTION_SPEC.md" download><span class="action-icon">≡</span><span><strong>Sculpt production specification</strong><small>Rig, facial states & integration contract</small></span><span class="chevron">↗</span></a>
+    <a class="action-card" href="assets/approved-orbit-reference.png" target="_blank"><span class="action-icon">◈</span><span><strong>Approved artwork</strong><small>Compare original concept and sculpt</small></span><span class="chevron">↗</span></a><div class="separation"></div><div class="section-heading"><span>SCENE DETAILS</span></div>
     <div class="meta-grid"><span>Renderer</span><strong>Local WebGL2</strong><span>Body pieces</span><strong>4</strong><span>Facial output</span><strong>Canvas texture</strong><span>Frames</span><strong>Time-based, continuous</strong><span>Cloud calls</span><strong>None</strong></div>
    </div>
    <div class="right-bottom"><span class="swatch"></span><span>OFFLINE 3D STUDIO<br/><small>NO DESKTOP AI LINK</small></span></div>
@@ -73,7 +73,7 @@
  </div>
  <footer class="footer"><span>ORBIT · THE FIXER</span><span>FOUR PIECES. ONE PRESENCE.</span><span>3D PERFORMANCE R&D / 2026</span></footer>
 </div>
-<dialog id="aboutDialog"><form method="dialog"><button class="dialog-close" aria-label="Close">×</button></form><div class="eyebrow">A NEW FOUNDATION</div><h2>A living 3D character, not a 2D puppet.</h2><p>Orbit has four articulated physical parts: head, torso, left arm and right arm. His dynamic facial screen displays emotional eyes, scanner graphics, yellow caution, green completion and red error indicators.</p><p>The studio is a fully local animation testbed. Press gestures to view choreographed motion, drag Orbit to inspect his form, or export a model. It does <strong>not</strong> connect to Framework Command or interpret real task results.</p><form method="dialog"><button class="outline-button">Close</button></form></dialog>
+<dialog id="aboutDialog"><form method="dialog"><button class="dialog-close" aria-label="Close">×</button></form><div class="eyebrow">MASTER CHARACTER REBUILD</div><h2>Artwork-matched 3D robot · four articulated pieces.</h2><p>Orbit has four articulated physical parts: head, torso, left arm and right arm. This second-generation sculpt has a curved screen, detailed helmet trim, tapered torso and shaped arm pods. The reference art is available for side-by-side comparison. His dynamic facial screen displays emotional eyes, scanner graphics, yellow caution, green completion and red error indicators.</p><p>The studio is a fully local animation testbed. Press gestures to view choreographed motion, drag Orbit to inspect his form, or export a model. It does <strong>not</strong> connect to Framework Command or interpret real task results.</p><form method="dialog"><button class="outline-button">Close</button></form></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 <script type="module" src="app.mjs"></script>
 </body>
