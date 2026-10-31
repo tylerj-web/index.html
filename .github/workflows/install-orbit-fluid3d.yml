@@ -1,0 +1,79 @@
+name: Publish Orbit Fluid 3D Motion Lab
+on:
+  push:
+    paths:
+      - ".github/workflows/install-orbit-fluid3d.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install-fluid3d:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout existing site
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download and verify Fluid 3D release
+        env:
+          DOWNLOAD_URL: "https://at.adobe.com/42gTgoMbky1DhYTn"
+          SHA256: "30f84437d9144f60bd717099a11e44198cbbd5e1d923356c6502364acc34054f"
+        run: |
+          set -euo pipefail
+          curl --fail --location --show-error --retry 3 --max-time 180 --output /tmp/orbit-fluid3d.zip "$DOWNLOAD_URL"
+          printf '%s  %s\n' "$SHA256" /tmp/orbit-fluid3d.zip | sha256sum --check
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          from stat import S_IFMT, S_IFLNK
+          package=Path('/tmp/orbit-fluid3d.zip')
+          target=Path('/tmp/orbit-fluid3d-stage')
+          target.mkdir(exist_ok=True)
+          with ZipFile(package) as z:
+              seen=set()
+              for f in z.infolist():
+                  p=PurePosixPath(f.filename)
+                  assert f.filename and not f.filename.startswith('/') and '..' not in p.parts, f.filename
+                  assert f.filename not in seen, f.filename
+                  assert f.file_size <= 20_000_000, f.filename
+                  assert S_IFMT(f.external_attr>>16) != S_IFLNK, f.filename
+                  seen.add(f.filename)
+              z.extractall(target)
+          for name in ('index.html','app.mjs','motion.mjs','renderer.mjs','service-worker.js','assets/Orbit_WebMeshes.json','assets/Orbit_WebMeshes.bin','assets/Orbit_FourPart_Reference3D.glb'):
+              assert (target/name).is_file(), name
+          text=(target/'index.html').read_text()
+          assert 'ACTUAL 3D' in text
+          assert 'WebGL2' in (target/'renderer.mjs').read_text() or 'webgl2' in (target/'renderer.mjs').read_text()
+          PY
+      - name: Install standalone 3D test page and navigation
+        run: |
+          set -euo pipefail
+          mkdir -p orbit/fluid3d
+          cp -a /tmp/orbit-fluid3d-stage/. orbit/fluid3d/
+          python3 - <<'PY'
+          from pathlib import Path
+          fluid=Path('orbit/fluid/index.html')
+          if fluid.exists():
+              s=fluid.read_text()
+              marker='<a href="../" class="subtle-link">3D sculpt</a>'
+              link='<a href="../fluid3d/" class="subtle-link" style="border-color:#68bccc;color:#bdf6ff">NEW: Fluid 3D</a>'
+              if 'href="../fluid3d/"' not in s:
+                  assert marker in s,'Navigation anchor changed; abort rather than corrupt site'
+                  s=s.replace(marker,link+marker,1)
+                  fluid.write_text(s)
+          root=Path('orbit/index.html')
+          s=root.read_text()
+          if 'href="./fluid3d/"' not in s:
+              marker='<div class="top-actions">'
+              assert marker in s,'Studio header changed; abort'
+              link='<a href="./fluid3d/" style="display:inline-flex;align-items:center;padding:9px 12px;background:#163748;color:#b4f3ff;border:1px solid #356778;border-radius:10px;text-decoration:none;font:600 12px system-ui,sans-serif">Fluid 3D Motion Lab</a>'
+              s=s.replace(marker,marker+link,1)
+              root.write_text(s)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add orbit/fluid3d/ orbit/index.html orbit/fluid/index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Orbit: add true 3D fluid motion laboratory and navigation"
+            git push
+          fi
