@@ -1,0 +1,62 @@
+name: Publish Orbit four-piece 3D animation studio
+on:
+  push:
+    paths:
+      - ".github/workflows/install-orbit-3d-lab-v1.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout existing site
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download and verify finished Orbit 3D release
+        env:
+          SOURCE_URL: "https://at.adobe.com/1ToSZsGas5E7m4NP"
+          CHECKSUM: "f232572bb780c455da39b7de3c48f2665d932d9e10ba9d088fe0dfad84b28b1e"
+        run: |
+          set -euo pipefail
+          curl --fail --location --show-error --retry 3 --max-time 150 -o /tmp/orbit-3d.zip "$SOURCE_URL"
+          printf '%s  %s\n' "$CHECKSUM" /tmp/orbit-3d.zip | sha256sum --check
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          archive = Path('/tmp/orbit-3d.zip')
+          dest = Path('/tmp/orbit3d-unpacked')
+          dest.mkdir(exist_ok=True)
+          with ZipFile(archive) as z:
+              assert z.testzip() is None, 'Archive integrity check failed'
+              names=set()
+              for info in z.infolist():
+                  path=PurePosixPath(info.filename)
+                  assert info.filename and not info.filename.startswith('/') and '..' not in path.parts, 'Unsafe path'
+                  assert info.file_size < 8_000_000, 'Oversized file'
+                  assert not ((info.external_attr >> 16) & 0o170000)==0o120000, 'Symlink forbidden'
+                  assert info.filename not in names, 'Duplicate path'
+                  names.add(info.filename)
+              required={'index.html','app.mjs','rig.mjs','renderer.mjs','styles.css','service-worker.js','assets/Orbit_4Piece_Rig.glb','PRODUCTION_SPEC.md','TEST_REPORT.md'}
+              assert required.issubset(names), 'Missing required files'
+              z.extractall(dest)
+          assert '3D CHARACTER LAB' in (dest/'index.html').read_text()
+          assert 'orbit-3d-studio-v1.0.0' in (dest/'service-worker.js').read_text()
+          assert (dest/'assets/Orbit_4Piece_Rig.glb').stat().st_size>10000
+          print('Orbit 3D release integrity and contract checks passed')
+          PY
+      - name: Replace only the Orbit testbed
+        run: |
+          set -euo pipefail
+          git rm -rq --ignore-unmatch -- orbit
+          rm -rf orbit
+          mkdir -p orbit
+          cp -a /tmp/orbit3d-unpacked/. orbit/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- orbit/
+          if ! git diff --cached --quiet; then
+            git commit -m "Orbit: launch four-piece interactive 3D character animation lab"
+            git push
+          fi
