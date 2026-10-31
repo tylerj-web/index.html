@@ -1,0 +1,35 @@
+{
+  "id": "./",
+  "name": "Orbit \u2014 Your Robot Establishment Officer",
+  "short_name": "Orbit",
+  "description": "Orbit Mobile \u2014 black-and-gold robot companion for the Framework Command prototype. Offline-capable demonstration.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone"
+  ],
+  "background_color": "#071017",
+  "theme_color": "#071017",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
