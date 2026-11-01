@@ -1,3 +1,15 @@
+# V4.1 playback correction — 2 November 2026
+
+The initial V4 page incorrectly defaulted to a live static Orbit rendering plus tiny OLED symbols. This produced a blue dot and almost no full-body motion. That was **not the user's requested animation system**.
+
+The page now defaults to the 28 actual pre-existing, source-derived 60-frame 24 FPS emote atlases, and also exposes 31 actual 24-frame 24 FPS transitions. Unproduced actions are in a separate Planned tab and do not play a fake bobbing animation. The static character fallback is explicitly identified as unanimated. The placeholder blue-dot OLED function is no longer invoked. No change was made to the old Orbit 3D or Orbit 5× viewer files.
+
+The online page does **not** host the new high-resolution 30 FPS pilot atlases. The local offline package `ORBIT_V4_1_FIXED_MOTION_REVIEW.zip` contains 4 image-derived 30 FPS pilot clips and 10 original user-supplied sprite strips (73 frames). They can be played, stepped, and scrubbed in the offline reviewer.
+
+**Artistic status:** The existing 5× atlas contains optical-flow-generated in-betweens and some known deformation; the four 30 FPS pilot clips are 2.5D image-derived movements, not rigged 3D renders. The full 141-action bespoke high-resolution animation library has not been produced.
+
+---
+
 # Orbit V4 — Original Sprite & OLED Review Studio
 
 Source-only review deployment. This is a new subdirectory; it does not replace the existing `orbit/` 3D sculpt or `orbit/5x/` motion viewer.
