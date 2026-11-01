@@ -1,204 +1,217 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ORBIT — Sprite & Screen Studio V4</title>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#081522">
+<title>ORBIT — Approved Animation Studio</title>
 <style>
-:root{color-scheme:dark;--bg:#07101b;--panel:#101e30;--edge:#224760;--accent:#71e8ff;--sub:#88adc1;--gold:#e5aa4c}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -15%,#1b405a 0%,#07111b 45%,#050b13 100%);color:#e9f8ff;font:14px/1.48 system-ui,-apple-system,Segoe UI,sans-serif}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 24px;background:#081524ef;border-bottom:1px solid #315770;flex-wrap:wrap}
-h1{font-size:24px;letter-spacing:.16em;margin:0;font-weight:750}h1 em{color:var(--accent);font-style:normal}small,.muted{color:var(--sub)}.kicker{letter-spacing:.16em;color:var(--accent);font-size:10px;text-transform:uppercase}.tag{border:1px solid #335874;border-radius:999px;padding:4px 9px;color:#a7d3e7;font-size:11px}
-a{color:#8ee4fb}.wrap{display:grid;grid-template-columns:minmax(205px,290px) minmax(400px,1fr) minmax(230px,310px);gap:16px;margin:16px auto;max-width:1650px;padding:0 16px}
-.panel{background:linear-gradient(160deg,#122538f2,#091624f5);border:1px solid var(--edge);border-radius:17px;overflow:hidden;min-width:0}
-.phead{padding:14px 16px;border-bottom:1px solid #25495f;display:flex;gap:8px;align-items:center;justify-content:space-between}
-.pbody{padding:15px}.phead strong{letter-spacing:.025em}.catalog{max-height:calc(100vh - 179px);overflow:auto}
-#find{width:100%;padding:10px;border-radius:9px;border:1px solid #325775;background:#061324;color:#effaff;outline:none}
-#groups{display:flex;gap:5px;flex-wrap:wrap;margin:11px 0}.groupbtn{font-size:11px;padding:6px 8px}
-button,select,input,textarea{font:inherit}button{cursor:pointer;background:#132d42;border:1px solid #38627d;border-radius:9px;color:#d9f5ff;padding:8px 11px}
-button:hover{border-color:var(--accent);background:#19415a}button[aria-pressed="true"],.active{background:#174a62!important;border-color:#69dfff!important}
-.catalog button.state{display:flex;width:100%;border:none;border-bottom:1px solid #1b3547;text-align:left;background:transparent;border-radius:0;align-items:center;justify-content:space-between;padding:10px 9px;gap:8px}
-.catalog button.state.active{background:#19415a!important}.catalog button.state .name{font-size:12.5px}.tiny{font-size:10px;color:#89b0c3}
-.legend{display:flex;flex-wrap:wrap;gap:6px}.dot{width:7px;height:7px;display:inline-block;border-radius:50%;background:#f1b965;margin-right:6px}.dot.legacy{background:#63dcda}.dot.prototype{background:#c18eeb}
-.visual{border-radius:13px;background:linear-gradient(45deg,#16212a 25%,#1b2935 25% 50%,#16212a 50% 75%,#1b2935 75%);background-size:28px 28px;position:relative;overflow:hidden}
-.visual.light{background:linear-gradient(45deg,#d6e4e8 25%,#edf5f7 25% 50%,#d6e4e8 50% 75%,#edf5f7 75%);background-size:28px 28px}
-.visual.dark{background:#07121e}.visual canvas{display:block;width:100%;max-height:min(69vh,850px);aspect-ratio:1;object-fit:contain;cursor:crosshair}
-#stagehint{position:absolute;left:12px;top:12px;padding:5px 9px;background:#071523ba;border-radius:8px;font-size:11px;pointer-events:none}
-#stateTitle{font-size:21px;font-weight:740;margin:0}.subline{margin:3px 0 13px;color:#9bbad0;font-size:12px}
-.control{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:10px 0}.control label{font-size:12px;color:#a5c4d6}
-input[type=range]{accent-color:#6bdef5;flex:1;min-width:100px}
-select{background:#0b2134;border:1px solid #355e79;color:#dff7ff;border-radius:7px;padding:7px}
-.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.stat{border:1px solid #28465b;background:#0d1e2d;border-radius:11px;padding:9px}.stat b{display:block;font-size:15px}.stat span{font-size:10px;color:#9cbcd1}
-.note{font-size:12px;color:#a5c3d2;line-height:1.6;margin:9px 0}
-textarea{width:100%;min-height:115px;border:1px solid #315875;background:#071726;color:#e5f8ff;border-radius:11px;padding:10px;resize:vertical}
-.reviewBtns{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}.reviewBtns button{padding:9px 4px;font-size:11px}
-.hint{background:#0b2031;border-left:3px solid #5aaacd;padding:10px 12px;border-radius:7px;font-size:12px;color:#bcdbe8;line-height:1.55}
-#sourceImg{width:100%;border-radius:10px;margin-top:8px;border:1px solid #284760;display:none}
-footer{text-align:center;padding:24px;font-size:12px;color:#7ea7bd}
-@media(max-width:1120px){.wrap{grid-template-columns:230px 1fr}.review{grid-column:1/-1}.catalog{max-height:650px}}
-@media(max-width:720px){header{padding:12px 14px}h1{font-size:18px}.wrap{grid-template-columns:1fr;padding:0 9px;gap:10px}.catalog{max-height:240px}.statrow{grid-template-columns:repeat(3,1fr)}}
-</style></head><body>
-<header><div><div class="kicker">The Fixer / Original Character</div><h1>ORBIT <em>SPRITE STUDIO</em> <span style="color:#a8bed3;font-size:14px">V4</span></h1><small>Source-preserving animation review · 30 FPS screen prototypes · existing 24 FPS atlases</small></div><div class="legend"><span class="tag"><span class="dot legacy"></span>Existing atlas</span><span class="tag"><span class="dot prototype"></span>Screen prototype</span><a class="tag" href="../">Original 3D studio</a><a class="tag" href="../5x/">Original motion library</a></div></header>
-<div class="wrap">
-<section class="panel"><div class="phead"><strong>Action catalogue</strong><span class="tiny" id="total">0 states</span></div><div class="pbody"><input id="find" placeholder="Search emotes, actions, states" aria-label="Search actions"><div id="groups"></div><p class="note" style="font-size:11px;margin-top:-5px">Only real atlases appear in Emotes and Transitions. Select Planned to inspect missing requirements.</p></div><div id="catalog" class="catalog"></div></section>
-<section class="panel"><div class="phead"><strong id="stateTitle">Orbit — Idle</strong><span class="tag" id="kind">Loading</span></div><div class="pbody"><p class="subline" id="desc">Original Orbit · screen-driven behaviour prototype</p>
-<div id="visual" class="visual"><canvas id="stage" width="900" height="900" aria-label="Orbit animation viewer"></canvas><div id="stagehint">Playing original Orbit sprite animation</div></div>
-<div class="control"><button id="play">Pause</button><button id="prev" title="Previous frame">◀</button><button id="next" title="Next frame">▶</button><label for="timeline">Frame</label><input type="range" id="timeline" min="0" max="59" value="0"><span class="tiny" id="counter">000 / 060</span></div>
-<div class="control"><label for="mode">Renderer</label><select id="mode"><option value="atlas">Actual 24 FPS animation frames</option><option value="hi">Original Orbit still — unanimated</option></select><label for="fps">Playback</label><select id="fps"><option value="30">30 FPS</option><option value="24">24 FPS</option><option value="12">12 FPS</option></select><label for="bg">Background</label><select id="bg"><option value="check">Checker</option><option value="dark">Dark</option><option value="light">Light</option></select></div>
-<div class="statrow"><div class="stat"><b id="framenum">60</b><span>Timed frames / preview</span></div><div class="stat"><b id="duration">2.0s</b><span>Preview duration</span></div><div class="stat"><b id="source">Original hero</b><span>Visual source</span></div></div>
-<p class="note" id="explain"></p>
-<div class="hint">The default player shows actual frames from the existing 28-emote, 31-transition source-derived 24 FPS sprite library. Planned actions are listed separately and <b>do not play fake emotes</b>. This library is still under artistic review; it is not a completed 30 FPS production library.</div>
-</div></section>
-<section class="panel review"><div class="phead"><strong>Art direction & review</strong><span class="tiny">Saved in this browser</span></div><div class="pbody"><div class="kicker">Character fidelity</div><p class="note">The original glossy black and gold-reflective Orbit is the only approved character. The black glass face serves as an OLED screen for status graphics.</p>
-<div class="reviewBtns"><button data-status="approved">Approve</button><button data-status="refine">Refine</button><button data-status="reject">Reject</button></div>
-<label class="muted" for="notes">Review notes / frame issues</label><textarea id="notes" placeholder="Record what should change on this state…"></textarea>
-<div class="control"><button id="save">Save note</button><button id="export">Export reviews JSON</button></div>
-<p class="note" id="reviewState">No review recorded.</p><hr style="border:0;border-top:1px solid #25475d;margin:18px 0">
-<div class="kicker">Original source</div><button id="original">Show / hide approved artwork</button><img id="sourceImg" alt="Original Orbit reference" src="../assets/approved-orbit-reference.png">
-<p class="note">Source assets: <a href="../assets/approved-orbit-reference.png">approved hero</a> · <a href="../assets/approved-orbit-sprite-sheet.png">original transparent atlas</a> · <a href="../5x/">existing 5× motion viewer</a>.</p>
-<div class="kicker">Production status</div><p class="note" id="progress"></p></div></section>
-</div><footer>Orbit Sprite Studio V4 · Preserves the existing Orbit site and original assets · This is an animation review interface, not a desktop-control or AI engine.</footer>
+:root{--bg:#06111d;--pane:#101e2c;--pane2:#132638;--edge:#2a4056;--cyan:#83e5ff;--muted:#90aabc;--gold:#efc27e;--white:#edf8ff;--glass:#071525ee}
+*{box-sizing:border-box}body{margin:0;color:var(--white);background:radial-gradient(ellipse 78% 60% at 55% -20%,#16456480,transparent 70%),var(--bg);font:14px/1.47 -apple-system,BlinkMacSystemFont,Segoe UI,Inter,system-ui,sans-serif;min-height:100vh}
+a{color:#9cddf6;text-decoration:none}a:hover{text-decoration:underline}button,select,input{font:inherit;color:inherit}button{cursor:pointer;border:1px solid #36546c;background:#152a3c;border-radius:10px;padding:9px 13px;transition:background .15s,border-color .15s}button:hover{background:#1d4056;border-color:#5ed8f2}button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+header{display:flex;align-items:center;justify-content:space-between;padding:19px 26px;background:#081724da;border-bottom:1px solid #29475b;gap:20px;flex-wrap:wrap}
+.kicker{font-size:10px;letter-spacing:.21em;color:var(--cyan);text-transform:uppercase;font-weight:650}
+h1{margin:3px 0 1px;font-size:24px;letter-spacing:.14em;font-weight:800;line-height:1.1}h1 span{color:var(--cyan)}
+header .sub{color:var(--muted);font-size:12px;margin:6px 0 0}
+.nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav a{border:1px solid #35546a;border-radius:999px;padding:7px 12px;color:#b3d4e5;font-size:12px}.nav a.current{color:var(--cyan);border-color:#3d91ac;background:#133247}
+.topstatus{margin:13px auto 0;max-width:1630px;padding:0 16px;display:flex;align-items:center;gap:10px;color:#bfd6e7;font-size:12px}
+.pulse{display:inline-block;width:7px;height:7px;border-radius:99px;background:#65dbba;box-shadow:0 0 10px #65dbba}.pulse.pending{background:#dfa75b;box-shadow:0 0 8px #dfa75b}.pulse.error{background:#ff6e83;box-shadow:0 0 8px #ff6e83}
+.shell{display:grid;grid-template-columns:265px minmax(400px,1fr) 260px;gap:15px;margin:13px auto;max-width:1630px;padding:0 16px;align-items:start}
+.panel{background:linear-gradient(150deg,#112537f7,#0b1926f9);border:1px solid var(--edge);border-radius:17px;overflow:hidden;min-width:0}
+.titlebar{padding:15px 16px;border-bottom:1px solid #2b465a;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.titlebar strong{font-weight:720;letter-spacing:.03em}
+.minor{color:var(--muted);font-size:11px}.pad{padding:16px}
+.sidebar{max-height:calc(100vh - 165px);overflow:auto}
+.sheetlist{padding:6px}
+.sheetbtn{width:100%;display:flex;gap:12px;align-items:center;text-align:left;background:transparent;border:1px solid transparent;padding:9px 10px;margin:2px 0;border-radius:12px}
+.sheetbtn:hover{background:#173247}.sheetbtn.selected{background:#174157;border-color:#4081a0}
+.sheetbtn canvas{width:56px;height:56px;object-fit:contain;border-radius:8px;background:#050b11;flex:0 0 56px}
+.sheetbtn .label{font-size:13px;font-weight:690;white-space:nowrap}.sheetbtn .desc{font-size:10px;color:var(--muted);margin-top:2px}.sheetbtn .n{font-size:10px;color:#7eacbd;display:block}
+.search{width:100%;padding:10px;background:#071726;border:1px solid #365a70;border-radius:8px;margin-bottom:3px;color:#e8f9ff}
+.center{min-width:0}
+.headings{padding:17px 17px 12px;display:flex;justify-content:space-between;gap:12px;align-items:start;flex-wrap:wrap}
+.headings h2{font-size:22px;margin:0 0 4px;font-weight:760}.headings p{margin:0;font-size:12px;color:var(--muted)}
+.flag{font-size:10px;text-transform:uppercase;letter-spacing:.11em;border:1px solid #367c86;border-radius:99px;color:#96ece0;padding:5px 9px;white-space:nowrap}
+.viewer{height:min(60vw,620px);min-height:350px;max-height:620px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:12px;margin:0 16px}
+.viewer.check{background-color:#0c1925;background-image:linear-gradient(45deg,#192a34 25%,transparent 25%),linear-gradient(-45deg,#192a34 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#192a34 75%),linear-gradient(-45deg,transparent 75%,#192a34 75%);background-size:30px 30px;background-position:0 0,0 15px,15px -15px,-15px 0}
+.viewer.black{background:#000}.viewer.light{background:#e9eef1}.viewer.navy{background:radial-gradient(circle at 55% 44%,#193a50,#050b15 70%)}
+canvas#stage{width:100%;height:100%;display:block;object-fit:contain}
+.frameinfo{position:absolute;top:12px;left:12px;background:#061521c8;border:1px solid #234354;border-radius:9px;padding:6px 9px;color:#b1cde0;font-size:11px;pointer-events:none}
+.loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:13px 18px;border:1px solid #4b6879;background:#071725ee;border-radius:10px;text-align:center;max-width:80%;font-size:13px}
+.controlbox{padding:14px 17px 17px}
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+.play{background:#23627b;border-color:#56bdd6;font-weight:760;color:#f4fdff;min-width:85px}
+.controlbox input[type=range]{accent-color:#6ce0fb;min-width:100px;flex:1}
+select{background:#071929;border:1px solid #36596d;border-radius:8px;padding:8px 7px}
+.seg{display:flex;gap:5px;background:#081521;border:1px solid #2f4b60;padding:3px;border-radius:11px;align-items:center}.seg button{border:0;background:transparent;padding:7px 11px;border-radius:8px;font-size:12px}
+.seg button.sel{background:#1b5167;color:#aff3ff}
+.barsmall{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.barsmall span{font-size:11px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{background:#081927;border:1px solid #2c4b5f;padding:11px 12px;border-radius:12px}
+.stat b{font-size:17px;display:block;font-variant-numeric:tabular-nums}.stat label{font-size:10px;color:var(--muted)}
+.note{font-size:12px;color:#b8cedb;line-height:1.7;margin:15px 0}
+.divider{border:none;border-top:1px solid #2d4759;margin:18px 0}
+.links{display:flex;flex-wrap:wrap;gap:8px}.links a{display:inline-flex;align-items:center;border:1px solid #416279;padding:8px 10px;border-radius:9px;font-size:11px}
+.progress-label{display:flex;justify-content:space-between;color:#aec4d2;font-size:11px;margin-bottom:6px}
+.progress{height:7px;background:#081522;border:1px solid #294658;border-radius:99px;overflow:hidden}.progress div{width:100%;height:100%;background:linear-gradient(90deg,#45aacc,#70f3d2)}
+.statusnote{font-size:12px;color:#c6e0ed;line-height:1.6;padding:11px 12px;border-radius:10px;background:#0b2435;border:1px solid #315267}
+footer{text-align:center;color:#7d9db2;font-size:11px;padding:19px 14px 30px}
+kbd{font-size:11px;padding:2px 5px;border-radius:4px;background:#1e3445;border:1px solid #426176}
+@media(max-width:1160px){.shell{grid-template-columns:235px minmax(360px,1fr)}.right{grid-column:1/-1}.right .pad{display:grid;grid-template-columns:1fr 1fr;gap:14px}.right .pad>*{margin-top:0}.right .pad .divider{display:none}}
+@media(max-width:740px){header{padding:14px 15px}h1{font-size:19px}.shell{grid-template-columns:1fr;gap:10px;padding:0 9px}.sidebar{max-height:260px}.right{grid-column:1}.right .pad{display:block}.viewer{height:390px;min-height:280px;margin:0 10px}.titlebar{padding:11px 12px}.controlbox{padding:12px}.headings h2{font-size:19px}.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head><body>
+<header><div><div class="kicker">The Fixer · Character animation</div><h1>ORBIT <span>ANIMATION STUDIO</span></h1><p class="sub">Fourteen user-approved sprite sequences · Original black-and-gold Orbit</p></div><nav class="nav" aria-label="Orbit pages"><a class="current" href="./">Approved Emotes</a><a href="../5x/">Legacy Motion</a><a href="../">3D Studio</a></nav></header>
+<div class="topstatus"><span class="pulse pending" id="pulse"></span><span id="status">Connecting to approved sprite library…</span></div>
+<main class="shell">
+<aside class="panel"><div class="titlebar"><strong>APPROVED MOTIONS</strong><span class="minor" id="count">14 actions</span></div><div class="pad" style="padding-bottom:0"><input id="search" class="search" placeholder="Search actions" aria-label="Search approved motions"></div><div class="sheetlist sidebar" id="list"></div></aside>
+<section class="panel center">
+<div class="headings"><div><div class="kicker" id="category">Original orbit · motion 01 / 14</div><h2 id="name">Idle / Float</h2><p id="subtitle">Ready to review</p></div><span class="flag">Approved visual set</span></div>
+<div id="viewer" class="viewer navy"><canvas id="stage" width="1100" height="900" aria-label="Orbit approved sprite playback"></canvas><div class="frameinfo" id="frameinfo">Frame 01 of 60</div><div id="loader" class="loader">Loading approved artwork…</div></div>
+<div class="controlbox">
+<div class="bar"><button class="play" id="play" title="Play/pause animation">Pause</button><button id="first" title="First frame">|◀</button><button id="prev" title="Previous frame">◀</button><button id="next" title="Next frame">▶</button><button id="last" title="Last frame">▶|</button><input id="seek" type="range" min="0" max="59" value="0" aria-label="Frame position"><span class="minor" id="time">00 / 60</span></div>
+<div class="bar"><div class="seg"><button data-mode="motion" class="sel">Animation</button><button data-mode="sheet">Whole sheet</button></div><div class="barsmall"><span>Playback</span><select id="fps" aria-label="Playback frame rate"><option value="30">30 FPS</option><option value="24">24 FPS</option><option value="15">15 FPS</option><option value="8">8 FPS</option></select><span>Background</span><select id="background" aria-label="Viewer background"><option value="navy">Navy</option><option value="black">Black</option><option value="check">Checker</option><option value="light">White</option></select></div></div>
+<div class="minor">Keyboard: <kbd>Space</kbd> play/pause · <kbd>←</kbd> <kbd>→</kbd> frame step · <kbd>1</kbd>–<kbd>9</kbd> select animation</div>
+</div>
+</section>
+<aside class="panel right"><div class="titlebar"><strong>SHEET INFORMATION</strong><span class="minor">Validated source</span></div><div class="pad">
+<div class="stats"><div class="stat"><b>14</b><label>Approved actions</label></div><div class="stat"><b id="frameCount">60</b><label>Frames per action</label></div><div class="stat"><b id="dimensions">—</b><label>Source dimensions</label></div><div class="stat"><b id="duration">2.00s</b><label>At selected FPS</label></div></div>
+<hr class="divider"><div class="kicker">Description</div><p class="note" id="description">Orbit's approved animation strip, played in original frame order.</p>
+<hr class="divider"><div class="kicker">Original artwork</div><p class="note">The large curved helmet, glossy near-black metal, gold reflective edging, glowing cyan eyes and central power core remain unchanged.</p>
+<div class="links"><a id="downloadWebp" href="#" download>Download sheet</a><a id="downloadPng" href="#" download>Original PNG</a></div>
+<hr class="divider"><div class="kicker">Library installation</div><p class="note">These are the fourteen newly approved strips, not the previous interpolated 5× motion library. Their source PNGs are preserved, and the website plays all 60 cells in row-major order.</p>
+<div class="progress-label"><span>Visual asset set</span><strong>14 / 14 approved</strong></div><div class="progress"><div></div></div>
+<p class="statusnote">This site previews approved sprite-sheet art. It does not yet provide native desktop cursor control, AI functions, or a physically rigged 3D animation system.</p>
+</div></aside>
+</main>
+<footer>Orbit Character Studio · GitHub Pages · Original Orbit identity preserved · New approved motion set (November 2026)</footer>
 <script>
+(() => {
 "use strict";
-const CATS={
-Emotions:"Neutral happy|Blink|Excited|Curious|Thinking|Focused|Determined|Serious|Concerned|Sad|Disappointed|Confused|Surprised|Shocked|Sleepy|Sleeping|Wake|Wink|Laughing|Love|Proud|Celebrating|Frustrated|Relieved".split("|"),
-Conversation:"Hello greet|Goodbye|Listening|Speaking|Nod yes|Shake no|Okay|Thank you|Apologise|Point|Present|Explain|Question|Idea|Approval|Disapproval|Attention".split("|"),
-Systems:"Idle|Typing|Loading|Processing|Scanning|Searching|Reading|Inspecting|Working|Progress|Complete|Success|Warning|Error|Critical alert|File found|File opened|File saved|Syncing|Connected|Disconnected|Command received|Task assigned|Audit active|Audit complete|Notification|Waiting|Paused|Cancelled|Help".split("|"),
-Mouse:"Look left|Look right|Look up|Look down|Look up-left|Look up-right|Look down-left|Look down-right|Return gaze centre|Track slow cursor|Track fast cursor|Notice stationary cursor|Look at click|Click reaction|Double click|Approach cursor|Retreat from cursor|Point at cursor|Inspect object|Look at window|Window opens|Window closes|Drag drop|Return attention".split("|"),
-Movement:"Idle float|Rise|Descend|Float hop|Fly left|Fly right|Fly up|Fly down|Fly diagonal|Accelerate|Decelerate|Stop hover|Turn left|Turn right|Turn around|Face user|Approach object|Retreat object|Lean inspect|Look around|Run left|Run right|Quick dash|Slow drift|Settle corner|Move between windows".split("|"),
-Composites:"Happy wave speaking|Curious inspect|Thinking idea|Processing complete|Processing error|Search result|Reading confirmation|Warning recover|Error retry|Sad encouragement|Sleep wake|Celebrate idle|New notification|Present complete task|Cursor talking|Window pointing|Scanning hover|Working progress|Command acknowledgement|Task finish acknowledgement".split("|")};
-const alias={
-"Neutral happy":"idle","Excited":"happy","Curious":"curious","Thinking":"thinking","Focused":"focused","Concerned":"concerned","Sad":"sad","Surprised":"surprised","Sleepy":"sleepy","Sleeping":"sleepy","Wake":"greeting","Celebrating":"celebrate","Hello greet":"greeting","Listening":"listening","Speaking":"speaking","Nod yes":"nod","Idle":"idle","Processing":"processing","Scanning":"scanning","Complete":"complete","Success":"complete","Warning":"caution","Error":"error","Idle float":"hover","Fly left":"fly_left","Fly right":"fly_right","Look around":"look_around","Look up":"look_up","Blink":"blink","Look left":"look_around","Look right":"look_around"};
-const categoryKeys=Object.keys(CATS);const states=categoryKeys.flatMap((cat,ci)=>CATS[cat].map((name,i)=>({id:cat[0]+String(i+1).padStart(2,"0"),name,category:cat,legacy:alias[name]||name.toLowerCase().replace(/[^a-z0-9]+/g,"_")})));
-let manifest=null,emoteImage=null,hero=null,selected=null,filteredCat="All",playing=true,frame=0,loop=true,time=performance.now(),pointer={x:0,y:0},atlasImage=null,frameRate=24,lastDraw=performance.now(),reviews={},assetError="";
-const $=s=>document.querySelector(s),stage=$("#stage"),ctx=stage.getContext("2d"),cat=$("#catalog"),groups=$("#groups"),timeline=$("#timeline");
-try{reviews=JSON.parse(localStorage.getItem("orbitV4Reviews")||"{}")}catch(e){}
-async function load(){
- try{const r=await fetch("../5x/manifest.json");if(r.ok)manifest=await r.json()}catch(e){}
- const img=new Image();img.src="../assets/approved-orbit-reference.png";await img.decode();hero=document.createElement("canvas");hero.width=img.naturalWidth;hero.height=img.naturalHeight;
- const c=hero.getContext("2d",{willReadFrequently:true});c.drawImage(img,0,0);const pixels=c.getImageData(0,0,hero.width,hero.height),p=pixels.data;
- for(let i=0;i<p.length;i+=4){const r=p[i],g=p[i+1],b=p[i+2];let key=Math.max(0,Math.min(1,Math.min((r-128)/60,(b-138)/60,(r+b-2*g-125)/75)));let alpha=Math.round((1-key)*255);p[i+3]=alpha;if(alpha===0)p[i]=p[i+1]=p[i+2]=0}
- c.putImageData(pixels,0,0);const wave=(manifest?.emotes?.wave)?{id:"A18",name:"Wave",category:"Emotes",legacy:"wave"}:states[0];selectState(wave);requestAnimationFrame(tick);
+const $=(s)=>document.querySelector(s), host=$("#viewer"),stage=$("#stage"),g=stage.getContext("2d");
+const sourceFallback=[
+["idle","Idle / float","Loop / subtle hover"],["wave","Wave / greeting","Greeting gesture"],
+["listening","Listening","Attentive posture"],["thinking","Thinking","Contemplation and face symbols"],
+["speaking","Speaking","Expressive conversational gestures"],["celebration","Celebration","Arms raised / celebratory reaction"],
+["scanning","Scanning","Integrated facial scan"],["caution","Caution","Warning symbol and reaction"],
+["complete","Complete / success","Face-display completion tick"],["error","Error / recovery","Error indication and recovery"],
+["sleep","Sleep","Sleep/rest cycle"],["wake","Wake","Wake from standby"],
+["review","Review / inspection","Check/inspect outcome"],["idle-return","Return to idle","Settle to original pose"]];
+let actions=[],selected=null,selectedIndex=0,image=null,images=new Map(),frame=0,playing=true,mode="motion",fps=30,lastFrameTime=null,ready=false;
+const assign=(id,val)=>$(id).textContent=val;
+function setStatus(text,type){$("#status").textContent=text;$("#pulse").className="pulse"+(type==="ok"?"":type==="error"?" error":" pending")}
+function busy(text){$("#loader").textContent=text;$("#loader").style.display="block"}
+function unbusy(){$("#loader").style.display="none"}
+function cell(img,n,columns,rows) {
+ const col=n%columns,row=Math.floor(n/columns);
+ const x0=Math.round(col*img.naturalWidth/columns),y0=Math.round(row*img.naturalHeight/rows);
+ const x1=Math.round((col+1)*img.naturalWidth/columns),y1=Math.round((row+1)*img.naturalHeight/rows);
+ return [x0,y0,x1-x0,y1-y0];
 }
-
-function actualCatalog(){
- if(!manifest)return [];
- const emotes=Object.entries(manifest.emotes||{}).map(([legacy,a],i)=>({id:"A"+String(i+1).padStart(2,"0"),name:a.label||legacy.replaceAll("_"," "),category:"Emotes",legacy}));
- const transitions=Object.entries(manifest.transitions||{}).map(([legacy,a],i)=>({id:"T"+String(i+1).padStart(2,"0"),name:(a.from||"")+" → "+(a.to||""),category:"Transitions",legacy,transition:true}));
- return [...emotes,...transitions];
+function thumb(canvas,img,index=0){
+ const c=canvas.getContext("2d"); c.clearRect(0,0,canvas.width,canvas.height);
+ if(!img||!img.naturalWidth)return;
+ const [sx,sy,sw,sh]=cell(img,index,10,6);
+ const scale=Math.min(canvas.width*.87/sw,canvas.height*.87/sh);
+ c.drawImage(img,sx,sy,sw,sh,(canvas.width-sw*scale)/2,(canvas.height-sh*scale)/2,sw*scale,sh*scale);
 }
-function availableLegacy(s){return !!(manifest && (s.transition ? manifest.transitions?.[s.legacy] : manifest.emotes?.[s.legacy]))}
-function descriptor(s){return s.transition?manifest?.transitions?.[s.legacy]:manifest?.emotes?.[s.legacy]}
-function renderCatalog(){
- const q=$("#find").value.trim().toLowerCase();cat.replaceChildren();
- let actual=actualCatalog();
- let all=filteredCat==="Planned"?states.filter(s=>!manifest?.emotes?.[s.legacy]):actual;
- if(filteredCat!=="All"&&filteredCat!=="Planned")all=all.filter(s=>s.category===filteredCat);
- all=all.filter(s=>(s.name+" "+s.id).toLowerCase().includes(q));
- for(const x of all){
-  const b=document.createElement("button");b.type="button";
-  b.className="state"+(selected?.id===x.id&&selected?.category===x.category?" active":"");
-  const stateLabel=x.category==="Planned"?"NOT ANIMATED":x.transition?"24F • 24 FPS":"60F • 24 FPS";
-  const lhs=document.createElement("span");lhs.className="name";lhs.textContent=x.id+" · "+x.name;
-  const rhs=document.createElement("span");rhs.className="tiny";rhs.textContent=stateLabel;
-  b.append(lhs,rhs);b.onclick=()=>selectState(x);cat.append(b)
+function cardList(){
+ const filter=$("#search").value.trim().toLowerCase(),list=$("#list");list.replaceChildren();
+ actions.forEach((a,i)=>{
+  if(!(a.name+" "+a.description).toLowerCase().includes(filter))return;
+  const b=document.createElement("button");b.className="sheetbtn"+(i===selectedIndex?" selected":"");b.type="button";
+  const canvas=document.createElement("canvas");canvas.width=88;canvas.height=88;
+  const meta=document.createElement("span");
+  const n=document.createElement("span");n.className="n";n.textContent="ANIMATION "+String(i+1).padStart(2,"0");
+  const title=document.createElement("span");title.className="label";title.textContent=a.name;
+  const description=document.createElement("span");description.className="desc";description.textContent="60 frames · 30 FPS";
+  meta.append(n,title,document.createElement("br"),description);b.append(canvas,meta);
+  b.onclick=()=>select(i);list.append(b);
+  const img=images.get(a.id);
+  if(img){thumb(canvas,img);return}
+  const e=new Image();e.decoding="async";e.src=a.url;
+  e.onload=()=>{images.set(a.id,e);thumb(canvas,e)};
+  e.onerror=()=>{canvas.title="Sheet unavailable"};
+ });
+}
+function select(i){
+ selectedIndex=i;selected=actions[i];if(!selected)return;
+ frame=0;lastFrameTime=null;playing=true;$("#play").textContent="Pause";$("#category").textContent="Approved motion "+String(i+1).padStart(2,"0")+" / 14";
+ assign("#name",selected.name);assign("#subtitle",selected.description);
+ assign("#description",selected.description+". This animation is played directly from its user-approved 10×6 source strip.");
+ assign("#frameCount",selected.frames||60);assign("#dimensions",selected.width+" × "+selected.height);
+ $("#seek").max=(selected.frames||60)-1;$("#seek").value=0;
+ $("#downloadWebp").href=selected.url;$("#downloadWebp").download=selected.id+".webp";
+ $("#downloadPng").href=selected.original;$("#downloadPng").download=selected.id+".png";
+ cardList();
+ const img=images.get(selected.id);
+ if(img?.naturalWidth){image=img;unbusy();draw();return}
+ image=null;busy("Loading "+selected.name+"…");
+ const newImg=new Image();newImg.decoding="async";newImg.src=selected.url;
+ newImg.onload=()=>{if(selected?.id!==actions[i].id)return;images.set(selected.id,newImg);image=newImg;unbusy();cardList();draw()};
+ newImg.onerror=()=>{if(selected?.id!==actions[i].id)return;busy("Could not load approved sprite sheet. Check GitHub asset deployment.");setStatus("Image missing: "+selected.url,"error")};
+}
+function draw(){
+ g.clearRect(0,0,stage.width,stage.height);
+ if(!image||!image.naturalWidth)return;
+ const iw=stage.width,ih=stage.height;
+ if(mode==="sheet"){
+  const scale=Math.min(iw*.94/image.naturalWidth,ih*.91/image.naturalHeight);
+  g.drawImage(image,(iw-image.naturalWidth*scale)/2,(ih-image.naturalHeight*scale)/2,image.naturalWidth*scale,image.naturalHeight*scale);
+ }else{
+  const [sx,sy,sw,sh]=cell(image,Math.min(59,Math.floor(frame)),10,6);
+  const scale=Math.min(iw*.78/sw,ih*.83/sh);
+  const dw=sw*scale,dh=sh*scale;
+  g.drawImage(image,sx,sy,sw,sh,(iw-dw)/2,(ih-dh)/2,dw,dh);
  }
- $("#total").textContent=actual.length+" motion clips";
- $("#progress").textContent=(manifest?Object.keys(manifest.emotes).length:"0")+" existing emote atlases + "+(manifest?Object.keys(manifest.transitions||{}).length:"0")+" existing transition atlases. Of the 141 planned actions, many still require bespoke animation.";
+ $("#seek").value=Math.floor(frame);
+ assign("#frameinfo","FRAME "+String(Math.floor(frame)+1).padStart(2,"0")+" / "+(selected?.frames||60));
+ assign("#time",String(Math.floor(frame)+1).padStart(2,"0")+" / "+String(selected?.frames||60));
+ assign("#duration",((selected?.frames||60)/fps).toFixed(2)+"s");
 }
-function createGroups(){
- for(const name of ["All","Emotes","Transitions","Planned"]){
-  const b=document.createElement("button");b.className="groupbtn"+(name==="All"?" active":"");b.textContent=name;
-  b.onclick=()=>{filteredCat=name;[...groups.children].forEach(x=>x.classList.toggle("active",x===b));renderCatalog()};
-  groups.append(b)
+function loop(now){
+ if(lastFrameTime===null)lastFrameTime=now;
+ const elapsed=Math.min(80,now-lastFrameTime);
+ lastFrameTime=now;
+ if(playing&&mode==="motion"&&image){
+  frame+=(elapsed*fps/1000);
+  if(frame>=60){if(selected?.loop){frame%=60}else{frame=59;playing=false;$("#play").textContent="Play again"}}
  }
+ draw();requestAnimationFrame(loop);
 }
-function selectState(x){
- selected=x;frame=0;time=performance.now();lastDraw=time;assetError="";
- const item=descriptor(x),has=!!item;
- $("#stateTitle").textContent=x.id+" — "+x.name;
- $("#mode").value=has?"atlas":"hi";$("#mode").querySelector('option[value="atlas"]').disabled=!has;
- $("#fps").value=has?"24":"30";
- $("#kind").textContent=x.category==="Planned"?"Not animated":x.transition?"Existing transition — 24 FPS":"Existing animation — 24 FPS";
- $("#desc").textContent=has?(x.transition?"24-frame transition captured as a source-derived animation":"60-frame source-derived Orbit motion; visually review for interpolation defects"):"This requested behaviour has not been animated or exported. No stand-in animation is presented.";
- $("#explain").textContent=has?"These are real, distinct frame files stored in the already-existing Orbit 5× atlases, at 352×448 per sprite. Some frame interpolation and limb movement require artistic refinement.":"NOT COMPLETED: this action has no production sprite sequence. Original still artwork is shown only to preserve character reference.";
- $("#source").textContent=has?"5× actual atlas":"Original still";
- atlasImage=null;
- if(has){
-   const im=new Image();im.src="../5x/"+item.atlas;
-   im.onerror=()=>{assetError="Could not load "+item.atlas;$("#explain").textContent=assetError};
-   im.onload=()=>{assetError="";};
-   atlasImage=im
+function setPlay(v){playing=v;if(mode!=="motion")mode="motion";updateTabs();if(playing&&frame>=59)frame=0;$("#play").textContent=v?"Pause":"Play";lastFrameTime=null}
+function step(n){setPlay(false);frame=Math.min(59,Math.max(0,Math.floor(frame)+n));draw()}
+function updateTabs(){document.querySelectorAll("[data-mode]").forEach(b=>b.classList.toggle("sel",b.dataset.mode===mode));}
+$("#play").onclick=()=>setPlay(!playing);
+$("#prev").onclick=()=>step(-1);$("#next").onclick=()=>step(1);
+$("#first").onclick=()=>{setPlay(false);frame=0;draw()};
+$("#last").onclick=()=>{setPlay(false);frame=59;draw()};
+$("#seek").oninput=e=>{setPlay(false);frame=+e.target.value;draw()};
+$("#search").oninput=cardList;
+$("#fps").onchange=e=>{fps=Number(e.target.value);draw()};
+$("#background").onchange=e=>{host.className="viewer "+e.target.value};
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{mode=b.dataset.mode;playing=mode==="motion";$("#play").textContent=playing?"Pause":"Play";updateTabs();draw()});
+window.addEventListener("keydown",e=>{
+ if(["INPUT","TEXTAREA","SELECT"].includes(document.activeElement?.tagName))return;
+ if(e.code==="Space"){e.preventDefault();setPlay(!playing)}
+ if(e.code==="ArrowLeft"){e.preventDefault();step(-1)}
+ if(e.code==="ArrowRight"){e.preventDefault();step(1)}
+ if(/^[1-9]$/.test(e.key)&&actions.length>=+e.key)select(+e.key-1);
+});
+async function boot(){
+ try{
+ const r=await fetch("./manifest-approved.json?assets=20261102",{cache:"no-store"});
+ if(!r.ok)throw new Error("The verified asset import has not completed (HTTP "+r.status+").");
+ const m=await r.json();
+ if(m.count!==14 || !Array.isArray(m.actions)||m.actions.length!==14)throw new Error("Wrong approved manifest count.");
+ const expected=sourceFallback.map(x=>x[0]);
+ for(let i=0;i<14;i++){
+   if(m.actions[i].id!==expected[i]||m.actions[i].frames!==60)throw new Error("Mismatched action "+(i+1));
  }
- $("#stagehint").textContent=has?"ACTUAL "+(item.frames||0)+"-FRAME SPRITE MOTION":"MISSING ANIMATION — STATIC CHARACTER REFERENCE";
- playing=has;$("#play").textContent=playing?"Pause":"Play";
- loadReview();renderCatalog()
+ actions=m.actions;ready=true;
+ setStatus("14 approved sheets installed · 840 frame cells · original PNGs preserved","ok");
+ assign("#count","14 approved");select(0);requestAnimationFrame(loop);
+ }catch(e){setStatus("Import pending or failed: "+e.message,"error");busy("Approved assets not installed yet. "+e.message);console.error(e)}
 }
-
-function saveReview(status){reviews[selected.id]={status:status||reviews[selected.id]?.status||"note",notes:$("#notes").value.trim(),name:selected.name,category:selected.category,updated:new Date().toISOString()};localStorage.setItem("orbitV4Reviews",JSON.stringify(reviews));loadReview()}
-function loadReview(){let a=reviews[selected.id];$("#notes").value=a?.notes||"";$("#reviewState").textContent=a?"Review: "+a.status+" · "+new Date(a.updated).toLocaleString():"No review recorded.";document.querySelectorAll("[data-status]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.status===a?.status)))}
-function drawPanelText(g,s,x,y,color="#6de5ff"){g.font="bold 45px system-ui";g.textAlign="center";g.fillStyle=color;g.shadowColor=color;g.shadowBlur=14;g.fillText(s,x,y);g.shadowBlur=0}
-function oled(g,t){
- const name=selected.name.toLowerCase();
- const isIdle=/idle|happy|hover|float|neutral|look|fly|run|wake|wave|hello/.test(name);
- if(isIdle && !/click|look at|pointer/.test(name))return;
- const color=/error|critical|fail/.test(name)?"#ff626f":/warning|caution/.test(name)?"#ffca65":/success|complete|approved|saved|connected/.test(name)?"#74ffd8":"#68e4ff";
- const text=/error|fail/.test(name)?"×":/warning|caution|critical/.test(name)?"!":/success|complete|approved/.test(name)?"✓":/typing|speaking/.test(name)?"···":/think|processing|waiting|loading|sync|progress/.test(name)?"•••":/file|reading/.test(name)?"▤":/search|inspect|scan|audit/.test(name)?"⌕":/love/.test(name)?"♥":/question|confus|help/.test(name)?"?":/idea/.test(name)?"✦":/paused/.test(name)?"Ⅱ":/cancel|disapprov|shake/.test(name)?"×":/notice|notification|alert/.test(name)?"!":"•";
- const alpha=Math.min(1,Math.max(0,(t%2)/.28));g.save();g.globalAlpha=alpha;
- g.fillStyle="#020711";g.beginPath();g.roundRect(370,398,512,175,72);g.fill();
- if(/progress|loading|sync/.test(name)){g.strokeStyle=color;g.lineWidth=10;g.beginPath();g.arc(624,484,68,-Math.PI/2,-Math.PI/2+(t*2.8)%(Math.PI*2));g.stroke()}
- else if(/think|processing|typing|speaking|waiting/.test(name)){for(let i=0;i<3;i++){const d=15+6*Math.sin(t*6-i*1.8);g.fillStyle=color;g.shadowColor=color;g.shadowBlur=10;g.beginPath();g.arc(510+114*i,484,d,0,Math.PI*2);g.fill()}}
- else drawPanelText(g,text,625,508,color);
- g.restore()
-}
-
-function paint(timeMs){
- ctx.clearRect(0,0,stage.width,stage.height);
- if(!selected)return;
- const item=descriptor(selected),has=!!item,mode=$("#mode").value;
- const fps=+$("#fps").value;
- const frames=mode==="atlas"&&has?item.frames:1;
- if(playing && frames>1){
-   frame+=Math.max(0,(timeMs-lastDraw)/1000*fps);
-   if(frame>=frames){
-      if(selected.transition){frame=frames-1;playing=false;$("#play").textContent="Play"}
-      else frame%=frames;
-   }
- }
- lastDraw=timeMs;
- const index=Math.min(frames-1,Math.floor(frame));
- timeline.max=Math.max(0,frames-1);timeline.value=index;
- $("#counter").textContent=String(index+1).padStart(3,"0")+" / "+String(frames).padStart(3,"0");
- $("#framenum").textContent=frames;$("#duration").textContent=(frames/fps).toFixed(2)+"s";
- if(mode==="atlas"&&has && atlasImage?.complete && atlasImage?.naturalWidth){
-   const cols=item.atlas_columns||10;
-   const w=manifest.frame_width,h=manifest.frame_height;
-   const sx=(index%cols)*w,sy=Math.floor(index/cols)*h;
-   const r=Math.min((stage.width*.79)/w,(stage.height*.83)/h);
-   const dw=w*r,dh=h*r;
-   ctx.drawImage(atlasImage,sx,sy,w,h,(stage.width-dw)/2,(stage.height-dh)/2,dw,dh);
-   return
- }
- if(mode==="atlas"&&has){
-   ctx.fillStyle="#d1edff";ctx.textAlign="center";ctx.font="20px system-ui";
-   ctx.fillText(assetError||"Loading original sprite atlas…",stage.width/2,stage.height/2);return
- }
- if(!hero)return;
- const scale=Math.min(stage.width/1254,stage.height/1254)*.92;
- const tx=(stage.width-1254*scale)/2,ty=(stage.height-1254*scale)/2;
- ctx.drawImage(hero,tx,ty,1254*scale,1254*scale);
-}
-
-function tick(now){paint(now);requestAnimationFrame(tick)}
-$("#stage").addEventListener("pointermove",e=>{const r=stage.getBoundingClientRect();pointer.x=(e.clientX-r.left)/r.width*2-1;pointer.y=(e.clientY-r.top)/r.height*2-1});
-$("#stage").addEventListener("pointerleave",()=>{pointer={x:0,y:0}});
-$("#stage").addEventListener("click",()=>{$("#play").click()});
-$("#play").onclick=()=>{playing=!playing;$("#play").textContent=playing?"Pause":"Play"};
-$("#next").onclick=()=>{playing=false;$("#play").textContent="Play";frame=Math.floor(frame)+1};
-$("#prev").onclick=()=>{playing=false;$("#play").textContent="Play";frame=Math.max(0,Math.floor(frame)-1)};
-timeline.oninput=e=>{frame=+e.target.value;playing=false;$("#play").textContent="Play"};
-$("#mode").onchange=()=>{frame=0;lastDraw=performance.now();const actual=$("#mode").value==="atlas";$("#fps").value=actual?"24":"30";playing=actual;$("#play").textContent=actual?"Pause":"Play";$("#stagehint").textContent=actual?"ACTUAL SPRITE ANIMATION":"STATIC CHARACTER REFERENCE — NOT A COMPLETED EMOTE"};
-$("#bg").onchange=e=>{$("#visual").className="visual "+(e.target.value==="check"?"":e.target.value)};
-$("#find").oninput=renderCatalog;
-$("#original").onclick=()=>{$("#sourceImg").style.display=$("#sourceImg").style.display==="block"?"none":"block"};
-document.querySelectorAll("[data-status]").forEach(b=>b.onclick=()=>saveReview(b.dataset.status));$("#save").onclick=()=>saveReview();
-$("#export").onclick=()=>{const blob=new Blob([JSON.stringify({app:"Orbit Sprite Studio V4",timestamp:new Date().toISOString(),reviews},null,2)],{type:"application/json"});const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="orbit-v4-review.json";a.click();setTimeout(()=>URL.revokeObjectURL(u),500)};
-createGroups();renderCatalog();load().catch(e=>{$("#explain").textContent="Could not load original reference: "+e.message});
+boot();
+})();
 </script></body></html>
