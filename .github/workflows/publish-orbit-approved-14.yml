@@ -1,0 +1,53 @@
+name: Publish 14 Approved Orbit Sprite Sheets
+on:
+  push:
+    paths:
+      - ".github/workflows/publish-orbit-approved-14.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: orbit-approved-sheets-v1
+  cancel-in-progress: false
+jobs:
+  import-approved:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Install image processing libraries
+        run: |
+          python3 -m pip install --disable-pip-version-check Pillow numpy scipy
+      - name: Download, verify and convert exact approved sheets
+        run: |
+          set -euo pipefail
+          python3 orbit/sprite-studio-v4/build_assets.py
+      - name: Confirm completed frame data
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("orbit/sprite-studio-v4")
+          m=json.loads((p/"manifest-approved.json").read_text())
+          assert len(m["actions"])==14
+          for a in m["actions"]:
+              assert a["frames"]==60 and a["columns"]==10 and a["rows"]==6
+              assert (p/a["url"]).stat().st_size>10000
+              assert (p/a["original"]).stat().st_size>100000
+          print("PASS: 14 approved source sheets + 14 full-resolution WebP sheets")
+          PY
+      - name: Commit only the new approved assets and manifest
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A orbit/sprite-studio-v4/assets/approved orbit/sprite-studio-v4/manifest-approved.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Orbit: install 14 user-approved full-resolution animation sprite atlases"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
