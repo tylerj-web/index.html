@@ -5,10 +5,10 @@ const D=window.FC_DATA;
 const el=document.getElementById('app');
 const ORBIT_ROOT=(document.body.getAttribute('data-site-root')||'.').replace(/\/$/,'');
 const orbitSrc=ORBIT_ROOT+'/orbit/assets/approved-orbit-reference.png';
-const defaults={notes:{},extraProjects:{},extraApps:{},appUrls:{},favourites:[],orbitHistory:[],appearance:'dark'};
+const defaults={notes:{},extraProjects:{},extraApps:{},appUrls:{},favourites:['reliable','html','severance','music'],orbitHistory:[],appearance:'blue'};
 let state;
 try{state=Object.assign({},defaults,JSON.parse(localStorage.getItem('framework-command-prototype-v1')||'{}'))}catch(e){state=structuredClone(defaults)}
-let modal='',orbitOpen=false,toastTimer=null,mediaUrl=null;
+let modal='',orbitOpen=false,appearanceOpen=false,toastTimer=null,mediaUrl=null;
 const esc=s=>String(s===undefined||s===null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const paths={
 home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
@@ -77,10 +77,14 @@ function workspaceTile(w){
 return '<article class="project-card" data-go="studio:'+w.id+'" tabindex="0" role="button" style="padding:20px;min-height:155px;border-color:'+w.accent+'40;background:linear-gradient(145deg,'+w.accent+'18,#121b2a)"><div class="between"><span class="project-mark" style="color:'+w.accent+'">'+icon(w.icon)+'</span><span class="tag">0'+w.n+'</span></div><h3>'+esc(w.name)+'</h3><p>'+esc(w.short)+'</p></article>'
 }
 function home(){
-return '<div class="home"><div class="view"><div class="home-hero"><div><div class="eyebrow"><span class="pill"><i></i> FRAMEWORK COMMAND / INTERACTIVE DESIGN</span></div><h1>One command.<br><em>Infinite possibilities.</em></h1><p>Three divisions. Nine purpose-built environments. One familiar way to move between all the things you make, manage and enjoy.</p><div class="row mt20"><button class="btn btn-primary" data-go="division:create">Explore Creative Studios '+icon('arrow')+'</button><button class="btn btn-ghost" data-action="orbit-toggle">Meet Orbit</button></div></div><div class="hero-orbit"><div class="orbit-rings"></div><img src="'+orbitSrc+'" alt="Approved Orbit robot"></div></div>'+
-'<div class="between section-head"><h2 class="mb0">Your three worlds</h2><span class="tiny muted">CHOOSE A DIVISION</span></div><div class="division-grid">'+divs.map(d=>'<article class="division-card '+d.id+'" data-go="division:'+d.id+'" tabindex="0" role="button"><div><span class="pill">'+icon(d.icon)+' '+d.desc+'</span><h3>'+d.name+'</h3><p>'+d.sub+'</p></div><div class="row">'+icon('arrow')+' Enter division</div><span class="big-num">0'+D.workspaces.filter(w=>w.division===d.id).length+'</span></article>').join('')+'</div>'+
-'<div class="between section-head"><h2 class="mb0">Jump into a studio</h2><span class="tiny muted">ALL NINE SECTIONS</span></div><div class="grid grid3">'+D.workspaces.map(workspaceTile).join('')+'</div>'+
-'<div class="section-head"><h2>Designed around how you work.</h2></div><div class="grid grid3">'+[['layers','Independent environments','Each studio opens with its own interface and dedicated workflow.'],['spark','Orbit everywhere','Your assistant is available from any Framework-native project.'],['shield','Local first','This demonstration stores edits in your browser. Future desktop data stays under your control.']].map(t=>'<div class="mini-stat"><div class="project-mark">'+icon(t[0])+'</div><h3 class="mt20">'+t[1]+'</h3><p class="tiny">'+t[2]+'</p></div>').join('')+'</div></div></div>'
+const theme=['blue','silver','ocean','evergreen'].includes(state.appearance)?state.appearance:'blue';
+const favourites=(state.favourites||[]).filter(id=>D.workspaces.some(w=>w.id===id));
+const dock='<nav class="min-dock" aria-label="Favourite studio shortcuts"><button class="min-dock-btn home-active" title="Framework Home" aria-label="Framework Home" data-go="home">'+icon('home')+'</button><div class="min-dock-divider"></div>'+favourites.map(id=>{const w=D.workspaces.find(w=>w.id===id);return '<button class="min-dock-btn" title="'+esc(w.name)+'" aria-label="Open '+esc(w.name)+'" data-go="studio:'+w.id+'">'+icon(w.icon)+'</button>'}).join('')+'<div class="min-dock-divider"></div><button class="min-dock-btn" data-action="home-appearance" title="Customise desktop" aria-label="Customise desktop">'+icon('settings')+'</button></nav>';
+const swatches=[['blue','#9ccaff'],['silver','#b9cadf'],['ocean','#58d4e8'],['evergreen','#7bd7a6']];
+const settings=appearanceOpen?'<aside class="min-settings" aria-label="Homepage appearance controls"><div class="between"><h3 class="mb0">Personalise home</h3><button class="min-header-btn" data-action="home-appearance" aria-label="Close appearance settings">'+icon('close')+'</button></div><p class="mt10">Choose a colour and pin your favourite studios to the dock.</p><div class="label">COLOUR THEME</div><div class="min-swatch-row">'+swatches.map(c=>'<button class="min-swatch '+(theme===c[0]?'chosen':'')+'" title="'+c[0]+'" aria-label="'+c[0]+' theme" data-action="home-theme:'+c[0]+'" style="--swatch:'+c[1]+'"></button>').join('')+'</div><div class="label mb8">DOCK FAVOURITES</div><div class="min-favs">'+D.workspaces.map(w=>'<label><input type="checkbox" '+(favourites.includes(w.id)?'checked':'')+' data-action="home-fav:'+w.id+'">'+esc(w.name)+'</label>').join('')+'</div></aside>':'';
+return '<div class="min-home" data-min-theme="'+theme+'"><header class="min-header"><div class="min-brand" data-go="home"><div class="min-symbol">F</div><div class="min-wordmark">FRAMEWORK COMMAND<small>YOUR DIGITAL ENVIRONMENT</small></div></div><div class="min-status"><span class="min-online">Interactive design preview</span><span id="clock"></span><button class="min-header-btn" data-action="home-appearance" title="Personalise home" aria-label="Personalise home">'+icon('settings')+'</button></div></header>'+
+'<main class="min-main"><div class="min-main-copy"><div class="min-kicker">YOUR SPACE · YOUR PROJECTS</div><h1 class="min-title">What would<br>you like to <span>do?</span></h1><p class="min-intro">Everything in its place. Choose where you want to go, and the environment adapts to what you are doing.</p><div class="min-choices">'+divs.map((d,i)=>'<button class="min-choice" data-go="division:'+d.id+'"><span class="min-choice-top">'+icon(d.icon)+'<span class="min-choice-num">0'+(i+1)+'</span></span><span class="min-choice-bottom"><span><span class="min-choice-name">'+d.name+'</span><span class="min-choice-sub">'+(d.id==='work'?'Your team, your knowledge.':d.id==='create'?'Make the next thing.':'Games, music and media.')+'</span></span>'+icon('arrow')+'</span></button>').join('')+'</div></div><div class="min-orbit-stage"><div class="min-orbit-halo"></div><img src="'+orbitSrc+'" alt="Orbit, your floating assistant"><button class="min-orbit-tag" data-action="orbit-toggle">Meet Orbit '+icon('arrow')+'</button></div></main>'+
+'<footer class="min-footer"><div class="min-footer-status"><span>FRAMEWORK COMMAND</span><i></i><span>LOCAL-FIRST DESKTOP VISION</span></div><span>INTERACTIVE CONCEPT · NOT CONNECTED TO AI</span></footer>'+dock+settings+'</div>';
 }
 function division(id){
 const d=divs.find(x=>x.id===id)||divs[0],w=D.workspaces.filter(x=>x.division===d.id);
@@ -110,7 +114,7 @@ return matches.length?matches.map(x=>'<div class="list-row" data-go="'+esc(x.url
 function render(){
 const r=route();
 const body=r.type==='home'?home():r.type==='division'?division(r.id):r.type==='studio'?window.FC_SCREENS.renderStudio(r.id,r.tab||D.workspaces.find(w=>w.id===r.id)?.tabs[0]):window.FC_SCREENS.renderProject(r.id,r.project);
-el.innerHTML='<div class="app-shell">'+side(r)+'<div class="shell-main">'+top(r)+'<div class="preview-banner">INTERACTIVE DESIGN PROTOTYPE — EXAMPLE CONTENT ONLY · EXTERNAL AI AND DESKTOP APPS NOT CONNECTED</div><main class="main-content">'+body+'</main></div></div>'+orbDrawer()+modalUI();
+el.innerHTML=(r.type==='home'?body:'<div class="app-shell">'+side(r)+'<div class="shell-main">'+top(r)+'<div class="preview-banner">INTERACTIVE DESIGN PROTOTYPE — EXAMPLE CONTENT ONLY · EXTERNAL AI AND DESKTOP APPS NOT CONNECTED</div><main class="main-content">'+body+'</main></div></div>')+orbDrawer()+modalUI();
 document.title=(r.type==='home'?'Framework Command':(D.workspaces.find(w=>w.id===r.id)?.name||'Framework Command'))+' — Framework Command';
 if(r.type==='studio'&&r.id==='html'&&r.tab==='Workshop')refreshPreview();
 setClock();
@@ -130,6 +134,9 @@ window.open(url.startsWith('./')?ORBIT_ROOT+'/'+url.replace(/^\.\//,''):url,'_bl
 function handleAction(s,from){
 if(s==='orbit-toggle'){orbitOpen=!orbitOpen;render();return}
 if(s==='close-modal'||s==='dismiss-modal'){modal='';render();return}
+if(s==='home-appearance'){appearanceOpen=!appearanceOpen;render();return}
+if(s.startsWith('home-theme:')){state.appearance=s.split(':')[1];save();render();return}
+if(s.startsWith('home-fav:')){const id=s.split(':')[1];const favs=new Set(state.favourites||[]);if(favs.has(id))favs.delete(id);else favs.add(id);state.favourites=[...favs];save();render();return}
 if(s==='settings'){modal='settings';render();return}
 if(s==='open-search'){modal='search';render();document.getElementById('modal-search')?.focus();return}
 if(s.startsWith('new-project:')||s.startsWith('new-app:')||s.startsWith('configure-app:')){modal=s;render();return}
