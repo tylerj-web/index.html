@@ -78,3 +78,20 @@ All JavaScript files parsed successfully. The homepage initialized in an isolate
 - All studio-specific layout and production pages remain independent.
 - Cached CSS/JS files are refreshed via the root index query version.
 - No Windows-local apps, AI models or external creative APIs were connected by this visual change.
+
+
+## Restored original Framework Home — 2026-11-02
+
+The repository root index.html now uses the supplied FRAMEWORK_HOME_DESIGN_LAB_v1.html as its authentic starting point. The exact unmodified reference is retained in framework-command/references/FRAMEWORK_HOME_DESIGN_LAB_v1.html.
+
+The home view preserves:
+- Three large side-by-side Entertain / Create / Work sections on desktop.
+- Fixed translucent top status bar (CPU/memory/storage figures are labelled as demo, not device measurements).
+- The original Design Lab appearance editor: dark/light, accent colours, four wallpaper modes, glass opacity, corner radius, dock icon size, motion control, Orbit visibility, and design JSON import/export.
+- Favourites dock, quick links and smaller floating black/gold Orbit artwork without a pink image background.
+
+The home section buttons hand off to framework-command/preview.html#/division/{work,create,entertain}. All nine separate studio workspaces remain in the modular preview app. That preview's Home controls return to ../index.html.
+
+The user's Framework_Command_Interactive_Chart.html is installed at framework-command/org-chart.html, linked and embedded in Reliable Friends → Organisation. The original prior site home remains archived at backups/framework-command-home-pre-design-lab-2026-11-02.html.
+
+Public GitHub Pages delivery and Windows-native features remain separate from the successful GitHub commit verification.
