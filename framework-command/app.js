@@ -5,7 +5,7 @@ const D=window.FC_DATA;
 const el=document.getElementById('app');
 const ORBIT_ROOT=(document.body.getAttribute('data-site-root')||'.').replace(/\/$/,'');
 const orbitSrc=ORBIT_ROOT+'/orbit/assets/approved-orbit-reference.png';
-const defaults={notes:{},extraProjects:{},extraApps:{},appUrls:{},favourites:['reliable','html','severance','music'],orbitHistory:[],appearance:'blue'};
+const defaults={notes:{},extraProjects:{},extraApps:{},appUrls:{},favourites:['reliable','html','severance','music'],orbitHistory:[],appearance:'blue',dockSize:'normal',dockPosition:'center',orbitVisible:true,orbitSize:'small',motion:true,ambient:true};
 let state;
 try{state=Object.assign({},defaults,JSON.parse(localStorage.getItem('framework-command-prototype-v1')||'{}'))}catch(e){state=structuredClone(defaults)}
 let modal='',orbitOpen=false,appearanceOpen=false,toastTimer=null,mediaUrl=null;
@@ -76,24 +76,71 @@ return '<header class="topbar"><div class="crumb"><button data-go="home">Framewo
 function workspaceTile(w){
 return '<article class="project-card" data-go="studio:'+w.id+'" tabindex="0" role="button" style="padding:20px;min-height:155px;border-color:'+w.accent+'40;background:linear-gradient(145deg,'+w.accent+'18,#121b2a)"><div class="between"><span class="project-mark" style="color:'+w.accent+'">'+icon(w.icon)+'</span><span class="tag">0'+w.n+'</span></div><h3>'+esc(w.name)+'</h3><p>'+esc(w.short)+'</p></article>'
 }
+
+/* GLOBAL CHROME — Home stays minimal, project applications keep their independent designs. */
+const themeOptions=[['blue','#93bdff','Midnight'],['silver','#b9c9dd','Silver'],['ocean','#60d5ea','Ocean'],['evergreen','#83d8ae','Evergreen'],['amber','#eac392','Amber']];
+const pref=(key,defaultValue)=>state[key]===undefined?defaultValue:state[key];
+const orbitMarkup=(kind='normal')=>'<canvas class="orbit-cutout orbit-'+kind+'" width="589" height="760" role="img" aria-label="Orbit, the approved four-part robot character"></canvas>';
+function dockHTML(r){
+ const fav=(state.favourites||[]).filter(id=>D.workspaces.some(w=>w.id===id));
+ const btn=(id,title,ico,selected)=>'<button class="min-dock-btn '+(selected?'home-active':'')+'" title="'+esc(title)+'" aria-label="'+esc(title)+'" data-go="'+id+'">'+icon(ico)+'</button>';
+ return '<nav class="min-dock fc-global-dock" aria-label="Framework Command navigation dock">'+
+ btn('home','Framework Home','home',r.type==='home')+
+ '<div class="min-dock-divider"></div>'+
+ divs.map(d=>btn('division:'+d.id,d.name,d.icon,r.type==='division'&&r.id===d.id)).join('')+
+ (fav.length?'<div class="min-dock-divider"></div>':'')+
+ fav.map(id=>{const w=D.workspaces.find(x=>x.id===id);return btn('studio:'+id,w.name,w.icon,r.id===id)}).join('')+
+ '<div class="min-dock-divider"></div><button class="min-dock-btn" data-action="home-appearance" title="Personalise Framework Command" aria-label="Personalise Framework Command">'+icon('settings')+'</button></nav>';
+}
+function appearanceUI(){
+ if(!appearanceOpen)return '';
+ const theme=themeOptions.some(t=>t[0]===state.appearance)?state.appearance:'blue';
+ const fav=state.favourites||[];
+ return '<aside class="min-settings fc-customisation" role="dialog" aria-label="Framework Command customisation">'+
+ '<div class="between"><h3 class="mb0">Personalise</h3><button class="min-header-btn" data-action="home-appearance" aria-label="Close personalisation">'+icon('close')+'</button></div>'+
+ '<p class="mt10">Your layout, your preferences. Changes apply across the site and are saved in this browser.</p>'+
+ '<div class="label">COLOUR THEME</div>'+
+ '<div class="min-swatch-row">'+themeOptions.map(t=>'<button class="min-swatch '+(theme===t[0]?'chosen':'')+'" style="--swatch:'+t[1]+'" title="'+t[2]+'" aria-label="'+t[2]+' colour theme" data-action="home-theme:'+t[0]+'"></button>').join('')+'</div>'+
+ '<div class="fc-preference"><label for="fc-dock-size">Dock size</label><select id="fc-dock-size" class="fc-choice-field" data-setting="dockSize"><option value="compact" '+(pref('dockSize','normal')==='compact'?'selected':'')+'>Compact</option><option value="normal" '+(pref('dockSize','normal')==='normal'?'selected':'')+'>Standard</option><option value="large" '+(pref('dockSize','normal')==='large'?'selected':'')+'>Large</option></select></div>'+
+ '<div class="fc-preference"><label for="fc-dock-position">Dock placement</label><select id="fc-dock-position" class="fc-choice-field" data-setting="dockPosition"><option value="center" '+(pref('dockPosition','center')==='center'?'selected':'')+'>Centre</option><option value="left" '+(pref('dockPosition','center')==='left'?'selected':'')+'>Left</option></select></div>'+
+ '<div class="fc-preference"><label for="fc-orbit-size">Orbit size</label><select id="fc-orbit-size" class="fc-choice-field" data-setting="orbitSize"><option value="small" '+(pref('orbitSize','small')==='small'?'selected':'')+'>Small</option><option value="medium" '+(pref('orbitSize','small')==='medium'?'selected':'')+'>Medium</option></select></div>'+
+ '<div class="fc-pref-toggle"><label><input type="checkbox" data-setting="orbitVisible" '+(pref('orbitVisible',true)?'checked':'')+'> Show Orbit</label></div>'+
+ '<div class="fc-pref-toggle"><label><input type="checkbox" data-setting="motion" '+(pref('motion',true)?'checked':'')+'> Gentle animations</label></div>'+
+ '<div class="fc-pref-toggle"><label><input type="checkbox" data-setting="ambient" '+(pref('ambient',true)?'checked':'')+'> Ambient background light</label></div>'+
+ '<div class="label mt20 mb8">FAVOURITES DOCK</div><div class="min-favs">'+D.workspaces.map(w=>'<label><input type="checkbox" '+(fav.includes(w.id)?'checked':'')+' data-action="home-fav:'+w.id+'">'+esc(w.name)+'</label>').join('')+'</div>'+
+ '<div class="mt20"><button class="btn btn-sm btn-ghost full" data-action="settings">Advanced prototype settings</button></div>'+
+ '</aside>';
+}
 function home(){
-const theme=['blue','silver','ocean','evergreen'].includes(state.appearance)?state.appearance:'blue';
-const favourites=(state.favourites||[]).filter(id=>D.workspaces.some(w=>w.id===id));
-const dock='<nav class="min-dock" aria-label="Favourite studio shortcuts"><button class="min-dock-btn home-active" title="Framework Home" aria-label="Framework Home" data-go="home">'+icon('home')+'</button><div class="min-dock-divider"></div>'+favourites.map(id=>{const w=D.workspaces.find(w=>w.id===id);return '<button class="min-dock-btn" title="'+esc(w.name)+'" aria-label="Open '+esc(w.name)+'" data-go="studio:'+w.id+'">'+icon(w.icon)+'</button>'}).join('')+'<div class="min-dock-divider"></div><button class="min-dock-btn" data-action="home-appearance" title="Customise desktop" aria-label="Customise desktop">'+icon('settings')+'</button></nav>';
-const swatches=[['blue','#9ccaff'],['silver','#b9cadf'],['ocean','#58d4e8'],['evergreen','#7bd7a6']];
-const settings=appearanceOpen?'<aside class="min-settings" aria-label="Homepage appearance controls"><div class="between"><h3 class="mb0">Personalise home</h3><button class="min-header-btn" data-action="home-appearance" aria-label="Close appearance settings">'+icon('close')+'</button></div><p class="mt10">Choose a colour and pin your favourite studios to the dock.</p><div class="label">COLOUR THEME</div><div class="min-swatch-row">'+swatches.map(c=>'<button class="min-swatch '+(theme===c[0]?'chosen':'')+'" title="'+c[0]+'" aria-label="'+c[0]+' theme" data-action="home-theme:'+c[0]+'" style="--swatch:'+c[1]+'"></button>').join('')+'</div><div class="label mb8">DOCK FAVOURITES</div><div class="min-favs">'+D.workspaces.map(w=>'<label><input type="checkbox" '+(favourites.includes(w.id)?'checked':'')+' data-action="home-fav:'+w.id+'">'+esc(w.name)+'</label>').join('')+'</div></aside>':'';
-return '<div class="min-home" data-min-theme="'+theme+'"><header class="min-header"><div class="min-brand" data-go="home"><div class="min-symbol">F</div><div class="min-wordmark">FRAMEWORK COMMAND<small>YOUR DIGITAL ENVIRONMENT</small></div></div><div class="min-status"><span class="min-online">Interactive design preview</span><span id="clock"></span><button class="min-header-btn" data-action="home-appearance" title="Personalise home" aria-label="Personalise home">'+icon('settings')+'</button></div></header>'+
-'<main class="min-main"><div class="min-main-copy"><div class="min-kicker">YOUR SPACE · YOUR PROJECTS</div><h1 class="min-title">What would<br>you like to <span>do?</span></h1><p class="min-intro">Everything in its place. Choose where you want to go, and the environment adapts to what you are doing.</p><div class="min-choices">'+divs.map((d,i)=>'<button class="min-choice" data-go="division:'+d.id+'"><span class="min-choice-top">'+icon(d.icon)+'<span class="min-choice-num">0'+(i+1)+'</span></span><span class="min-choice-bottom"><span><span class="min-choice-name">'+d.name+'</span><span class="min-choice-sub">'+(d.id==='work'?'Your team, your knowledge.':d.id==='create'?'Make the next thing.':'Games, music and media.')+'</span></span>'+icon('arrow')+'</span></button>').join('')+'</div></div><div class="min-orbit-stage"><div class="min-orbit-halo"></div><img src="'+orbitSrc+'" alt="Orbit, your floating assistant"><button class="min-orbit-tag" data-action="orbit-toggle">Meet Orbit '+icon('arrow')+'</button></div></main>'+
-'<footer class="min-footer"><div class="min-footer-status"><span>FRAMEWORK COMMAND</span><i></i><span>LOCAL-FIRST DESKTOP VISION</span></div><span>INTERACTIVE CONCEPT · NOT CONNECTED TO AI</span></footer>'+dock+settings+'</div>';
+ return '<div class="min-home" data-min-theme="'+esc(state.appearance||'blue')+'">'+
+ '<header class="min-header"><div class="min-brand" data-go="home"><div class="min-symbol">F</div><div class="min-wordmark">FRAMEWORK COMMAND<small>YOUR DIGITAL ENVIRONMENT</small></div></div><div class="min-status"><span class="min-online">Interactive design preview</span><span id="clock"></span><button class="min-header-btn" data-action="home-appearance" title="Personalise Framework Command" aria-label="Personalise Framework Command">'+icon('settings')+'</button></div></header>'+
+ '<main class="min-main"><div class="min-main-copy"><div class="min-kicker">YOUR SPACE · YOUR PROJECTS</div><h1 class="min-title">What would<br>you like to <span>do?</span></h1><p class="min-intro">Everything in its place. Choose where you want to go, and the environment adapts to what you are doing.</p><div class="min-choices">'+divs.map((d,i)=>'<button class="min-choice" data-go="division:'+d.id+'"><span class="min-choice-top">'+icon(d.icon)+'<span class="min-choice-num">0'+(i+1)+'</span></span><span class="min-choice-bottom"><span><span class="min-choice-name">'+d.name+'</span><span class="min-choice-sub">'+(d.id==='work'?'Your team, your knowledge.':d.id==='create'?'Make the next thing.':'Games, music and media.')+'</span></span>'+icon('arrow')+'</span></button>').join('')+'</div></div>'+
+ (pref('orbitVisible',true)?'<div class="min-orbit-stage"><div class="min-orbit-halo"></div>'+orbitMarkup('home')+'<button class="min-orbit-tag" data-action="orbit-toggle">Orbit '+icon('arrow')+'</button></div>':'')+
+ '</main><footer class="min-footer"><div class="min-footer-status"><span>FRAMEWORK COMMAND</span><i></i><span>LOCAL-FIRST DESKTOP VISION</span></div><span>INTERACTIVE CONCEPT · AI NOT CONNECTED</span></footer></div>';
+}
+function studioChrome(r){
+ const w=D.workspaces.find(x=>x.id===r.id);
+ const division=w?w.division:r.id;
+ const divisionName=division.charAt(0).toUpperCase()+division.slice(1);
+ const current=r.type==='division'?divisionName:r.type==='project'?(allProjects(r.id).find(p=>p.id===r.project)?.name||'Project'):(w?.name||'Studio');
+ return '<header class="fc-studio-header">'+
+ '<button class="fc-back" data-action="go-back" title="Back to '+(r.type==='project'?'studio':r.type==='studio'?'division':'home')+'" aria-label="Go back">'+icon('arrowleft')+'</button>'+
+ '<div class="fc-location"><button data-go="home" class="fc-location-root">FRAMEWORK COMMAND</button><span class="fc-location-chevron">/</span><button data-go="division:'+division+'" class="fc-location-division">'+divisionName+'</button>'+
+ (r.type==='division'?'':'<span class="fc-location-chevron">/</span><span class="fc-location-current">'+esc(current)+'</span>')+
+ '</div><div class="fc-header-spacer"></div>'+
+ '<button class="fc-header-tool" data-action="open-search" aria-label="Search all projects" title="Search (Ctrl/⌘ K)">'+icon('search')+'</button>'+
+ '<button class="fc-header-tool" data-action="home-appearance" aria-label="Personalise Framework Command" title="Personalise">'+icon('settings')+'</button>'+
+ '<button class="fc-header-tool fc-orbit-shortcut" data-action="orbit-toggle" aria-label="Open Orbit" title="Orbit">'+icon('spark')+'</button>'+
+ '</header>';
 }
 function division(id){
 const d=divs.find(x=>x.id===id)||divs[0],w=D.workspaces.filter(x=>x.division===d.id);
 return '<div class="workspace ws-'+(id==='create'?'html':id==='entertain'?'entertain':'reliable')+'"><div class="view"><div class="eyebrow">FRAMEWORK COMMAND / DIVISION</div><div class="ws-header"><div><h1>'+d.name+'</h1><p>'+d.sub+'</p></div><span class="pill">'+w.length+' SPECIALISED WORKSPACES</span></div><div class="grid grid2">'+w.map(x=>'<article class="project-card" data-go="studio:'+x.id+'" style="padding:28px;min-height:230px;background:linear-gradient(125deg,'+x.accent+'1e,#101724);border-color:'+x.accent+'55"><div class="between"><span class="project-mark" style="width:55px;height:55px;color:'+x.accent+'">'+icon(x.icon)+'</span><span class="label" style="color:'+x.accent+'">SECTION '+String(x.n).padStart(2,'0')+'</span></div><h2 class="mt20 mb8">'+esc(x.name)+'</h2><p>'+esc(x.subtitle)+'</p><div class="row" style="color:'+x.accent+'">OPEN STUDIO '+icon('arrow')+'</div></article>').join('')+'</div></div></div>';
 }
 function orbDrawer(){
-const history=state.orbitHistory.slice(-12);
-return (orbitOpen?'<div class="orbit-drawer" role="dialog" aria-label="Orbit preview panel"><div class="drawer-head"><img src="'+orbitSrc+'"><div class="grow"><b>Orbit · The Fixer</b><div class="tiny muted">Visual assistant · AI not connected</div></div><button class="btn btn-ghost btn-sm btn-square" data-action="orbit-toggle" aria-label="Close Orbit">'+icon('close')+'</button></div><div class="drawer-history" id="orbit-history"><div class="chat-bubble">I am available throughout Framework Command. This is my preview interface; no AI model is connected yet. You can record a note here.</div>'+history.map(x=>'<div class="chat-bubble '+(x.mine?'mine':'')+'">'+esc(x.text)+'</div>').join('')+'</div><div class="drawer-foot"><form data-form="orbit"><input class="field" name="message" placeholder="Leave a note for future Orbit..." required><button type="submit" class="btn btn-primary btn-square" aria-label="Send note">'+icon('arrow')+'</button></form></div></div>':'')+
-'<button class="float-orbit" aria-label="Open Orbit" title="Orbit · available everywhere" data-action="orbit-toggle"><img src="'+orbitSrc+'" alt="Orbit"></button>'
+ const history=(state.orbitHistory||[]).slice(-12);
+ return (orbitOpen?'<div class="orbit-drawer" role="dialog" aria-label="Orbit preview panel"><div class="drawer-head">'+orbitMarkup('drawer')+'<div class="grow"><b>Orbit · The Fixer</b><div class="tiny muted">Visual assistant · AI not connected</div></div><button class="btn btn-ghost btn-sm btn-square" data-action="orbit-toggle" aria-label="Close Orbit">'+icon('close')+'</button></div><div class="drawer-history" id="orbit-history"><div class="chat-bubble">I am available throughout Framework Command. This is my preview interface; no AI model is connected yet. You can record a note here.</div>'+history.map(x=>'<div class="chat-bubble '+(x.mine?'mine':'')+'">'+esc(x.text)+'</div>').join('')+'</div><div class="drawer-foot"><form data-form="orbit"><input class="field" name="message" placeholder="Leave a note for future Orbit..." required><button type="submit" class="btn btn-primary btn-square" aria-label="Send note">'+icon('arrow')+'</button></form></div></div>':'')+
+ (pref('orbitVisible',true)&&!orbitOpen?'<button class="float-orbit" aria-label="Open Orbit" title="Orbit · available everywhere" data-action="orbit-toggle">'+orbitMarkup('bubble')+'</button>':'');
 }
 function modalUI(){
 if(!modal)return '';
@@ -112,13 +159,47 @@ const matches=entries.filter(x=>!term||[x.name,x.type,x.detail].join(' ').toLowe
 return matches.length?matches.map(x=>'<div class="list-row" data-go="'+esc(x.url)+'" style="cursor:pointer"><span class="project-mark">'+icon(x.type==='Studio'?'grid':'file')+'</span><span class="grow"><strong>'+esc(x.name)+'</strong><div class="tiny muted">'+esc(x.type)+' · '+esc(x.detail)+'</div></span>'+icon('arrow')+'</div>').join(''):'<div class="empty">No matching studios or projects</div>'
 }
 function render(){
-const r=route();
-const body=r.type==='home'?home():r.type==='division'?division(r.id):r.type==='studio'?window.FC_SCREENS.renderStudio(r.id,r.tab||D.workspaces.find(w=>w.id===r.id)?.tabs[0]):window.FC_SCREENS.renderProject(r.id,r.project);
-el.innerHTML=(r.type==='home'?body:'<div class="app-shell">'+side(r)+'<div class="shell-main">'+top(r)+'<div class="preview-banner">INTERACTIVE DESIGN PROTOTYPE — EXAMPLE CONTENT ONLY · EXTERNAL AI AND DESKTOP APPS NOT CONNECTED</div><main class="main-content">'+body+'</main></div></div>')+orbDrawer()+modalUI();
-document.title=(r.type==='home'?'Framework Command':(D.workspaces.find(w=>w.id===r.id)?.name||'Framework Command'))+' — Framework Command';
-if(r.type==='studio'&&r.id==='html'&&r.tab==='Workshop')refreshPreview();
-setClock();
-if(orbitOpen){let h=document.getElementById('orbit-history');if(h)h.scrollTop=h.scrollHeight}
+ const r=route(),theme=themeOptions.some(t=>t[0]===state.appearance)?state.appearance:'blue';
+ const body=r.type==='home'?home():r.type==='division'?division(r.id):r.type==='studio'?window.FC_SCREENS.renderStudio(r.id,r.tab||D.workspaces.find(w=>w.id===r.id)?.tabs[0]):window.FC_SCREENS.renderProject(r.id,r.project);
+ const main=r.type==='home'?body:'<div class="fc-studio-shell">'+studioChrome(r)+'<main class="fc-content">'+body+'</main></div>';
+ el.innerHTML='<div class="fc-root fc-theme-'+theme+' '+(pref('motion',true)?'':'fc-no-motion')+' '+(pref('ambient',true)?'':'fc-no-ambient')+' fc-dock-'+pref('dockSize','normal')+' fc-dock-pos-'+pref('dockPosition','center')+' fc-orbit-'+pref('orbitSize','small')+'">'+
+ main+dockHTML(r)+appearanceUI()+orbDrawer()+modalUI()+'</div>';
+ document.title=(r.type==='home'?'Framework Command':(D.workspaces.find(w=>w.id===r.id)?.name||'Framework Command'))+' — Framework Command';
+ if(r.type==='studio'&&r.id==='html'&&r.tab==='Workshop')refreshPreview();
+ setClock();drawOrbitSprites();
+ if(orbitOpen){const h=document.getElementById('orbit-history');if(h)h.scrollTop=h.scrollHeight}
+}
+let orbitAssetsPromise=null;
+function loadOrbitAssets(){
+ if(orbitAssetsPromise)return orbitAssetsPromise;
+ const folder=ORBIT_ROOT+'/orbit/fluid/assets/';
+ orbitAssetsPromise=fetch(folder+'parts.json').then(r=>{if(!r.ok)throw Error('Orbit geometry not available');return r.json()}).then(async parts=>{
+   const images={};
+   await Promise.all(['head','torso','left-arm','right-arm'].map(key=>new Promise((resolve,reject)=>{
+     const i=new Image();i.onload=()=>{images[key]=i;resolve()};i.onerror=()=>reject(Error('Orbit '+key+' unavailable'));i.src=folder+key+'.png';
+   })));
+   return {parts,images};
+ }).catch(err=>{orbitAssetsPromise=null;throw err});
+ return orbitAssetsPromise;
+}
+async function drawOrbitSprites(){
+ const pending=document.querySelectorAll('canvas.orbit-cutout');
+ if(!pending.length)return;
+ try{
+   const {parts,images}=await loadOrbitAssets();
+   document.querySelectorAll('canvas.orbit-cutout').forEach(canvas=>{
+     if(canvas.dataset.rendered==='yes')return;
+     canvas.width=589;canvas.height=760;
+     const ctx=canvas.getContext('2d');if(!ctx)return;
+     ctx.clearRect(0,0,589,760);
+     for(const key of ['torso','head','left-arm','right-arm']){
+       const b=parts[key];if(b&&images[key])ctx.drawImage(images[key],b.left,b.top,b.width,b.height);
+     }
+     canvas.dataset.rendered='yes';
+   });
+ }catch(err){
+   document.querySelectorAll('canvas.orbit-cutout').forEach(canvas=>{canvas.setAttribute('aria-label','Orbit artwork unavailable — visit Orbit Studio');canvas.style.opacity='.2'});
+ }
 }
 const refreshPreview=()=>{const f=document.getElementById('html-preview'),code=document.getElementById('code-editor');if(f&&code)f.srcdoc=code.value};
 function toast(text){document.querySelector('.toast')?.remove();let n=document.createElement('div');n.className='toast';n.textContent=text;document.body.appendChild(n);clearTimeout(toastTimer);toastTimer=setTimeout(()=>n.remove(),3600)}
@@ -132,10 +213,18 @@ if(!/^https?:\/\//i.test(url)&&!url.startsWith('./')&&!url.startsWith('../')){to
 window.open(url.startsWith('./')?ORBIT_ROOT+'/'+url.replace(/^\.\//,''):url,'_blank','noopener,noreferrer');
 }
 function handleAction(s,from){
+if(s==='go-back'){
+ const r=route();
+ if(r.type==='project')go('studio:'+r.id);
+ else if(r.type==='studio')go('division:'+D.workspaces.find(w=>w.id===r.id)?.division);
+ else go('home');
+ return;
+}
+if(s.startsWith('setting:'))return;
 if(s==='orbit-toggle'){orbitOpen=!orbitOpen;render();return}
 if(s==='close-modal'||s==='dismiss-modal'){modal='';render();return}
 if(s==='home-appearance'){appearanceOpen=!appearanceOpen;render();return}
-if(s.startsWith('home-theme:')){state.appearance=s.split(':')[1];save();render();return}
+if(s.startsWith('home-theme:')){const candidate=s.split(':')[1];if(themeOptions.some(t=>t[0]===candidate)){state.appearance=candidate;save();render()}return}
 if(s.startsWith('home-fav:')){const id=s.split(':')[1];const favs=new Set(state.favourites||[]);if(favs.has(id))favs.delete(id);else favs.add(id);state.favourites=[...favs];save();render();return}
 if(s==='settings'){modal='settings';render();return}
 if(s==='open-search'){modal='search';render();document.getElementById('modal-search')?.focus();return}
@@ -175,7 +264,15 @@ if(type==='new-app'){let ws=f.dataset.ws,name=String(fd.get('name')||'').trim(),
 if(type==='configure-app'){let ws=f.dataset.ws,i=f.dataset.idx,url=String(fd.get('url')||'').trim();if(url&&!/^https?:\/\//i.test(url)&&!url.startsWith('./')){toast('Enter a valid web URL');return}state.appUrls[ws+':'+i]=url;save();modal='';render();toast('Launcher updated');return}
 });
 document.addEventListener('change',async e=>{
-const t=e.target;if(!t.matches('[data-file]'))return;const file=t.files?.[0];if(!file)return;
+ const t=e.target;
+ if(t.matches('[data-setting]')){
+   const k=t.dataset.setting;
+   if(['dockSize','dockPosition','orbitSize'].includes(k))state[k]=t.value;
+   if(['orbitVisible','motion','ambient'].includes(k))state[k]=!!t.checked;
+   save();render();return;
+ }
+ if(!t.matches('[data-file]'))return;
+ const file=t.files?.[0];if(!file)return;
 if(t.dataset.file==='import-data'){try{let obj=JSON.parse(await file.text());if(!obj||typeof obj!=='object'||Array.isArray(obj))throw Error('Invalid state');state={...structuredClone(defaults),...obj};save();modal='';render();toast('Prototype state imported')}catch(e){toast('Could not import that JSON file')}return}
 if(mediaUrl)URL.revokeObjectURL(mediaUrl);
 mediaUrl=URL.createObjectURL(file);
@@ -188,6 +285,6 @@ if(e.key==='Escape'&&modal){modal='';render();return}
 if(e.key==='Enter'&&e.target.matches('[data-project],[data-go]'))e.target.click()
 });
 window.addEventListener('hashchange',()=>{modal='';render();window.scrollTo(0,0)});
-window.FC={icon,esc,orbitSrc,getNote:note,allProjects,allApps,go,save,toast};
+window.FC={icon,esc,orbitSrc,orbitMarkup,getNote:note,allProjects,allApps,go,save,toast};
 render();setInterval(setClock,60000);
 })();
