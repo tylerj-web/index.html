@@ -1,41 +1,53 @@
-# V4.1 playback correction — 2 November 2026
+# Orbit — Approved Sprite Animation Studio (14 motions)
 
-The initial V4 page incorrectly defaulted to a live static Orbit rendering plus tiny OLED symbols. This produced a blue dot and almost no full-body motion. That was **not the user's requested animation system**.
+**Published:** 2 November 2026  
+**Live site:** https://tylerj-web.github.io/index.html/orbit/sprite-studio-v4/
 
-The page now defaults to the 28 actual pre-existing, source-derived 60-frame 24 FPS emote atlases, and also exposes 31 actual 24-frame 24 FPS transitions. Unproduced actions are in a separate Planned tab and do not play a fake bobbing animation. The static character fallback is explicitly identified as unanimated. The placeholder blue-dot OLED function is no longer invoked. No change was made to the old Orbit 3D or Orbit 5× viewer files.
+## Production state
 
-The online page does **not** host the new high-resolution 30 FPS pilot atlases. The local offline package `ORBIT_V4_1_FIXED_MOTION_REVIEW.zip` contains 4 image-derived 30 FPS pilot clips and 10 original user-supplied sprite strips (73 frames). They can be played, stepped, and scrubbed in the offline reviewer.
+This page now plays the fourteen **user-approved** Orbit animation strips, not the earlier V4 placeholder/blue-dot emotes and not the older optical-flow 5× library.
 
-**Artistic status:** The existing 5× atlas contains optical-flow-generated in-betweens and some known deformation; the four 30 FPS pilot clips are 2.5D image-derived movements, not rigged 3D renders. The full 141-action bespoke high-resolution animation library has not been produced.
+The approved action set comprises:
 
----
+1. Idle / float — updated approved sheet
+2. Wave / greeting — updated approved sheet
+3. Listening — updated approved sheet
+4. Thinking — updated approved sheet
+5. Speaking
+6. Celebration
+7. Scanning
+8. Caution
+9. Complete / success
+10. Error / recovery — updated approved sheet
+11. Sleep
+12. Wake
+13. Review / inspection
+14. Return to idle
 
-# Orbit V4 — Original Sprite & OLED Review Studio
+Each source atlas is a **10-column × 6-row** ordered grid, 60 illustrated frames, with 30 FPS playback as the default (2 seconds per sequence). The viewer also supports 24, 15 and 8 FPS playback for inspection. Some are looping; the rest play once and stop at the end pose. These are the exact approved images, not a claim of independently rendered 3D motion.
 
-Source-only review deployment. This is a new subdirectory; it does not replace the existing `orbit/` 3D sculpt or `orbit/5x/` motion viewer.
+## Files
 
-## What this page really does
+- `index.html`: mobile-friendly static playback studio, scrubbable timeline, playback controls, background options, sheet view, direct downloads.
+- `manifest-approved.json`: installed asset metadata and frame counts.
+- `approved_sources.json`: name mapping, short-lived imported-source references, original SHA-256 checksums; preserved for provenance.
+- `assets/approved/<id>.webp`: optimized, full-dimension RGBA WebP sheets used on the site.
+- `assets/approved/source/<id>.png`: unmodified original approved PNG source sheets.
+- `build_assets.py`: deterministic hash-checking, black-background separation for later source sheets, and output generation.
+- `.github/workflows/publish-orbit-approved-14.yml`: one-time import workflow (completed successfully).
 
-- Loads the original approved high-resolution Orbit reference in the browser and removes its magenta background for a live canvas preview.
-- Renders status glyphs *inside the face* and demonstrates browser-canvas pointer reactions.
-- Lists the 141 requested emotions, commands, system states, cursor behaviours, movements and composite actions.
-- Reuses the 28 existing source-derived 24 FPS emote atlas sheets from `orbit/5x/` when an actual existing clip is available.
-- Allows users to filter, inspect, review and export notes as JSON. Local notes stay in the browser's localStorage.
+Original sheet dimensions: 1448×1086 (nine corrected/new sheets) or 1619×971 (five retained earlier approved sheets). Grid cells are calculated from actual image dimensions, avoiding mistaken fixed-width cropping.
 
-## What it does NOT do
+## Verification
 
-The 141 actions do not yet have 141 individually authored motion sheets. Many are procedural screen-state **concept previews**, explicitly labelled in the interface. The live 30 FPS canvas animation is **not a new 30 FPS sprite export**. The 28 existing 5× emotes are source-derived and have known interpolation limitations.
+- Automated GitHub Actions import: **success**.
+- Fourteen WebP outputs and fourteen preserved source PNGs: **confirmed in the GitHub repository**.
+- All 14 WebP sheets: **HTTP 200** from published GitHub Pages when checked via browser.
+- Live browser test at 1440×920: fourteen selectable entries, frame playback changes, full motion viewer, every selected action draws non-empty pixels, **zero page JavaScript errors**.
+- No dependency on temporary Adobe asset links at runtime; the site serves the versioned sprites from its own repository.
 
-Four new 1024×1024 transparent RGBA pilot animations (idle, thinking, wave and processing) were generated separately from the approved original artwork, with 30 FPS timing and individual atlas pages. They are distributed as review/download ZIPs in the ChatGPT conversation, not uploaded into this static GitHub directory because they contain hundreds of megabytes of new lossless images. They are image-derived 2.5D motion, not newly modelled 3D renders and require artist review.
+## Boundaries
 
-## Character rules
+Approved sprite art and browser playback are complete for this set. The page is a **sprite animation preview**, not an AI agent, OS mouse tracker, or a live physically animated 3D model. Those future mechanics require a separate native integration and can reuse the manifest as a behavior-to-animation map.
 
-Master visual authority: `../assets/approved-orbit-reference.png` and `../assets/approved-orbit-sprite-sheet.png`. Dark midnight-blue metal with warm-gold reflections, original cyan eyes and core, legless floating structure. Never substitute a generic robot.
-
-## Local GitHub Pages path
-
-Likely project-site location when Pages publishes from `main`: `https://tylerj-web.github.io/index.html/orbit/sprite-studio-v4/`. Repository commit is confirmed; a live Pages browser check was not available at build time.
-
-## Next artistic and technical gate
-
-Review the four detailed pilots; repair wavering limbs / face-display transitions where necessary, then create bespoke assets from the vetted 3D rig. Desktop mouse-tracking and computer controls will need a separate authorised native application or bridge; the GitHub page is a browser-only demonstration.
+The original `orbit/` 3D studio and `orbit/5x/` motion library have been preserved.
