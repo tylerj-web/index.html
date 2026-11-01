@@ -33,3 +33,138 @@
 
 /* The main Orbit portrait replaces the usual floating bubble on the minimal homepage. */
 body:has(.min-home)>.float-orbit{display:none}
+
+
+/* v1.2 — UNIFIED MINIMAL CHROME / NO STUDIO SIDEBARS */
+.fc-root{--fc-ui-accent:#96c3ff;min-height:100svh;background:#090f18}
+.fc-root.fc-theme-silver{--fc-ui-accent:#c3d1e8}
+.fc-root.fc-theme-ocean{--fc-ui-accent:#64d5ea}
+.fc-root.fc-theme-evergreen{--fc-ui-accent:#90daba}
+.fc-root.fc-theme-amber{--fc-ui-accent:#e6bb8e}
+.fc-root.fc-no-motion *, .fc-root.fc-no-motion *::before,.fc-root.fc-no-motion *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+.fc-no-ambient .min-home{background:#0c121b!important}
+.fc-no-ambient .workspace{background:#101722!important}
+.min-home[data-min-theme="amber"]{--mh-accent:#ebc49a;background:radial-gradient(ellipse at 82% 39%,rgba(143,89,38,.22),transparent 55%),#15120e}
+.fc-root .min-orbit-stage{right:4%;top:13%;width:31%;height:67%}
+.fc-root .min-orbit-halo{width:73%;max-width:290px;opacity:.55}
+.orbit-cutout{display:block;background:transparent!important;border:0;object-fit:contain;max-width:100%;filter:drop-shadow(0 19px 25px rgba(0,0,0,.65)) drop-shadow(0 0 22px rgba(61,152,209,.22));animation:hoverFloat 5.5s ease-in-out infinite}
+.fc-root .orbit-home{width:170px;height:220px;position:relative;z-index:2}
+.fc-orbit-medium .orbit-home{width:215px!important;height:277px!important}
+.fc-root .min-orbit-tag{bottom:11%;right:13%;border-color:#78a9da33;background:#112030aa;letter-spacing:.08em}
+.fc-root .min-main-copy{width:min(750px,70%)}
+.fc-root .min-choices{max-width:710px}
+.fc-root .min-choice{min-height:145px}
+.fc-root .min-intro{margin-bottom:33px}
+.fc-root .min-orbit-halo{pointer-events:none}
+.fc-root .min-header{position:relative;z-index:2}
+.fc-root .fc-global-dock{position:fixed;bottom:21px;left:50%;transform:translateX(-50%);max-width:calc(100vw - 32px);box-sizing:border-box;z-index:55;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;padding:7px 8px;display:flex;align-items:center;gap:4px;background:#121e2eda;border:1px solid #9ab9e536;box-shadow:0 14px 40px #0008}
+.fc-root .fc-global-dock::-webkit-scrollbar{display:none}
+.fc-global-dock .min-dock-btn{flex:0 0 auto}
+.fc-global-dock .min-dock-btn:hover{color:var(--fc-ui-accent)}
+.fc-global-dock .min-dock-btn.home-active{color:var(--fc-ui-accent);background:color-mix(in srgb,var(--fc-ui-accent) 16%,transparent)}
+.fc-root.fc-dock-compact .min-dock-btn{width:30px;height:30px;border-radius:8px}
+.fc-root.fc-dock-compact .min-dock-btn .icon{width:17px;height:17px}
+.fc-root.fc-dock-large .min-dock-btn{width:47px;height:47px;border-radius:12px}
+.fc-root.fc-dock-large .min-dock-btn .icon{width:23px;height:23px}
+.fc-root.fc-dock-pos-left .fc-global-dock{left:32px;transform:none}
+.fc-studio-shell{min-height:100svh;position:relative}
+.fc-studio-header{position:sticky;z-index:35;top:0;height:66px;display:flex;align-items:center;gap:15px;padding:0 clamp(18px,3.7vw,65px);background:#0b111be8;border-bottom:1px solid rgba(146,175,212,.12);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.fc-studio-header button{transition:.2s}
+.fc-back{display:grid;place-items:center;width:39px;height:39px;flex:0 0 39px;border-radius:11px;border:1px solid rgba(153,189,225,.2);background:#fff1;color:#d4e2f4}
+.fc-back:hover,.fc-header-tool:hover{background:#90b8f821;border-color:#9ac8fa77;color:#fff}
+.fc-back .icon{width:19px;height:19px}
+.fc-location{display:flex;align-items:center;gap:10px;min-width:0;white-space:nowrap;font-size:11px;font-family:'Space Grotesk',sans-serif}
+.fc-location button{background:none;border:0;padding:4px 0;color:#8da0ba;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
+.fc-location button:hover{color:#e8eff9}
+.fc-location-root{letter-spacing:.12em!important;font-size:10px!important}
+.fc-location-chevron{color:#4d637e}
+.fc-location-current{font-size:12px;color:#e7edf5;font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.fc-header-spacer{flex:1}
+.fc-header-tool{width:36px;height:36px;flex:0 0 36px;border:1px solid transparent;border-radius:9px;background:transparent;color:#97acc3;display:grid;place-items:center}
+.fc-header-tool .icon{width:18px;height:18px}
+.fc-header-tool.fc-orbit-shortcut{color:#9edff5}
+.fc-content{min-height:calc(100svh - 66px)}
+.fc-content>.workspace{min-height:calc(100svh - 66px)}
+.fc-content .workspace>.view{max-width:1510px;padding:28px clamp(22px,4vw,65px) 145px}
+.fc-content .ws-header{padding:23px 0 20px}
+.fc-content .ws-header h1{font-size:clamp(35px,3.55vw,59px)}
+.fc-content .ws-tabs{margin:9px 0 24px;padding-bottom:15px}
+.fc-content .ws-tab{padding:9px 13px}
+.fc-customisation{z-index:75;top:70px;right:26px;max-height:calc(100svh - 87px);overflow-y:auto;width:min(325px,calc(100vw - 30px));padding:20px;background:linear-gradient(140deg,#152237,#0e1828);box-shadow:0 28px 75px #000c}
+.fc-customisation .min-swatch-row{margin-bottom:12px;gap:11px}
+.fc-customisation .min-favs{max-height:188px}
+.fc-customisation .min-favs label{padding:4px 0}
+.fc-preference{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:8px 0;color:#b1c0d0;font-size:12px}
+.fc-preference label{font-size:12px;white-space:nowrap}
+.fc-choice-field{width:137px;background:#1e2d42;border:1px solid #41536c;border-radius:8px;color:#e1eafa;padding:7px 8px;font-size:12px;outline:none}
+.fc-choice-field:focus{border-color:var(--fc-ui-accent)}
+.fc-pref-toggle label{display:flex;gap:10px;align-items:center;padding:5px 0;color:#bac9da;font-size:12px;cursor:pointer}
+.fc-pref-toggle input,.fc-customisation .min-favs input{accent-color:var(--fc-ui-accent)}
+.fc-customisation .min-swatch.chosen{border-color:var(--fc-ui-accent)}
+.fc-customisation .label{font-size:10px}
+.fc-root .modal-backdrop{z-index:90}
+.fc-root .orbit-drawer{z-index:65}
+.fc-root .float-orbit{z-index:57;width:57px;height:57px;right:24px;bottom:22px;border:1px solid rgba(105,170,210,.38);background:radial-gradient(circle at 45% 26%,#153344,#091523 68%);padding:0;overflow:hidden;box-shadow:0 10px 23px #0008}
+.fc-root .orbit-bubble{height:54px;width:46px;animation:none;filter:drop-shadow(0 5px 7px #0009)}
+.fc-root .orbit-drawer .orbit-drawer{width:40px;height:50px;flex:0 0 40px;animation:none;filter:none}
+.fc-root .orbit-drawer .drawer-head .orbit-cutout{width:39px;height:48px;animation:none;filter:none;flex:0 0 39px}
+.fc-root .float-orbit:hover{transform:translateY(-3px)}
+.fc-root .officer-portrait .orbit-cutout{height:75px;width:58px;animation:none;filter:none}
+.fc-root .orbit-render .orbit-cutout{height:225px;width:170px}
+.fc-orbit-small .float-orbit{width:48px;height:48px}
+.fc-orbit-small .orbit-bubble{width:40px;height:46px}
+.fc-orbit-medium .orbit-render .orbit-cutout{height:255px;width:195px}
+.fc-root .float-orbit{bottom:23px;right:22px}
+.fc-root .float-orbit .orbit-cutout{margin:auto}
+.fc-root .orbit-drawer{right:24px;bottom:90px}
+.fc-root .fc-studio-shell .ws-banner{box-shadow:none}
+.fc-root .fc-studio-shell .view{animation:fadeUp .25s ease both}
+@media(max-width:980px){
+.fc-root .min-orbit-stage{right:0;width:32%;opacity:.86}
+.fc-root .min-orbit-halo{max-width:230px}
+.fc-root .min-main-copy{width:min(750px,78%)}
+.fc-root .orbit-home{width:130px;height:168px}
+.fc-orbit-medium .orbit-home{width:170px!important;height:220px!important}
+.fc-root .fc-global-dock{bottom:12px}
+.fc-content .workspace>.view{padding:22px 26px 120px}
+}
+@media(max-width:750px){
+.fc-studio-header{height:58px;padding:0 14px;gap:8px}
+.fc-back{width:34px;height:34px;flex-basis:34px}
+.fc-location{gap:6px}
+.fc-location-root{font-size:9px!important;letter-spacing:.03em!important}
+.fc-location-division{display:none}
+.fc-location-chevron{display:none}
+.fc-header-tool{width:32px;height:32px;flex-basis:32px}
+.fc-header-tool .icon{width:17px;height:17px}
+.fc-root .min-main-copy{width:100%}
+.fc-root .min-main{padding-top:27px}
+.fc-root .min-intro{margin-bottom:154px}
+.fc-root .min-orbit-stage{top:168px;right:4%;height:185px;width:47%;opacity:.98}
+.fc-root .orbit-home{width:110px;height:147px}
+.fc-orbit-medium .orbit-home{width:148px!important;height:195px!important}
+.fc-root .min-orbit-halo{max-width:185px}
+.fc-root .min-orbit-tag{bottom:0;right:5%;font-size:9px}
+.fc-root .min-choice{min-height:91px}
+.fc-root .min-footer{bottom:75px}
+.fc-root .fc-global-dock{bottom:11px;padding:6px;gap:2px;border-radius:13px;max-width:calc(100vw - 16px)}
+.fc-root .fc-global-dock .min-dock-btn{height:33px;width:33px}
+.fc-root .fc-global-dock .min-dock-btn .icon{height:18px;width:18px}
+.fc-root .fc-global-dock .min-dock-divider{margin:0 1px}
+.fc-root.fc-dock-pos-left .fc-global-dock{left:10px}
+.fc-root .float-orbit{bottom:63px;right:13px}
+.fc-root .orbit-drawer{bottom:126px;right:12px}
+.fc-customisation{right:10px;top:67px;max-height:calc(100svh - 84px)}
+.fc-content .workspace>.view{padding:19px 17px 120px}
+.fc-content .ws-header{padding:14px 0 17px}
+.fc-content .ws-header h1{font-size:clamp(34px,8vw,43px)}
+.fc-content .ws-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:10px}
+.fc-content .ws-tabs::-webkit-scrollbar{display:none}
+.fc-content .ws-tab{white-space:nowrap}
+}
+@media(max-width:430px){
+.fc-root .min-intro{margin-bottom:165px}
+.fc-root .min-orbit-stage{top:170px;right:5%;width:51%;height:170px}
+.fc-root .orbit-home{width:100px;height:130px}
+.fc-root .min-title{font-size:48px}
+}
