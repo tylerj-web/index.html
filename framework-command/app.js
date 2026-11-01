@@ -136,7 +136,7 @@ if(s.startsWith('new-project:')||s.startsWith('new-app:')||s.startsWith('configu
 if(s.startsWith('go-studio:')){go('studio:'+s.split(':')[1]);return}
 if(s==='save-notes'){save();toast('Saved in this browser');return}
 if(s==='preview-code'){refreshPreview();toast('Preview updated');return}
-if(s==='export-code'){download(note('html-code','<!DOCTYPE html><html><body></body></html>'),'framework-studio-project.html','text/html');return}
+if(s==='export-code'){download(note('html-code','<!DOCTYPE html>\n<html>\n<head><title>My creation</title></head>\n<body style="font-family:system-ui;padding:24px">\n  <h1>My next project</h1>\n  <p>Made in Framework Command.</p>\n</body>\n</html>'),'framework-studio-project.html','text/html');return}
 if(s==='export-lyrics'){download(note('music-lyrics'),'music-studio-lyrics.txt');return}
 if(s==='export-writing'){download(note('severance-writing'),'severance-working-draft.txt');return}
 if(s==='export-data'){download(JSON.stringify(state,null,2),'framework-command-preview-data.json','application/json');return}
