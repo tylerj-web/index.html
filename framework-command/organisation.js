@@ -1,0 +1,126 @@
+/* Native Reliable Friends organisation chart.
+  Derived from Framework Command aligned command-chain chart; mounted in a Shadow DOM
+  so that the diagram's styling stays isolated without iframes or page navigation.
+  This is the browser visualisation, not a running agent hierarchy. */
+(function(){
+'use strict';
+const template="<style>\n:root{--bg:#08111f;--glass:#0b182a;--line:#23334b;--muted:#92a7c1;--text:#eaf1ff;--blue:#8bbafa}\n*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0%,#142b46,transparent 60%),#08111f;color:var(--text);font:13px system-ui,'Segoe UI',sans-serif}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid #9ed9ff;outline-offset:3px}\nheader{min-height:68px;padding:13px clamp(16px,2.3vw,39px);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid #38517266;background:#0c1728e8;backdrop-filter:blur(15px);position:relative;z-index:2}\n.brand{display:flex;align-items:center;gap:13px;min-width:0}.brand-mark{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;border:1px solid #679bd47a;background:#1b3251;color:#a5d5ff;font-weight:800;font-size:17px}.title{font-weight:800;letter-spacing:.065em;font-size:14px}.subtitle{font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:.015em}\n.toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.tool{min-height:34px;padding:7px 11px;border-radius:9px;border:1px solid #354963;background:#152339;color:#d5e3f7;font-weight:650;font-size:11px}.tool:hover{border-color:#659bd4;background:#1d3453}.tool.primary{color:#07131f;background:#a9cfff;border-color:#a9cfff}.tool.icon{font-size:16px;min-width:34px}.tool.active{background:#223d5f;border-color:#72b7fa}.counter{color:#acc2d9;background:#13243c;border:1px solid #2d4868;padding:8px 10px;border-radius:9px;font:600 11px 'Segoe UI',sans-serif}\nmain{max-width:1900px;margin:auto;padding:17px clamp(12px,2vw,34px) 15px}.overview{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:12px}.overview h1{font-size:clamp(20px,2.1vw,29px);letter-spacing:-.055em;margin:0 0 4px}.overview p{color:#9caec7;font-size:12px;line-height:1.5;margin:0}.legend{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.legend span{font-size:10px;color:#aac0d8;padding:5px 9px;background:#15243b;border:1px solid #32465f;border-radius:7px}.legend b{font-weight:800;color:#edf5ff}\n.stage{width:100%;height:clamp(480px,72vh,780px);min-height:480px;border:1px solid #324663;border-radius:17px;background:radial-gradient(circle at 50% 15%,#14304f55,transparent 44%),linear-gradient(135deg,#0d1b2e,#091322);position:relative;overflow:auto;scrollbar-color:#45668f #101b2d;box-shadow:0 12px 42px #0007}\n.canvas-wrap{position:relative;width:max-content;min-width:100%;min-height:100%;display:flex;align-items:flex-start;justify-content:center}.chart{display:block;flex-shrink:0;overflow:visible;user-select:none}.chart .connector{fill:none;stroke:#7296c5;stroke-width:1.7;opacity:.68}.chart .connector.branch{stroke-width:1.25;opacity:.53}.chart .oversight-line{fill:none;stroke:#51d4e6;stroke-width:2;stroke-dasharray:5 7;opacity:.76}.chart .label-small{font-weight:700;font-size:12px;letter-spacing:.7px}.chart .node{cursor:pointer}.chart .node rect{transition:stroke .15s,filter .15s,fill .15s}.chart .node:hover rect,.chart .node:focus rect{stroke:#fff;stroke-width:2.5;filter:drop-shadow(0 0 8px #8abafc88)}.chart .node.selected rect{stroke:#f5d38d;stroke-width:2.8;filter:drop-shadow(0 0 7px #b78c4677)}.chart .node.dim{opacity:.22}.chart text{pointer-events:none}.chart .node{outline:none}.chart .node:focus-visible rect{stroke:#fff;stroke-width:3}\n#agentDetails{margin-top:12px;display:flex;align-items:center;gap:16px;justify-content:space-between;flex-wrap:wrap;padding:13px 16px;border-radius:13px;background:#111e32;border:1px solid #2c4360;min-height:65px}#agentDetails strong{font-size:13px;display:block}#agentDetails span{font-size:11px;color:#9bb0cd;display:block;margin-top:5px;line-height:1.5}.status{font-size:10px;padding:7px 10px;border:1px solid #4b7188;border-radius:40px;color:#9bd4ef;letter-spacing:.08em}\n.search{border:1px solid #435777;border-radius:9px;min-height:34px;width:165px;padding:7px 10px;background:#111d30;color:#eff7ff;outline:none}.search:focus{border-color:#7cbcf3}.flowlink{display:inline-flex;align-items:center;gap:7px;color:#b1d1fa;cursor:pointer;text-decoration:none;font-size:11px}.flowlink:hover{text-decoration:underline}.footer{padding:14px 2px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:10px;color:#758ba5}.footer strong{color:#92abc4}\n/* hide surplus surrounding chrome when chart is embedded inside Reliable Friends */\nbody.embed header{display:none}body.embed main{padding:10px}body.embed .overview{margin-bottom:8px}body.embed .overview h1{font-size:21px}body.embed .stage{height:clamp(500px,73vh,780px);min-height:500px}body.embed .footer{display:none}\n@media(max-width:650px){header{padding:10px}.title{font-size:12px}.toolbar{gap:4px}.tool{padding:5px 8px;font-size:10px}.counter{padding:6px}.search{width:125px}.overview h1{font-size:21px}.overview .legend{display:none}.stage{height:clamp(420px,67vh,670px);min-height:420px}body.embed .stage{height:clamp(420px,68vh,680px);min-height:420px}#agentDetails{align-items:flex-start}}\n\n\n:host{display:block;width:100%;color:#eaf1ff;font:13px system-ui,\"Segoe UI\",sans-serif;--bg:#08111f;--glass:#0b182a;--line:#23334b;--muted:#92a7c1;--text:#eaf1ff;--blue:#8bbafa;contain:layout style}\n*,*::before,*::after{box-sizing:border-box}\n.org-inline{width:100%;min-width:0;display:block;border-radius:16px;overflow:hidden;background:#08111f;border:1px solid #385372}\n.org-inline .toolbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;justify-content:flex-end;background:#0d1b2c;padding:12px;border-bottom:1px solid #263e57}\n.org-inline main{padding:13px 14px 8px;max-width:none}\n.org-inline .overview{margin:3px 0 13px}\n.org-inline .stage{height:clamp(480px,70vh,780px);min-height:480px;border-radius:13px}\n.org-inline .footer{display:none}\n.org-inline .counter{min-width:45px;text-align:center}\n@media(max-width:680px){.org-inline .toolbar{justify-content:flex-start}.org-inline main{padding:9px}.org-inline .overview p{font-size:11px}.org-inline .stage{height:clamp(420px,64vh,670px);min-height:420px}.org-inline .search{flex:1;min-width:120px}}\n</style><div class=\"org-inline\"><div class=\"toolbar\"><input class=\"search\" type=\"search\" id=\"search\" placeholder=\"Find an agent…\" aria-label=\"Find an agent\"><button class=\"tool primary\" id=\"fit\">Fit all</button><button class=\"tool\" id=\"center\">Center Commander</button><button class=\"tool icon\" id=\"minus\" aria-label=\"Zoom out\">−</button><span class=\"counter\" id=\"zoomText\">100%</span><button class=\"tool icon\" id=\"plus\" aria-label=\"Zoom in\">+</button></div><main><div class=\"overview\"><div><h1>Aligned organisational authority</h1><p>One level per horizontal row. Commander → 3 Directors → 9 Team Leads → 18 Specialists. Orbit is equal rank, with independent oversight.</p></div><div class=\"legend\"><span><b>31</b> production positions</span><span><b>30</b> reporting connections</span><span>+ Orbit, equal rank</span></div></div>\n<div class=\"stage\" id=\"viewport\"><div class=\"canvas-wrap\" id=\"wrap\"><svg class=\"chart\" id=\"chart\" viewBox=\"0 0 1800 680\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"Top-down production organisation with Commander at the top, three Directors, nine Team Leads and eighteen Specialist agents, with Orbit as an equal-rank oversight officer\"></svg></div></div>\n<div id=\"agentDetails\" aria-live=\"polite\"><div><strong>Choose an agent to inspect their responsibility.</strong><span>All agents share one user-approved governing policy. Select or search an agent; all positions remain visible in the chart.</span></div><span class=\"status\">DESIGN DEMONSTRATION</span></div>\n<div class=\"footer\"><span>Every agent may communicate directly; correction authority follows the nearest common senior. <strong>Orbit may receive complaints directly from any agent.</strong></span><span>Interactive chart · No live agents connected</span></div>\n</main></div>";
+let cleanup=null;
+function unmount(){if(cleanup){cleanup();cleanup=null}}
+function mount(host){
+ if(!host)return;
+ unmount();
+ const root=host.shadowRoot||host.attachShadow({mode:'open'});
+ root.innerHTML=template;
+ 
+const ORG=[{"id":"A","label":"ENGINEERING & DEVELOPMENT","director":"Engineering Director","color":"#79aafa","leads":[["Architecture & Development Lead",["Coding Agent","UI/UX Agent"]],["Quality & Release Lead",["Debugging Agent","Testing & Packaging Agent"]],["Data & Integration Lead",["Database & Synchronisation Agent","Integration Agent"]]]},{"id":"B","label":"KNOWLEDGE & OPERATIONS","director":"Operations Director","color":"#82d8b3","leads":[["Knowledge & Training Lead",["Memory Archivist","Research & Document Agent"]],["Information & Administration Lead",["Data Refinery Agent","Communications & Scheduling Agent"]],["Security & Systems Lead",["System Health & Recovery Agent","Hardware & Electronics Agent"]]]},{"id":"C","label":"CREATIVE & SIMULATION","director":"Creative Director","color":"#b4a3ff","leads":[["Story & Design Lead",["Story & Canon Agent","Visual & Graphic Design Agent"]],["Film & Audio Lead",["Animation & Video Agent","Music & Voice Agent"]],["Worlds & Gameplay Lead",["Game Development Agent","Environment & NPC Agent"]]]}];
+(function(){
+'use strict';
+
+const NS='http://www.w3.org/2000/svg';
+const svg=root.getElementById('chart'),stage=root.getElementById('viewport'),wrap=root.getElementById('wrap'),details=root.getElementById('agentDetails'),search=root.getElementById('search');
+const get=(id)=>root.getElementById(id);let scale=1,chosen=null;const map=new Map();
+const el=(name,atts={},text)=>{const e=document.createElementNS(NS,name);Object.entries(atts).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e};
+const add=(parent,child)=>{parent.appendChild(child);return child};
+const line=(x1,y1,x2,y2,kind='connector')=>add(svg,el('path',{d:`M${x1} ${y1} L${x1} ${(y1+y2)/2} L${x2} ${(y1+y2)/2} L${x2} ${y2}`,class:kind}));
+const connector=(from,to,kind)=>{const y1=from.y+from.h,y2=to.y;line(from.x+from.w/2,y1,to.x+to.w/2,y2,kind)};
+const label=(x,y,str,attrs={})=>add(svg,el('text',{x,y,fill:'#e9f2ff','font-family':'Segoe UI, Arial, sans-serif','font-size':12,...attrs},str));
+const wrapping=(parent,x,y,text,maxWidth,size=12,lineHeight=15)=>{
+ const words=text.split(' '),lines=[];let line='';const approx=t=>t.length*size*.52;
+ for(const w of words){const draft=line?line+' '+w:w;if(line&&approx(draft)>maxWidth){lines.push(line);line=w}else line=draft}if(line)lines.push(line);
+ const visible=lines.slice(0,3);for(let i=0;i<visible.length;i++)add(parent,el('text',{x,y:y+(i-(visible.length-1)/2)*lineHeight,fill:'#e8f0ff','font-family':'Segoe UI,Arial,sans-serif','font-weight':'600','font-size':size,'text-anchor':'middle'},visible[i]));
+};
+function box(id,name,desc,rect,color,type,display){
+ const {x,y,w,h}=rect;let node=add(svg,el('g',{class:'node',tabindex:'0',role:'button','aria-label':name,'data-key':id}));
+ add(node,el('rect',{x,y,width:w,height:h,rx:type==='director'?13:10,fill:type==='officer'?'#1a2b44':type==='director'?'#182941':'#142135',stroke:color,'stroke-width':type==='officer'?2:1.35}));
+ if(type==='director'||type==='officer')add(node,el('rect',{x:x+10,y:y+10,width:4,height:h-20,rx:2,fill:color}));
+ if(type==='officer'){wrapping(node,x+w/2,y+h*.46,name,w-35,20,20);add(node,el('text',{x:x+w/2,y:y+h-13,'font-size':11,fill:'#a9bdd8','text-anchor':'middle'},desc))}
+ else if(type==='director'){wrapping(node,x+w/2,y+h*.47,name,w-25,18,18);add(node,el('text',{x:x+w/2,y:y+h-11,'font-size':10,fill:'#9badc5','text-anchor':'middle'},'1 director · 3 team leads · 6 specialists'))}
+ else {wrapping(node,x+w/2,y+h/2+3,display||name,w-10,type==='specialist'?13:14,type==='specialist'?14:16)}
+ const data={id,name,desc,type,rect,color};map.set(id,data);
+ node.addEventListener('click',()=>select(id));node.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(id)}});node.addEventListener('pointerenter',()=>inspect(id,false));return rect;
+}
+function inspect(id,pin){const n=map.get(id);if(!n)return;details.querySelector('div').innerHTML='<strong>'+escapeHTML(n.name)+'</strong><span>'+escapeHTML(n.desc)+'</span>';if(pin)chosen=id;}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function select(id){inspect(id,true);svg.querySelectorAll('.node').forEach(n=>n.classList.toggle('selected',n.dataset.key===id))}
+// ALIGNED LEVEL LAYOUT — every peer occupies exactly the same Y coordinate.
+const canvasW=1800,canvasH=680,officerY=160,directorY=295,leadY=408,specialistY=526;
+const columns=[35,628,1221],departmentWidth=550;
+const dCenters=columns.map(x=>x+departmentWidth/2);
+const leadCenters=[],specCenters=[];
+for(let i=0;i<3;i++)for(let j=0;j<3;j++){const cx=columns[i]+90+185*j;leadCenters.push(cx);specCenters.push(cx-44,cx+44)}
+const directorRects=dCenters.map(cx=>({x:cx-145,y:directorY,w:290,h:64}));
+const leadRects=leadCenters.map(cx=>({x:cx-84,y:leadY,w:168,h:56}));
+const specRects=specCenters.map(cx=>({x:cx-42,y:specialistY,w:84,h:79}));
+add(svg,el('rect',{x:0,y:0,width:canvasW,height:canvasH,fill:'#081423',rx:12}));
+label(900,24,'FRAMEWORK COMMAND / ALIGNED AUTHORITY CHAIN',{'text-anchor':'middle',fill:'#b4c9df','font-size':12,'font-weight':'bold','letter-spacing':2});
+add(svg,el('rect',{x:727,y:37,width:346,height:33,rx:9,fill:'#262c3b',stroke:'#dfb97f','stroke-width':1.5}));
+label(900,58,'YOU  ·  SUPREME AUTHORITY',{'text-anchor':'middle',fill:'#f8dfaf','font-size':14,'font-weight':'bold'});
+add(svg,el('rect',{x:631,y:84,width:538,height:39,rx:10,fill:'#192c43',stroke:'#7597bd','stroke-width':1.3}));
+label(900,108,'ONE SHARED  ·  USER-CONTROLLED GOVERNING POLICY',{'text-anchor':'middle',fill:'#c3dfff','font-size':13,'font-weight':'bold'});
+// Column backgrounds span matching horizontal ranks, but don't cause any ranks to stack.
+for(let i=0;i<3;i++){
+ const d=ORG[i],x=columns[i];
+ add(svg,el('rect',{x,y:272,width:departmentWidth,height:358,rx:14,fill:d.color,'fill-opacity':.035,stroke:d.color,'stroke-opacity':.26,'stroke-width':1.2}));
+ add(svg,el('rect',{x:x+2,y:274,width:departmentWidth-4,height:3,rx:2,fill:d.color,'fill-opacity':.6}));
+ label(x+departmentWidth/2,287,d.id+'  /  '+d.label,{'text-anchor':'middle',fill:d.color,'font-size':12,'font-weight':'bold','letter-spacing':.6});
+}
+// Guides emphasize exact equal horizontal ranks.
+for(const lineInfo of [[leadY-14,'9 LEADS'],[specialistY-14,'18 SPECIALISTS']]){
+ add(svg,el('path',{d:'M18 '+lineInfo[0]+' H1782',fill:'none',stroke:'#587494','stroke-width':.8,'stroke-dasharray':'3 8',opacity:.25}));
+}
+// Root to officers.
+add(svg,el('path',{d:'M900 70 V84 M900 123 V143 H735 V160 M900 143 H1065 V160',fill:'none',stroke:'#b7b7ae','stroke-width':1.7,'stroke-linecap':'round'}));
+const commander={x:608,y:officerY,w:254,h:68},orbit={x:938,y:officerY,w:254,h:68};
+// Reporting: COMMANDER -> 3 DIRECTORS (all y=295).
+add(svg,el('path',{d:'M735 228 V255 H'+dCenters[0]+' M735 255 H'+dCenters[2],class:'connector'}));
+directorRects.forEach((r,i)=>add(svg,el('path',{d:'M'+dCenters[i]+' 255 V'+directorY,class:'connector'})));
+// Reporting: each Director -> 3 Leads (all y=408).
+for(let i=0;i<3;i++){
+ const c=dCenters[i],first=leadCenters[i*3],last=leadCenters[i*3+2];
+ add(svg,el('path',{d:'M'+c+' '+(directorY+64)+' V383 H'+first+' M'+c+' 383 H'+last,class:'connector branch'}));
+ for(let j=0;j<3;j++)add(svg,el('path',{d:'M'+leadCenters[i*3+j]+' 383 V'+leadY,class:'connector branch'}));
+}
+// Reporting: each Lead -> 2 Specialists (all y=526).
+for(let i=0;i<9;i++){
+ const c=leadCenters[i],l=specCenters[i*2],rr=specCenters[i*2+1];
+ add(svg,el('path',{d:'M'+c+' '+(leadY+56)+' V493 H'+l+' M'+c+' 493 H'+rr,class:'connector branch'}));
+ add(svg,el('path',{d:'M'+l+' 493 V'+specialistY,class:'connector branch'}));
+ add(svg,el('path',{d:'M'+rr+' 493 V'+specialistY,class:'connector branch'}));
+}
+// Orbit's separate oversight route is not a command/reporting branch.
+add(svg,el('path',{d:'M1192 192 H1784 V632 H1745',class:'oversight-line'}));
+label(1775,250,'ORBIT AUDITS ALL AGENTS',{'text-anchor':'end',fill:'#6ee0ee','font-size':11,'font-weight':'bold'});
+// Nodes rendered last to keep all labels unobstructed.
+box('COMMANDER','COMMANDER','Equal-rank senior production officer. Plans, delegates and drives targets via the three Directors.',commander,'#8ebcff','officer');
+box('ORBIT','ORBIT','Equal-rank Establishment Officer. Independently audits and receives complaints; cannot override Commander.',orbit,'#6ee0ee','officer');
+const leadShort=[
+ ['Architecture & Development','Quality & Release','Data & Integration'],
+ ['Knowledge & Training','Information & Admin','Security & Systems'],
+ ['Story & Design','Film & Audio','Worlds & Gameplay']
+];
+const specialistShort=[
+ [['Coding','UI/UX'],['Debugging','Testing & Packaging'],['Database & Sync','Integration']],
+ [['Memory Archivist','Research & Docs'],['Data Refinery','Comms & Schedule'],['System Health','Hardware & Electronics']],
+ [['Story & Canon','Visual & Graphic'],['Animation & Video','Music & Voice'],['Game Development','Environment & NPC']]
+];
+ORG.forEach((d,i)=>{
+ box(d.id,d.director,'Reports directly to Commander. Oversees three Team Leads and six Specialists.',directorRects[i],d.color,'director');
+ d.leads.forEach(([leadName,agents],j)=>{
+  const idx=i*3+j,id=d.id+(j+1);
+  box(id,leadName,'Reports to '+d.director+'. Directly manages '+agents.join(' and ')+'.',leadRects[idx],d.color,'lead',leadShort[i][j]);
+  agents.forEach((name,k)=>box(id+'.'+(k+1),name,'Reports to '+leadName+'.',specRects[idx*2+k],d.color,'specialist',specialistShort[i][j][k]));
+ });
+});
+label(900,665,'ONE RANK PER ROW  ·  3 DIRECTORS  ·  9 LEADS  ·  18 SPECIALISTS',{'text-anchor':'middle',fill:'#a1b8d1','font-size':11,'font-weight':'bold','letter-spacing':1});
+function setScale(n,{center=true}={}){scale=Math.max(.28,Math.min(1.9,n));const w=Math.round(1800*scale),h=Math.round(680*scale);svg.style.width=w+'px';svg.style.height=h+'px';wrap.style.width=Math.max(stage.clientWidth,w)+'px';wrap.style.height=Math.max(stage.clientHeight,h)+'px';get('zoomText').textContent=Math.round(scale*100)+'%';if(center){stage.scrollLeft=Math.max(0,(stage.scrollWidth-stage.clientWidth)/2);stage.scrollTop=0;}}
+function fit(){const ratio=Math.min((stage.clientWidth-16)/1800,(stage.clientHeight-14)/680);setScale(Math.max(.28,Math.min(1.3,ratio)));stage.scrollLeft=0;stage.scrollTop=0}
+get('fit').addEventListener('click',fit);get('plus').addEventListener('click',()=>setScale(scale*1.18));get('minus').addEventListener('click',()=>setScale(scale/1.18));
+get('center').addEventListener('click',()=>{setScale(Math.max(0.7,Math.min(1.12,scale)));const commanderCenter=(commander.x+commander.w/2)*scale;stage.scrollLeft=Math.max(0,commanderCenter-stage.clientWidth/2);stage.scrollTop=Math.max(0,(commander.y-28)*scale);select('COMMANDER')});
+search.addEventListener('input',()=>{const t=search.value.trim().toLowerCase();let first=null;svg.querySelectorAll('.node').forEach(n=>{const a=map.get(n.dataset.key),match=!t||[a.name,a.id,a.desc].join(' ').toLowerCase().includes(t);n.classList.toggle('dim',!match);if(t&&match&&!first)first=a});if(t&&first)inspect(first.id,false);if(!t&&chosen)inspect(chosen,false)});
+let timer;const obs=typeof ResizeObserver==='function'?new ResizeObserver(()=>{clearTimeout(timer);timer=setTimeout(fit,70)}):null;if(obs)obs.observe(stage);cleanup=()=>{if(obs)obs.disconnect();clearTimeout(timer)};fit();
+})();
+
+}
+window.FC_ORG={mount,unmount};
+})();

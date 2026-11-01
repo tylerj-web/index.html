@@ -160,6 +160,7 @@ const matches=entries.filter(x=>!term||[x.name,x.type,x.detail].join(' ').toLowe
 return matches.length?matches.map(x=>'<div class="list-row" data-go="'+esc(x.url)+'" style="cursor:pointer"><span class="project-mark">'+icon(x.type==='Studio'?'grid':'file')+'</span><span class="grow"><strong>'+esc(x.name)+'</strong><div class="tiny muted">'+esc(x.type)+' · '+esc(x.detail)+'</div></span>'+icon('arrow')+'</div>').join(''):'<div class="empty">No matching studios or projects</div>'
 }
 function render(){
+ window.FC_ORG?.unmount?.();
  const r=route(),theme=themeOptions.some(t=>t[0]===state.appearance)?state.appearance:'blue';
  const body=r.type==='home'?home():r.type==='division'?division(r.id):r.type==='studio'?window.FC_SCREENS.renderStudio(r.id,r.tab||D.workspaces.find(w=>w.id===r.id)?.tabs[0]):window.FC_SCREENS.renderProject(r.id,r.project);
  const main=r.type==='home'?body:'<div class="fc-studio-shell">'+studioChrome(r)+'<main class="fc-content">'+body+'</main></div>';
@@ -167,6 +168,7 @@ function render(){
  main+dockHTML(r)+appearanceUI()+orbDrawer()+modalUI()+'</div>';
  document.title=(r.type==='home'?'Framework Command':(D.workspaces.find(w=>w.id===r.id)?.name||'Framework Command'))+' — Framework Command';
  if(r.type==='studio'&&r.id==='html'&&r.tab==='Workshop')refreshPreview();
+ if(r.type==='studio'&&r.id==='reliable'&&(r.tab||'Overview')==='Organisation')window.FC_ORG?.mount?.(document.getElementById('fc-org-slot'));
  setClock();drawOrbitSprites();
  if(orbitOpen){const h=document.getElementById('orbit-history');if(h)h.scrollTop=h.scrollHeight}
 }
