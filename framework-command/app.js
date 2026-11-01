@@ -43,6 +43,7 @@ const allProjects=(ws)=>(D.projects[ws]||[]).concat(state.extraProjects[ws]||[])
 const allApps=(ws)=>(D.apps[ws]||[]).concat(state.extraApps[ws]||[]);
 const studio=(id,tab)=>{let w=D.workspaces.find(x=>x.id===id);return '#/studio/'+id+'/'+encodeURIComponent(tab||(w&&w.tabs[0])||'Overview')};
 const go=(target)=>{
+if(target==='home'){window.location.assign('../index.html');return}
 let url='#/';
 if(target==='home')url='#/';
 else if(target.startsWith('division:'))url='#/division/'+target.split(':')[1];

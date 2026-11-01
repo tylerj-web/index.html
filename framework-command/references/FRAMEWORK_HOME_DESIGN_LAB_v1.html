@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark light" />
+<title>Framework Home — Design Lab</title>
+<style>
+/* =============================================================
+   FRAMEWORK HOME — SINGLE FILE VISUAL PROTOTYPE
+   No external libraries, fonts or assets are required.
+   EASIEST THEME EDITS: See the :root variables just below.
+   This file is a design prototype, not a Windows shell.
+   ============================================================= */
+:root {
+  --accent: #7bdcff;           /* Main interaction colour */
+  --gold: #f0bc74;             /* Orbit / work accent */
+  --radius: 24px;              /* Main card corner radius */
+  --glass: .69;                /* 0 = clear, 1 = opaque */
+  --blur: 26px;                /* Frosted background blur */
+  --scale: 1;                  /* Main interface scale */
+  --dock-size: 50px;
+  --bg: #080e18;
+  --surface: #131c2b;
+  --surface-strong: #1d2839;
+  --text: #f3f7ff;
+  --muted: #92a0b7;
+  --line: rgba(208,229,255,.115);
+  --shadow: 0 24px 70px rgba(0,0,0,.32);
+}
+* { box-sizing: border-box; }
+html,body {margin:0;min-height:100%;}
+html {scroll-behavior:smooth;}
+body {
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  color:var(--text); background:var(--bg); overflow-x:hidden;
+  -webkit-font-smoothing: antialiased;
+}
+button,input,select {font:inherit;} button {cursor:pointer;} button:focus-visible,input:focus-visible,a:focus-visible {outline:2px solid var(--accent);outline-offset:3px;}
+a {color:inherit;text-decoration:none;}
+[hidden] {display:none !important;}
+.icon {width:19px;height:19px;display:inline-block;flex:none;vertical-align:middle;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+.icon.sm{width:15px;height:15px}.icon.xs{width:12px;height:12px}.icon.lg{width:24px;height:24px}.icon.xl{width:30px;height:30px}
+button { -webkit-tap-highlight-color:transparent; }
+.icon-button {border:1px solid var(--line);background:rgba(255,255,255,.05);color:inherit;border-radius:13px;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;transition:.2s ease;}
+.icon-button:hover {background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);transform:translateY(-1px);}
+.primary-btn,.ghost-btn,.mini-btn {display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:13px;white-space:nowrap;transition:background .2s,border-color .2s,transform .2s;}
+.primary-btn {border:1px solid var(--accent);background:var(--accent);color:#06131c;font-weight:750;padding:11px 17px;}
+.primary-btn:hover {filter:brightness(1.09);transform:translateY(-1px);}
+.ghost-btn {background:rgba(255,255,255,.055);color:var(--text);border:1px solid var(--line);padding:10px 14px;}
+.ghost-btn:hover,.mini-btn:hover {background:rgba(255,255,255,.13);}
+.mini-btn {padding:7px 11px;background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--line);font-size:12px;}
+.eyebrow {font-size:10px;font-weight:800;letter-spacing:.21em;text-transform:uppercase;color:var(--muted);}
+.muted{color:var(--muted)} .nowrap{white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:rgba(255,255,255,.055);border-radius:30px;padding:6px 9px;color:var(--muted);font-size:11px;font-weight:650;}
+.chip .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.chip.demo{color:#eebc8a;border-color:rgba(240,188,116,.24);background:rgba(240,188,116,.09);}
+.pane {background:color-mix(in srgb,var(--surface) calc(var(--glass)*100%),transparent);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));border:1px solid var(--line);box-shadow:var(--shadow);}
+
+/* Wallpapers are CSS-only, so this page works completely offline. */
+.wallpaper{position:fixed;inset:0;z-index:-2;pointer-events:none;background:
+ radial-gradient(ellipse 55% 55% at 12% 82%,rgba(34,103,141,.27),transparent 75%),
+ radial-gradient(ellipse 40% 52% at 95% 14%,rgba(111,78,144,.21),transparent 79%),
+ radial-gradient(ellipse 30% 45% at 50% 110%,rgba(0,99,108,.16),transparent 85%),
+ linear-gradient(125deg,#090e18 0%,#080f1c 52%,#10111b 100%);}
+.wallpaper:after {content:"";position:absolute;inset:0;opacity:.24;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='5' cy='5' r='.65' fill='%23b1c0d3'/%3E%3C/svg%3E");background-size:90px 90px;}
+body[data-wallpaper="aurora"] .wallpaper {background:radial-gradient(ellipse 60% 60% at 28% 96%,rgba(21,180,168,.28),transparent 75%),radial-gradient(ellipse 42% 50% at 82% 5%,rgba(122,90,232,.27),transparent 77%),linear-gradient(140deg,#07141d,#0e1026 60%,#102225);}
+body[data-wallpaper="ember"] .wallpaper {background:radial-gradient(ellipse 55% 60% at 8% 80%,rgba(170,68,33,.26),transparent 75%),radial-gradient(ellipse 55% 53% at 94% 4%,rgba(128,84,57,.18),transparent 76%),linear-gradient(125deg,#160e12,#15121c 58%,#151013);}
+body[data-wallpaper="midnight"] .wallpaper {background:radial-gradient(ellipse 48% 50% at 90% 99%,rgba(46,73,136,.17),transparent 78%),linear-gradient(125deg,#070a11,#0a101a 80%,#080c15);}
+body[data-theme="light"]{--bg:#e6ebf4;--surface:#f7faff;--surface-strong:#e9eef7;--text:#182435;--muted:#637188;--line:rgba(40,64,94,.16);--shadow:0 20px 50px rgba(50,67,102,.12);}
+body[data-theme="light"] .wallpaper{background:radial-gradient(ellipse 55% 54% at 10% 70%,#b9d6e8,transparent 78%),radial-gradient(ellipse 50% 55% at 99% 3%,#d3c7ec,transparent 79%),linear-gradient(135deg,#f3f7ff,#e7edf7);}
+body[data-theme="light"] .wallpaper:after{opacity:.08}
+body[data-theme="light"] .section-card,body[data-theme="light"] .feature-hero {color:#f7faff;}
+body[data-theme="light"] .ghost-btn,body[data-theme="light"] .icon-button,body[data-theme="light"] .mini-btn {background:rgba(20,33,55,.035);}
+body[data-theme="light"] .primary-btn{color:#051620}
+body[data-theme="light"] .dock button.active,body[data-theme="light"] .dock button:hover{background:rgba(22,61,93,.1)}
+
+/* Fixed translucent top status bar */
+.topbar {position:fixed;top:14px;left:clamp(12px,2.8vw,44px);right:clamp(12px,2.8vw,44px);height:58px;padding:0 14px 0 17px;border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:20;}
+.brand {display:flex;align-items:center;gap:11px;min-width:160px;}
+.brand-symbol {width:31px;height:31px;display:grid;place-items:center;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 38%,transparent);border-radius:10px;background:color-mix(in srgb,var(--accent) 10%,transparent);}
+.brand-copy strong {font-size:12px;letter-spacing:.20em;display:block;font-weight:830}.brand-copy small {font-size:9px;color:var(--muted);letter-spacing:.12em;display:block;margin-top:3px}
+.health {display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;}
+.metric {height:39px;min-width:78px;padding:5px 11px;border-right:1px solid var(--line);display:flex;align-items:center;gap:9px;}
+.metric:last-child{border-right:none}
+.metric .icon{color:var(--muted);width:15px;height:15px;}
+.metric-text{min-width:0}.metric-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}.metric-value{font-size:12px;font-weight:750;letter-spacing:.02em;margin-top:3px;font-variant-numeric:tabular-nums}
+.metric-value .small{font-size:9px;font-weight:500;color:var(--muted)}
+.top-actions{display:flex;align-items:center;gap:8px;white-space:nowrap;}.time-block{text-align:right;margin-right:4px;}.time-block .time{font-weight:760;font-size:13px}.time-block .date{color:var(--muted);font-size:10px;margin-top:2px}
+.demo-pill{font-size:9px;color:var(--gold);letter-spacing:.1em;border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);padding:4px 6px;border-radius:7px}
+
+/* Workspace */
+#mainContent {max-width:1580px;margin:0 auto;min-height:100vh;padding:116px clamp(24px,5.3vw,100px) 145px;position:relative;transform-origin:top center;}
+.view {animation:arrive .35s ease both;}
+@keyframes arrive{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.home-head{display:flex;align-items:center;justify-content:space-between;min-height:187px;margin-bottom:27px;position:relative;}
+.hero-left{max-width:770px}.hero-left .eyebrow{color:var(--accent);margin-bottom:17px;}
+.home-head h1{font-size:clamp(38px,4.8vw,70px);font-weight:770;line-height:1.05;letter-spacing:-.065em;margin:0;}
+.home-head h1 em{font-style:normal;color:var(--accent);font-weight:640;}
+.home-head p{font-size:clamp(13px,1.25vw,16px);color:var(--muted);max-width:590px;margin:19px 0 0;line-height:1.7}
+.hero-right{position:relative;min-width:240px;align-self:stretch;display:flex;align-items:center;justify-content:flex-end;padding-right:13px;}
+.decor-orbit {width:145px;height:145px;border:1px solid rgba(120,178,210,.17);border-radius:50%;display:grid;place-items:center;position:relative;opacity:.64}
+.decor-orbit:before,.decor-orbit:after{content:"";position:absolute;inset:15px;border:1px dashed rgba(144,181,212,.27);border-radius:50%;}.decor-orbit:after{inset:40px;border-style:solid;opacity:.5}.decor-orbit .center{width:9px;height:9px;background:var(--accent);box-shadow:0 0 22px var(--accent);border-radius:50%}
+.decor-orbit span{position:absolute;top:17px;right:12px;width:8px;height:8px;background:var(--gold);border-radius:50%}
+.home-tools{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:0 0 14px}.home-tools .eyebrow {color:var(--muted)}
+.sections-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.section-card{position:relative;overflow:hidden;min-height:355px;border-radius:var(--radius);text-align:left;display:flex;flex-direction:column;justify-content:space-between;padding:26px;background:#111d2b;color:white;border:1px solid rgba(220,235,255,.13);box-shadow:0 15px 40px rgba(0,0,0,.16);transition:transform .26s,box-shadow .26s,border-color .26s;isolation:isolate}
+.section-card:hover{transform:translateY(-7px);box-shadow:0 25px 60px rgba(0,0,0,.27);border-color:rgba(226,241,255,.32)}
+.section-card:before,.section-card:after{content:"";position:absolute;z-index:-1;pointer-events:none}
+.section-card.entertain {background:linear-gradient(145deg,#1a1b36,#151c32 52%,#101922)}
+.section-card.entertain:before{width:285px;height:285px;right:-80px;top:-95px;border-radius:50%;background:radial-gradient(circle at 39% 38%,#ea829b 0%,#88539e 37%,transparent 67%);filter:blur(7px);opacity:.67}
+.section-card.entertain:after{width:260px;height:260px;bottom:-130px;left:-110px;border-radius:50%;background:#2067a5;filter:blur(75px);opacity:.58}
+.section-card.create {background:linear-gradient(145deg,#092629,#11292c 52%,#0a1e25)}
+.section-card.create:before{height:270px;width:270px;right:-105px;top:-60px;background:conic-gradient(from 10deg,#75e0c1,#135d79,#0b2a33,#d6c881,#75e0c1);border-radius:40%;filter:blur(19px);opacity:.39;transform:rotate(32deg)}
+.section-card.create:after{height:160px;width:160px;right:29px;top:73px;border:1px solid rgba(118,222,203,.31);border-radius:20px;transform:rotate(-28deg)}
+.section-card.work {background:linear-gradient(145deg,#2a1f20,#23242c 50%,#17212b)}
+.section-card.work:before{width:280px;height:280px;right:-76px;top:-95px;background:radial-gradient(circle,#d9ac68 0%,#755537 38%,transparent 72%);filter:blur(15px);opacity:.53}
+.section-card.work:after{width:230px;height:230px;right:-56px;bottom:-105px;border:1px solid rgba(245,198,120,.19);border-radius:50%;box-shadow:0 0 0 24px rgba(241,184,111,.025),0 0 0 54px rgba(241,184,111,.025)}
+.section-icon {width:52px;height:52px;border-radius:17px;display:grid;place-items:center;background:rgba(255,255,255,.085);border:1px solid rgba(255,255,255,.17);color:#f7fafc;backdrop-filter:blur(9px)}
+.section-icon .icon{width:27px;height:27px}.card-art{position:absolute;top:86px;right:32px;opacity:.38;pointer-events:none}.card-art .icon{width:118px;height:118px;stroke-width:.55;transform:rotate(-13deg)}
+.section-card h2{font-size:clamp(30px,3vw,42px);letter-spacing:-.05em;line-height:1;margin:0 0 9px;font-weight:780}.section-card .card-desc{color:rgba(235,244,255,.72);font-size:13px;line-height:1.62;max-width:280px;margin:0}
+.card-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:22px}.card-label{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:rgba(235,244,255,.65);font-weight:750}.card-go{width:37px;height:37px;border-radius:12px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
+.recent{margin-top:27px;display:flex;flex-direction:column;gap:14px}.recent-head{display:flex;align-items:center;justify-content:space-between;}.recent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.recent-tile{padding:14px 16px;display:flex;align-items:center;gap:12px;border-radius:16px;text-align:left;transition:background .15s,transform .15s;background:rgba(255,255,255,.035);border:1px solid var(--line);color:var(--text);min-width:0}
+.recent-tile:hover{background:rgba(255,255,255,.085);transform:translateY(-2px)}
+.recent-tile .small-icon{height:37px;width:37px;display:grid;place-items:center;border-radius:11px;background:rgba(128,187,233,.09);color:var(--accent)}
+.recent-tile b{font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.recent-tile small{font-size:10px;color:var(--muted);display:block;margin-top:4px}
+
+/* Persistent dock */
+.dock-wrap{position:fixed;z-index:21;bottom:18px;left:0;right:0;display:flex;justify-content:center;pointer-events:none;padding:0 14px;}
+.dock{pointer-events:auto;display:flex;align-items:center;gap:5px;padding:9px 12px;border-radius:24px;max-width:calc(100vw - 22px);overflow-x:auto;scrollbar-width:none;}
+.dock::-webkit-scrollbar{display:none}.dock button{background:none;color:var(--muted);border:0;border-radius:14px;min-width:var(--dock-size);height:var(--dock-size);display:flex;justify-content:center;align-items:center;position:relative;transition:transform .2s,background .2s,color .2s;}
+.dock button:hover{background:rgba(255,255,255,.09);color:var(--text);transform:translateY(-5px)}.dock button.active{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}.dock button .icon{width:25px;height:25px}.dock button.active:after{content:"";height:3px;width:14px;border-radius:5px;position:absolute;bottom:1px;background:var(--accent)}
+.dock .divider{height:33px;width:1px;background:var(--line);margin:0 4px;flex:none}.dock .dock-label{position:absolute;left:50%;bottom:calc(100% + 13px);transform:translateX(-50%) translateY(6px);font-size:11px;background:var(--surface-strong);color:var(--text);padding:7px 10px;border-radius:8px;border:1px solid var(--line);opacity:0;pointer-events:none;white-space:nowrap;transition:.2s;box-shadow:var(--shadow)}
+.dock button:hover .dock-label,.dock button:focus-visible .dock-label{opacity:1;transform:translateX(-50%) translateY(0)}
+.dock button.dock-add{border:1px dashed var(--line);width:var(--dock-size);min-width:var(--dock-size);height:var(--dock-size);}
+
+/* Section pages */
+.section-view-header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:18px 0 28px;padding-right:145px;}
+.section-view-header .eyebrow{color:var(--accent);margin-bottom:12px}.section-view-header h1{font-size:clamp(39px,5vw,64px);margin:0;line-height:1;letter-spacing:-.06em;font-weight:780}.section-view-header p{color:var(--muted);line-height:1.6;font-size:14px;margin:14px 0 0}.view-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.feature-hero {border:1px solid var(--line);border-radius:var(--radius);padding:29px;min-height:175px;background:linear-gradient(115deg,#1c2743,#222042 58%,#40304e);display:flex;align-items:center;justify-content:space-between;overflow:hidden;position:relative;isolation:isolate}
+.feature-hero:before{content:"";position:absolute;right:-50px;top:-140px;border:1px solid rgba(255,255,255,.2);width:340px;height:340px;border-radius:50%;box-shadow:0 0 0 60px rgba(255,255,255,.017),0 0 0 120px rgba(255,255,255,.014);z-index:-1}.feature-hero h2{margin:8px 0 9px;font-size:25px;letter-spacing:-.035em}.feature-hero p{margin:0;color:#b9c5dd;font-size:13px;max-width:540px;line-height:1.6}.feature-hero .icon{width:78px;height:78px;opacity:.75}
+.subheading{display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px;gap:10px}.subheading h2{font-size:16px;margin:0;letter-spacing:-.02em}.subheading span{color:var(--muted);font-size:11px}
+.app-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}.app-card{min-width:0;border:1px solid var(--line);border-radius:19px;padding:18px 15px;text-align:left;background:rgba(255,255,255,.035);color:var(--text);transition:transform .2s,background .2s,border-color .2s;position:relative;}
+.app-card:hover{transform:translateY(-4px);background:rgba(255,255,255,.08);border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+.app-logo{width:53px;height:53px;border-radius:17px;display:grid;place-items:center;background:var(--logo-bg,#1c2938);color:var(--logo-color,#fff);font-size:25px;font-weight:850;box-shadow:inset 0 1px 1px rgba(255,255,255,.15)}
+.app-card h3{font-size:13px;margin:16px 0 4px}.app-card p{font-size:11px;color:var(--muted);margin:0;line-height:1.45;min-height:29px}.pin-btn{position:absolute;top:15px;right:12px;border:0;background:none;color:var(--muted);padding:5px}.pin-btn:hover,.pin-btn.is-pinned{color:var(--accent)}
+.project-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.project-card{position:relative;border-radius:var(--radius);border:1px solid var(--line);background:rgba(255,255,255,.04);padding:23px;min-height:230px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;cursor:pointer;transition:.2s}
+.project-card:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 40%,transparent);background:rgba(255,255,255,.072)}
+.project-card:after{content:"";position:absolute;right:-55px;bottom:-92px;width:220px;height:220px;background:var(--project-glow);filter:blur(75px);opacity:.36;z-index:-1}.project-card .project-top{display:flex;justify-content:space-between;align-items:center}.project-card .project-icon{height:51px;width:51px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.06);display:grid;place-items:center;color:var(--project-color,var(--accent));}
+.project-card h3{font-size:24px;letter-spacing:-.045em;margin:13px 0 7px}.project-card p{font-size:12px;line-height:1.6;color:var(--muted);margin:0;max-width:360px}.project-card .project-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px;font-size:11px;color:var(--muted)}
+.work-summary{display:grid;grid-template-columns:1fr 1fr;gap:14px}.officer{padding:21px;border-radius:var(--radius);position:relative;overflow:hidden}.officer:before{content:"";position:absolute;width:145px;height:145px;border-radius:50%;filter:blur(65px);right:-30px;bottom:-60px;background:var(--officer-glow);opacity:.35;pointer-events:none}
+.officer .officer-top{display:flex;align-items:center;gap:12px}.officer .officer-avatar{height:48px;width:48px;display:grid;place-items:center;background:rgba(255,255,255,.075);border-radius:14px;border:1px solid var(--line)}.officer h3{font-size:16px;margin:0}.officer p{font-size:11px;color:var(--muted);margin:5px 0 0}.officer .officer-status{margin-top:22px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font-size:12px}
+.tabbar{display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line);padding-bottom:12px;margin-top:26px;scrollbar-width:none}.tabbar button{border:0;background:transparent;color:var(--muted);font-size:12px;font-weight:680;padding:10px 15px;border-radius:11px;white-space:nowrap;display:flex;align-items:center;gap:8px;}
+.tabbar button:hover{background:rgba(255,255,255,.06);color:var(--text)}.tabbar button.active{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+.work-panel{padding:22px 0 5px;animation:arrive .3s ease}.org-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:18px}.org-tree,.agent-detail,.vault-card{border:1px solid var(--line);border-radius:var(--radius);padding:20px;background:rgba(255,255,255,.035)}
+.org-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;gap:12px}.org-title h3{margin:0;font-size:14px}.org-title small{font-size:10px;color:var(--muted)}
+.tree-root{font-size:12px;background:color-mix(in srgb,var(--gold) 11%,transparent);padding:10px 13px;border:1px solid color-mix(in srgb,var(--gold) 22%,transparent);border-radius:12px;display:flex;justify-content:space-between;gap:10px}
+.tree-lines{border-left:1px solid color-mix(in srgb,var(--gold) 22%,transparent);margin-left:14px;padding:6px 0 0 13px}
+.agent-row{display:flex;align-items:center;gap:8px;width:100%;border:1px solid transparent;color:var(--text);border-radius:10px;background:transparent;text-align:left;padding:8px 9px;font-size:12px;transition:background .15s,border .15s;min-width:0}
+.agent-row:hover,.agent-row.selected{background:rgba(255,255,255,.07);border-color:var(--line)}.agent-row .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.agent-row .status-dot{height:7px;width:7px;border-radius:50%;background:#708097;flex:none}.agent-row .status-dot.active{background:#5ce4bc;box-shadow:0 0 10px #4bdbb08a}.agent-row .status-dot.queued{background:#f1c178}.agent-row .status-dot.standby{background:#7e8a9c}
+.tree-director{border:1px solid var(--line);border-radius:13px;padding:7px;margin-top:8px;background:rgba(255,255,255,.02)}.tree-branch{border-left:1px solid var(--line);padding-left:13px;margin-left:14px}.tree-lead{margin:3px 0}.tree-toggle{height:22px;width:22px;border-radius:7px;background:rgba(255,255,255,.055);border:0;color:var(--muted);display:grid;place-items:center;flex:none}.tree-toggle .icon{width:12px;height:12px}
+.agent-detail{align-self:start;position:sticky;top:98px;min-height:265px}.agent-detail h3{font-size:20px;margin:16px 0 7px;letter-spacing:-.035em}.agent-detail p{color:var(--muted);font-size:12px;line-height:1.7;margin:0}.detail-status{display:flex;align-items:center;gap:7px;margin:12px 0;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.045);font-size:11px}.detail-kv{display:grid;grid-template-columns:95px 1fr;gap:12px;border-top:1px solid var(--line);padding:13px 0;font-size:11px}.detail-kv span:first-child{color:var(--muted)}
+.vault-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.vault-card{min-height:185px;display:flex;flex-direction:column;gap:12px}.vault-card .icon{color:var(--accent);width:25px;height:25px}.vault-card h3{font-size:14px;margin:0}.vault-card p{font-size:12px;color:var(--muted);line-height:1.6;margin:0;flex:1}.vault-footer{display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:10px;color:var(--muted)}
+
+/* Orbit companion — custom drawn vector, no external image */
+.orbit-float{position:fixed;z-index:28;left:calc(100vw - 178px);top:135px;width:130px;height:153px;cursor:grab;user-select:none;touch-action:none;transition:filter .2s;}
+.orbit-float:active{cursor:grabbing}.orbit-float:hover{filter:brightness(1.12)}.orbit-float.hidden-orbit{opacity:0;pointer-events:none;transform:scale(.6)}
+.orbit-float .robot-art{width:100%;height:130px;overflow:visible;filter:drop-shadow(0 18px 26px rgba(0,0,0,.4));animation:hoverbot 4.2s ease-in-out infinite;pointer-events:none}
+.orbit-float .orbit-caption{position:absolute;bottom:0;left:13px;right:13px;text-align:center;padding:5px 3px;font-size:9px;letter-spacing:.13em;font-weight:780;border-radius:8px;background:rgba(14,22,34,.82);color:#c5e9ff;border:1px solid rgba(135,188,237,.17);}
+@keyframes hoverbot{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(2deg)}}
+.orbit-float .glow-halo{position:absolute;left:13px;right:13px;top:15px;height:94px;background:radial-gradient(circle,rgba(93,194,255,.21),transparent 70%);z-index:-1;pointer-events:none}
+.orbit-panel{position:fixed;z-index:29;right:45px;top:285px;width:380px;max-height:min(510px,calc(100vh - 365px));min-height:275px;display:flex;flex-direction:column;border-radius:21px;overflow:hidden;box-shadow:0 30px 95px rgba(0,0,0,.55);}
+.chat-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}.chat-head strong{font-size:13px}.chat-head small{display:block;font-size:10px;color:var(--muted);margin-top:3px}.chat-body{padding:16px;overflow-y:auto;flex:1;min-height:100px;display:flex;flex-direction:column;gap:11px}.bubble{font-size:12px;line-height:1.55;max-width:92%;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.075);align-self:flex-start;word-wrap:break-word}.bubble.user{background:color-mix(in srgb,var(--accent) 20%,transparent);align-self:flex-end}.bubble .route-label{font-size:10px;color:var(--accent);font-weight:800;display:block;margin-bottom:5px}.chat-input{padding:12px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--line)}.chat-input input{flex:1;min-width:0;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.045);color:var(--text);outline:0;padding:12px;font-size:12px}.chat-input input:focus{border-color:var(--accent)}.chat-input button{width:39px;height:39px;border:0;border-radius:11px;background:var(--accent);color:#06131c;display:grid;place-items:center}
+
+/* Overlay drawers, modals, search and design panel */
+.scrim{position:fixed;inset:0;z-index:38;background:rgba(1,7,16,.6);backdrop-filter:blur(5px);}
+.drawer{position:fixed;z-index:39;right:0;top:0;height:100dvh;width:min(410px,100vw);padding:29px 24px 32px;overflow-y:auto;background:var(--surface);border-left:1px solid var(--line);box-shadow:-20px 0 70px rgba(0,0,0,.35);}
+.drawer-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:27px}.drawer-head h2{font-size:25px;letter-spacing:-.045em;margin:6px 0 0}.setting-group{border-top:1px solid var(--line);padding:19px 0}.setting-group h3{margin:0 0 12px;font-size:12px;letter-spacing:.035em}.setting-group p{font-size:11px;line-height:1.55;color:var(--muted);margin:0 0 13px}.choice-row{display:flex;gap:8px;flex-wrap:wrap}.choice-row button{flex:1;border:1px solid var(--line);padding:10px 12px;min-width:85px;border-radius:11px;color:var(--text);background:rgba(255,255,255,.04);font-size:12px}.choice-row button.selected{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
+.swatches{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.swatch{height:33px;width:33px;border-radius:11px;border:2px solid transparent;outline:0;position:relative}.swatch.selected{outline:2px solid var(--text);outline-offset:3px}.color-input{width:38px;height:34px;border:0;background:none;padding:0;cursor:pointer}
+.range-setting{display:flex;align-items:center;gap:13px;margin:13px 0}.range-setting label{font-size:11px;color:var(--muted);min-width:84px}.range-setting input{flex:1;accent-color:var(--accent);min-width:0}.range-setting output{font-size:11px;font-variant-numeric:tabular-nums;width:37px;text-align:right}
+.toggle-setting{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;padding:10px 0}.toggle-setting input{accent-color:var(--accent);height:18px;width:18px;}
+.setting-actions{display:flex;flex-wrap:wrap;gap:8px}.setting-actions button{flex:1}.drawer-note{font-size:11px;color:var(--muted);line-height:1.65;border-left:2px solid var(--gold);padding-left:11px;margin-top:14px}
+.modal{position:fixed;z-index:41;left:50%;top:50%;transform:translate(-50%,-50%);width:min(510px,calc(100vw - 28px));max-height:80vh;overflow-y:auto;padding:24px;border-radius:22px}.modal-header{display:flex;justify-content:space-between;gap:12px;align-items:center}.modal h2{margin:0 0 7px;font-size:21px;letter-spacing:-.03em}.modal p{color:var(--muted);line-height:1.65;font-size:12px}.field{margin-top:14px}.field label{font-size:11px;color:var(--muted);display:block;margin-bottom:7px}.field input,.field select{width:100%;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.055);color:var(--text);padding:11px 12px;outline:0}.field select option{background:#192333;color:white}.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}.app-list{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto;margin:16px 0}.app-list-row{display:flex;align-items:center;gap:10px;font-size:12px;border:1px solid var(--line);border-radius:11px;padding:8px 10px}.app-list-row strong{flex:1}.app-list-row .icon-button{height:28px;width:28px;border-radius:8px}
+.search-modal{position:fixed;z-index:41;left:50%;top:17%;transform:translateX(-50%);width:min(580px,calc(100vw - 26px));border-radius:20px;overflow:hidden;}.search-field{padding:17px;display:flex;align-items:center;gap:13px;border-bottom:1px solid var(--line)}.search-field input{font-size:16px;flex:1;min-width:0;color:var(--text);background:none;outline:none;border:0}.search-field input::placeholder{color:var(--muted)}.search-results{max-height:430px;overflow-y:auto;padding:10px}.search-result{display:flex;align-items:center;gap:12px;border:0;border-radius:11px;background:none;color:var(--text);padding:11px;width:100%;text-align:left}.search-result:hover{background:rgba(255,255,255,.075)}.search-result .icon{color:var(--accent)}.search-result span{flex:1}.search-result small{font-size:10px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:112px;transform:translateX(-50%) translateY(12px);z-index:50;max-width:min(520px,90vw);border-radius:12px;padding:11px 16px;font-size:12px;color:var(--text);opacity:0;pointer-events:none;transition:.23s;background:var(--surface-strong);border:1px solid var(--line);box-shadow:var(--shadow);text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:1150px){.metric:nth-child(3),.metric:nth-child(4){display:none}.sections-grid{gap:12px}.section-card{min-height:325px;padding:21px}.recent-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:850px){.section-view-header{padding-right:96px}.health{display:none}.topbar{top:8px;height:54px}.home-head{min-height:167px}.hero-right{display:none}.sections-grid{grid-template-columns:1fr}.section-card{min-height:210px}.section-card h2{font-size:32px}.section-card .card-desc{max-width:450px}.card-art{top:45px}.section-view-header{align-items:flex-start}.app-grid{grid-template-columns:repeat(3,1fr)}.project-grid{grid-template-columns:1fr}.org-layout{grid-template-columns:1fr}.agent-detail{position:static}.orbit-float{left:auto;right:12px;top:88px;width:96px;height:119px}.orbit-float .robot-art{height:105px}.orbit-float .orbit-caption{bottom:0;font-size:8px}.orbit-panel{right:12px;top:205px;max-height:50vh}.vault-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.section-view-header{padding-right:82px}#mainContent{padding:93px 17px 125px}.brand-copy small{display:none}.brand{min-width:0}.brand-copy strong{font-size:10px}.top-actions{gap:6px}.demo-pill{display:none}.time-block .date{display:none}.home-head h1{font-size:41px}.home-head p{max-width:85%;font-size:13px}.section-card{min-height:195px}.recent-grid{grid-template-columns:1fr 1fr}.recent-tile{padding:11px 9px;gap:8px}.recent-tile .small-icon{height:30px;width:30px}.recent-tile b{font-size:11px}.recent-tile small{font-size:9px}.section-view-header{flex-direction:column}.section-view-header h1{font-size:46px}.feature-hero{padding:21px;min-height:150px}.feature-hero .icon{width:55px}.app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.work-summary{grid-template-columns:1fr}.vault-grid{grid-template-columns:1fr}.dock{padding:7px;gap:2px;border-radius:20px}.orbit-panel{width:calc(100vw - 24px);left:12px;right:12px;max-height:55vh}.orbit-float{top:100px;right:8px;width:78px;height:98px}.orbit-float .robot-art{height:89px}.orbit-float .orbit-caption{display:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none !important;scroll-behavior:auto !important;transition:none !important;}}
+body[data-reduced-motion="true"] *,body[data-reduced-motion="true"] *:before,body[data-reduced-motion="true"] *:after{animation:none !important;transition:none !important;}
+</style>
+</head>
+<body data-theme="dark" data-wallpaper="cosmos">
+<!-- Inline SVG icon library: edit these symbols to change any interface icon. -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="i-command" viewBox="0 0 24 24"><path d="M9 7V5a2 2 0 1 0-2 2h10a2 2 0 1 0-2-2v14a2 2 0 1 0 2-2H7a2 2 0 1 0 2 2V5"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24"><path d="M6 12h4m-2-2v4m7-2h.01M18 10h.01M8 6h8a5 5 0 0 1 4.85 3.8l1.05 5.2c.55 2.7-2.7 4.4-4.55 2.4L15 15H9l-2.35 2.4C4.8 19.4 1.55 17.7 2.1 15l1.05-5.2A5 5 0 0 1 8 6z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9zM20 18v4m-2-2h4M4 2v4M2 4h4"/></symbol>
+  <symbol id="i-network" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-5h14v5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c5 5 5 13 0 18M12 3c-5 5-5 13 0 18"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4M17 8h4M3 16h4M17 16h4"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 8l12-2"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-16-2 20"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M10 2h4l.7 2.5 2.4 1 2.3-1.3 2.8 2.8-1.3 2.3 1 2.4L24 12l-2.5.7-1 2.4 1.3 2.3-2.8 2.8-2.3-1.3-2.4 1L14 22h-4l-.7-2.5-2.4-1-2.3 1.3-2.8-2.8 1.3-2.3-1-2.4L0 12l2.5-.7 1-2.4-1.3-2.3 2.8-2.8 2.3 1.3 2.4-1z" transform="translate(1 1) scale(.91)"/><circle cx="12" cy="12" r="3.2"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 9h6v6H9zM9 1v4m6-4v4M9 19v4m6-4v4M1 9h4m-4 6h4m14-6h4m-4 6h4"/></symbol>
+  <symbol id="i-ram" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 7v10m4-10v10m4-10v10m4-10v10M5 20v-3m5 3v-3m5 3v-3m4 3v-3"/></symbol>
+  <symbol id="i-drive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2 9a16 16 0 0 1 20 0M5.5 13a11 11 0 0 1 13 0M9 17a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="m2 2 20 20M2 9a16 16 0 0 1 17-1M5.5 13a11 11 0 0 1 8-2M9 17a5 5 0 0 1 5 0"/></symbol>
+  <symbol id="i-battery" viewBox="0 0 24 24"><rect x="2" y="6" width="18" height="12" rx="2"/><path d="M22 10v4M5 9h11v6H5"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="4"/><path d="M12 8V4m-2 0h4M8 14h.01M16 14h.01M1 13v3m22-3v3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 21 6v6c0 6-4 9-9 10-5-1-9-4-9-10V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="m9 3 6 6m-1-7 8 8-4 1-3 3-1 4-3-3-5 5m2-12 4-1 3-3z"/></symbol>
+  <symbol id="i-plus-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 3h13a2 2 0 0 1 2 2v16H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3zM3 17a3 3 0 0 1 3-3h13"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v11h14V9M10 13h4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M2 12h5l3-8 4 16 3-8h5"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="m6 8 4 4-4 4m7 0h5"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 12 7-12 7z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="15" rx="2"/><path d="M8 22h8m-4-4v4"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M11 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6m-6-10h8v8m0-8-11 11"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-4 2 2 0 0 1 1-4h3a3 3 0 0 0 3-3 9 9 0 0 0-9-7z"/><circle cx="7" cy="12" r="1"/><circle cx="9" cy="7" r="1"/><circle cx="15" cy="7" r="1"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="18" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 12h6m-6 4h6"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></symbol>
+</svg>
+<div class="wallpaper" aria-hidden="true"></div>
+
+<header class="topbar pane" aria-label="Framework system status">
+  <div class="brand"><div class="brand-symbol"><svg class="icon lg"><use href="#i-command"/></svg></div><div class="brand-copy"><strong>FRAMEWORK</strong><small>HOME · DESIGN LAB</small></div></div>
+  <div class="health" aria-label="Sample computer status"><div class="metric"><svg class="icon"><use href="#i-cpu"/></svg><div class="metric-text"><div class="metric-label">CPU</div><div class="metric-value">22% <span class="small">sample</span></div></div></div><div class="metric"><svg class="icon"><use href="#i-ram"/></svg><div class="metric-text"><div class="metric-label">Memory</div><div class="metric-value">11.2 <span class="small">/ 32 GB</span></div></div></div><div class="metric"><svg class="icon"><use href="#i-drive"/></svg><div class="metric-text"><div class="metric-label">Storage</div><div class="metric-value">734 <span class="small">GB free</span></div></div></div><div class="metric"><svg class="icon"><use href="#i-activity"/></svg><div class="metric-text"><div class="metric-label">AI Engine</div><div class="metric-value">Standby</div></div></div><div class="metric" title="Network indicator uses the browser's online/offline state"><svg class="icon"><use id="netIcon" href="#i-wifi"/></svg><div class="metric-text"><div class="metric-label">Network</div><div class="metric-value" id="networkState">Checking</div></div></div></div>
+  <div class="top-actions"><span class="demo-pill" title="Hardware usage numbers are visual examples only">DEMO METRICS</span><div class="time-block"><div id="clockTime" class="time">--:--</div><div id="clockDate" class="date">---</div></div><button class="icon-button" id="searchOpen" title="Search (Ctrl + K)" aria-label="Open search"><svg class="icon"><use href="#i-search"/></svg></button><button class="icon-button" id="settingsOpen" title="Customise appearance" aria-label="Open appearance editor"><svg class="icon"><use href="#i-palette"/></svg></button></div>
+</header>
+
+<main id="mainContent">
+  <section id="view-home" class="view" aria-label="Framework Home">
+    <div class="home-head"><div class="hero-left"><div class="eyebrow">YOUR PERSONAL OPERATING ENVIRONMENT</div><h1>Make space for<br><em>what matters.</em></h1><p>Everything you watch, build and run — organised in one place. Orbit is here whenever you need him.</p></div><div class="hero-right"><div class="decor-orbit"><div class="center"></div><span></span></div></div></div>
+    <div class="home-tools"><span class="eyebrow">CHOOSE YOUR WORLD</span><span class="chip"><span class="dot"></span> LOCAL-FIRST WORKSPACE</span></div>
+    <div class="sections-grid">
+      <button class="section-card entertain" data-route="entertain"><div class="section-icon"><svg class="icon"><use href="#i-game"/></svg></div><div class="card-art"><svg class="icon"><use href="#i-play"/></svg></div><div><h2>Entertain.</h2><p class="card-desc">Your games, streaming services, media and everything worth switching off for.</p><div class="card-bottom"><span class="card-label">PLAY · WATCH · LISTEN</span><span class="card-go"><svg class="icon"><use href="#i-arrow"/></svg></span></div></div></button>
+      <button class="section-card create" data-route="create"><div class="section-icon"><svg class="icon"><use href="#i-spark"/></svg></div><div class="card-art"><svg class="icon"><use href="#i-code"/></svg></div><div><h2>Create.</h2><p class="card-desc">SEVERANCE, game building, music production, coding and your next big idea.</p><div class="card-bottom"><span class="card-label">IMAGINE · BUILD · PRODUCE</span><span class="card-go"><svg class="icon"><use href="#i-arrow"/></svg></span></div></div></button>
+      <button class="section-card work" data-route="work"><div class="section-icon"><svg class="icon"><use href="#i-network"/></svg></div><div class="card-art"><svg class="icon"><use href="#i-network"/></svg></div><div><h2>Work.</h2><p class="card-desc">Your AI organisation, active operations, archives, training and governing policies.</p><div class="card-bottom"><span class="card-label">LEAD · ORGANISE · ACHIEVE</span><span class="card-go"><svg class="icon"><use href="#i-arrow"/></svg></span></div></div></button>
+    </div>
+    <div class="recent"><div class="recent-head"><span class="eyebrow">QUICK ACCESS</span><span class="muted" style="font-size:10px">Illustrative shortcuts</span></div><div class="recent-grid" id="recentList"></div></div>
+  </section>
+  <section id="view-entertain" class="view" hidden><div class="section-view-header"><div><div class="eyebrow">YOUR UNWIND SPACE</div><h1>Entertain<span style="color:var(--accent)">.</span></h1><p>Games, streaming, music and leisure — all within reach.</p></div><div class="view-actions"><button class="ghost-btn" data-route="home"><svg class="icon sm"><use href="#i-home"/></svg> Home</button><button class="ghost-btn" data-open="apps"><svg class="icon sm"><use href="#i-plus"/></svg> Add app</button></div></div><div class="feature-hero"><div><span class="eyebrow" style="color:#d6c5fb">YOUR ENTERTAINMENT LIBRARY</span><h2>A little time for yourself.</h2><p>Pin your favourite platforms to the dock, or add your own web applications and services.</p></div><svg class="icon"><use href="#i-game"/></svg></div><div class="subheading"><h2>Entertainment apps</h2><span>Launches web services in your browser</span></div><div class="app-grid" id="entertainApps"></div></section>
+  <section id="view-create" class="view" hidden><div class="section-view-header"><div><div class="eyebrow">THE CREATIVE STUDIO</div><h1>Create<span style="color:var(--accent)">.</span></h1><p>One home for stories, games, music, software and everything in progress.</p></div><div class="view-actions"><button class="ghost-btn" data-route="home"><svg class="icon sm"><use href="#i-home"/></svg> Home</button><button class="ghost-btn" id="newProjectBtn"><svg class="icon sm"><use href="#i-plus"/></svg> New project</button></div></div><div class="project-grid" id="projectGrid"></div><div class="subheading"><h2>Creative applications</h2><span>Quick links and favourite tools</span></div><div class="app-grid" id="createApps"></div></section>
+  <section id="view-work" class="view" hidden><div class="section-view-header"><div><div class="eyebrow">FRAMEWORK COMMAND</div><h1>Work<span style="color:var(--gold)">.</span></h1><p>Your organisation. Your intelligence. Your policies. One command structure.</p></div><div class="view-actions"><button class="ghost-btn" data-route="home"><svg class="icon sm"><use href="#i-home"/></svg> Home</button><button class="primary-btn" id="commanderBtn"><svg class="icon sm"><use href="#i-shield"/></svg> Command Commander</button></div></div><div class="work-summary"><div class="officer pane" style="--officer-glow:#8cabfb"><div class="officer-top"><div class="officer-avatar"><svg class="icon lg"><use href="#i-shield"/></svg></div><div><h3>Commander</h3><p>Operations, planning and execution</p></div></div><div class="officer-status"><span>Primary production interface</span><span class="chip demo">Demo: standby</span></div></div><div class="officer pane" style="--officer-glow:#e6b66a"><div class="officer-top"><div class="officer-avatar"><svg class="icon lg" style="color:var(--gold)"><use href="#i-bot"/></svg></div><div><h3>Orbit</h3><p>Independent establishment and oversight</p></div></div><div class="officer-status"><span>Equal rank · Separate responsibility</span><span class="chip demo">Demo: standby</span></div></div></div><div class="tabbar" id="workTabs" role="tablist"><button data-tab="organisation" class="active" role="tab" aria-selected="true"><svg class="icon sm"><use href="#i-network"/></svg> Organisation</button><button data-tab="archives" role="tab" aria-selected="false"><svg class="icon sm"><use href="#i-archive"/></svg> Archives</button><button data-tab="training" role="tab" aria-selected="false"><svg class="icon sm"><use href="#i-book"/></svg> AI training</button><button data-tab="policies" role="tab" aria-selected="false"><svg class="icon sm"><use href="#i-lock"/></svg> Master policies</button></div><div id="workPanel" class="work-panel"></div></section>
+</main>
+
+<div id="orbitFloat" class="orbit-float" role="button" tabindex="0" aria-label="Open Orbit assistant" title="Drag Orbit anywhere · Click to open · Ctrl + Alt + O to summon"><div class="glow-halo"></div>
+  <!-- Original-inspired small black/gold robot with glowing blue eyes and core. Vector art is editable here. -->
+  <svg class="robot-art" viewBox="0 0 140 138" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="robotBlack" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#34445c"/><stop offset=".42" stop-color="#172434"/><stop offset="1" stop-color="#080d18"/></linearGradient><linearGradient id="robotGold" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#fff0b7"/><stop offset=".46" stop-color="#d7a964"/><stop offset="1" stop-color="#77502a"/></linearGradient><radialGradient id="robotBlue"><stop stop-color="#e3ffff"/><stop offset=".35" stop-color="#80e7ff"/><stop offset="1" stop-color="#1a8ddd"/></radialGradient><filter id="robotGlow"><feGaussianBlur stdDeviation="3"/></filter></defs>
+    <ellipse cx="70" cy="131" rx="35" ry="4" fill="#6bd8ff" opacity=".29" filter="url(#robotGlow)"/>
+    <path d="M68 16V10" stroke="url(#robotGold)" stroke-width="4" stroke-linecap="round"/><circle cx="68" cy="9" r="4" fill="url(#robotBlue)"/>
+    <path d="M36 75 20 79 17 93q0 8 8 8h5l15-19" fill="url(#robotBlack)" stroke="url(#robotGold)" stroke-width="3"/>
+    <path d="m104 75 15 3 5 15q1 8-7 9h-6L96 83" fill="url(#robotBlack)" stroke="url(#robotGold)" stroke-width="3"/>
+    <path d="M50 96v19q0 8 8 9h7l5-8 5 8h8q7-1 7-9V95" fill="url(#robotBlack)" stroke="url(#robotGold)" stroke-width="3"/>
+    <path d="M41 74q29-18 58 0l5 22q0 14-15 15H51q-15-1-15-15z" fill="url(#robotBlack)" stroke="url(#robotGold)" stroke-width="3"/>
+    <path d="M45 78Q70 70 95 78" fill="none" stroke="#f0c882" stroke-width="2" opacity=".7"/>
+    <circle cx="70" cy="91" r="15" fill="#3b7da2" opacity=".35" filter="url(#robotGlow)"/>
+    <circle cx="70" cy="91" r="11" fill="#091622" stroke="url(#robotGold)" stroke-width="2.4"/><circle cx="70" cy="91" r="7.2" fill="url(#robotBlue)"/><circle cx="68" cy="88" r="2.2" fill="#d5fdff"/>
+    <path d="M24 32q4-18 24-19h44q20 1 24 20l3 23q-1 20-21 23H42Q21 77 21 56z" fill="url(#robotBlack)" stroke="url(#robotGold)" stroke-width="4"/>
+    <path d="M30 39q5-17 23-17h34q18 0 23 17l1 16q-3 17-22 17H48q-19-1-20-17z" fill="#080f1c" stroke="#66523c" stroke-width="1.6"/>
+    <rect x="37" y="40" width="24" height="16" rx="8" fill="#52beff" opacity=".45" filter="url(#robotGlow)"/><rect x="78" y="40" width="24" height="16" rx="8" fill="#52beff" opacity=".45" filter="url(#robotGlow)"/>
+    <rect x="39" y="41" width="22" height="15" rx="7.5" fill="url(#robotBlue)"/><rect x="79" y="41" width="22" height="15" rx="7.5" fill="url(#robotBlue)"/><ellipse cx="45" cy="45" rx="3" ry="2" fill="#fff" opacity=".72"/><ellipse cx="85" cy="45" rx="3" ry="2" fill="#fff" opacity=".72"/>
+    <path d="M62 62Q70 66 78 62" fill="none" stroke="#f0bd70" stroke-width="2" stroke-linecap="round"/>
+    <path d="M25 32l8-8M106 24l8 8" stroke="url(#robotGold)" stroke-width="3.5" stroke-linecap="round"/>
+  </svg>
+  <div class="orbit-caption">ORBIT · HERE</div>
+</div>
+<div id="orbitPanel" class="orbit-panel pane" hidden><div class="chat-head"><div><strong>Orbit</strong><small>Local desktop companion · Visual demonstration</small></div><button id="orbitClose" class="icon-button" aria-label="Close Orbit panel"><svg class="icon sm"><use href="#i-x"/></svg></button></div><div class="chat-body" id="chatBody"><div class="bubble">I'm here. Tell me what you'd like to do — I'll decide whether the request belongs with me or Commander.<br><br><span class="muted" style="font-size:10px">This prototype demonstrates routing only; it does not run an AI model or execute commands.</span></div></div><form class="chat-input" id="chatForm"><input id="chatMessage" type="text" maxlength="1000" placeholder="Ask Orbit anything…" autocomplete="off" aria-label="Message Orbit"/><button aria-label="Send message" type="submit"><svg class="icon"><use href="#i-send"/></svg></button></form></div>
+
+<div class="dock-wrap"><nav class="dock pane" id="dock" aria-label="Favourites dock"></nav></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="scrim" id="scrim" hidden></div>
+
+<aside class="drawer" id="settingsDrawer" aria-label="Customise your desktop" hidden>
+  <div class="drawer-head"><div><span class="eyebrow">DESIGN LAB</span><h2>Make it yours.</h2></div><button class="icon-button" data-close-overlay aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button></div>
+  <div class="setting-group" style="border-top:0;padding-top:0"><h3>Colour mode</h3><div class="choice-row" id="themeChoices"><button data-value="dark">Dark</button><button data-value="light">Light</button></div></div>
+  <div class="setting-group"><h3>Accent colour</h3><div class="swatches" id="accentSwatches"><button class="swatch" data-value="#7bdcff" style="background:#7bdcff" title="Arctic blue" aria-label="Arctic blue"></button><button class="swatch" data-value="#f0bc74" style="background:#f0bc74" title="Gold" aria-label="Gold"></button><button class="swatch" data-value="#69e0b4" style="background:#69e0b4" title="Emerald" aria-label="Emerald"></button><button class="swatch" data-value="#c5a1ff" style="background:#c5a1ff" title="Amethyst" aria-label="Amethyst"></button><button class="swatch" data-value="#ff929f" style="background:#ff929f" title="Rose" aria-label="Rose"></button><input type="color" class="color-input" id="customAccent" aria-label="Custom accent colour" value="#7bdcff" title="Choose custom colour"/></div></div>
+  <div class="setting-group"><h3>Background atmosphere</h3><div class="choice-row" id="wallpaperChoices"><button data-value="cosmos">Cosmos</button><button data-value="aurora">Aurora</button><button data-value="ember">Ember</button><button data-value="midnight">Midnight</button></div></div>
+  <div class="setting-group"><h3>Glass and layout</h3><div class="range-setting"><label for="glassSlider">Opacity</label><input id="glassSlider" type="range" min="15" max="98" step="1"/><output id="glassValue"></output></div><div class="range-setting"><label for="radiusSlider">Corners</label><input id="radiusSlider" type="range" min="4" max="42"/><output id="radiusValue"></output></div><div class="range-setting"><label for="dockSlider">Dock icons</label><input id="dockSlider" type="range" min="38" max="66"/><output id="dockValue"></output></div><div class="toggle-setting"><label for="motionToggle">Disable decorative motion</label><input id="motionToggle" type="checkbox"/></div><div class="toggle-setting"><label for="orbitToggle">Show Orbit companion</label><input id="orbitToggle" type="checkbox"/></div></div>
+  <div class="setting-group"><h3>Backup your design</h3><p>Your customisation is stored in this browser. Export settings to a JSON file so you can reuse them.</p><div class="setting-actions"><button class="ghost-btn" id="exportDesign">Export</button><button class="ghost-btn" id="importDesign">Import</button><button class="ghost-btn" id="resetDesign">Reset</button></div><input type="file" accept="application/json,.json" id="designFile" hidden/><div class="drawer-note">Tip: This entire interface is one editable HTML file. For permanent code-level changes, open it in VS Code or any text editor and edit the <code>:root</code> CSS variables.</div></div>
+</aside>
+<div class="modal pane" id="genericModal" role="dialog" aria-modal="true" aria-label="Framework dialog" hidden><div class="modal-header"><h2 id="modalTitle">Dialog</h2><button class="icon-button" data-close-overlay aria-label="Close dialog"><svg class="icon"><use href="#i-x"/></svg></button></div><div id="modalBody"></div></div>
+<div class="search-modal pane" id="searchModal" role="dialog" aria-modal="true" aria-label="Search" hidden><div class="search-field"><svg class="icon lg"><use href="#i-search"/></svg><input id="searchInput" placeholder="Search apps, projects, sections, agents…" autocomplete="off"/><button class="icon-button" data-close-overlay aria-label="Close search"><svg class="icon sm"><use href="#i-x"/></svg></button></div><div class="search-results" id="searchResults"></div><div style="padding:10px 17px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)">Press Esc to close · Ctrl + K to search</div></div>
+
+<script>
+(function(){
+'use strict';
+const $=(id)=>document.getElementById(id);
+const icon=(id,cl='')=>`<svg class="icon ${String(cl).replace(/[^a-z0-9- ]/gi,'')}" aria-hidden="true"><use href="#i-${String(id).replace(/[^a-z0-9-]/gi,'')}"></use></svg>`;
+const defaults={theme:'dark',wallpaper:'cosmos',accent:'#7bdcff',glass:69,radius:24,dock:50,motion:false,showOrbit:true,favorites:['home','entertain','create','work','google','youtube','netflix']};
+const key='framework-home-design-lab-v1';
+let settings={...defaults};
+const load=()=>{try{let s=JSON.parse(localStorage.getItem(key));if(s&&typeof s==='object')settings={...defaults,...s};}catch(e){}};
+const persist=()=>{try{localStorage.setItem(key,JSON.stringify(settings));}catch(e){toast('Browser storage unavailable — export your design to keep changes.');}};
+const safeText=(s,max=160)=>String(s??'').slice(0,max);
+const escapeHTML=(s)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const catalog=[
+{id:'home',name:'Home',type:'route',target:'home',icon:'home'},
+{id:'entertain',name:'Entertain',type:'route',target:'entertain',icon:'game'},
+{id:'create',name:'Create',type:'route',target:'create',icon:'spark'},
+{id:'work',name:'Work',type:'route',target:'work',icon:'network'},
+{id:'google',name:'Google',type:'url',url:'https://www.google.com/',icon:'globe',group:'entertain',desc:'Search and browse',color:'#70a3f7'},
+{id:'youtube',name:'YouTube',type:'url',url:'https://www.youtube.com/',icon:'play',group:'entertain',desc:'Watch videos',color:'#fa6969'},
+{id:'netflix',name:'Netflix',type:'url',url:'https://www.netflix.com/',symbol:'N',group:'entertain',desc:'Films and series',color:'#ed4e58'},
+{id:'spotify',name:'Spotify',type:'url',url:'https://open.spotify.com/',icon:'music',group:'entertain',desc:'Stream music',color:'#64d99a'},
+{id:'steam',name:'Steam',type:'url',url:'https://store.steampowered.com/',icon:'game',group:'entertain',desc:'PC games and store',color:'#90b8dc'},
+{id:'primevideo',name:'Prime Video',type:'url',url:'https://www.primevideo.com/',icon:'film',group:'entertain',desc:'Movies and shows',color:'#69c5f7'},
+{id:'twitch',name:'Twitch',type:'url',url:'https://www.twitch.tv/',icon:'monitor',group:'entertain',desc:'Live channels',color:'#a894fa'},
+{id:'github',name:'GitHub',type:'url',url:'https://github.com/',icon:'code',group:'create',desc:'Repositories and code',color:'#c3bbda'},
+{id:'suno',name:'Suno',type:'url',url:'https://suno.com/',icon:'music',group:'create',desc:'AI music workspace',color:'#c5a3fc'},
+{id:'huggingface',name:'Hugging Face',type:'url',url:'https://huggingface.co/',icon:'spark',group:'create',desc:'AI models and tools',color:'#f4c56a'}
+];
+const defaultProjects=[
+{id:'severance',name:'SEVERANCE',type:'Film & Animation',desc:'Scenes, shots, reference frames, scripts, production and review.',icon:'film',color:'#daa6eb',glow:'#945ad2'},
+{id:'game-studio',name:'Game Studio',type:'Game Development',desc:'Concepts, world building, assets, programming and playtesting.',icon:'game',color:'#83c7f1',glow:'#5f97ce'},
+{id:'music-lab',name:'Music Studio',type:'Audio Production',desc:'Tracks, compositions, lyrics, mixes and publishing assets.',icon:'music',color:'#eac387',glow:'#bc8862'},
+{id:'code-lab',name:'Code Workshop',type:'Software Engineering',desc:'Applications, prototypes, experiments and version history.',icon:'code',color:'#85e1ba',glow:'#4ca17f'}
+];
+let customApps=[];let projects=[];
+try{customApps=JSON.parse(localStorage.getItem(key+'-apps')||'[]');if(!Array.isArray(customApps))customApps=[];}catch(e){}
+try{projects=JSON.parse(localStorage.getItem(key+'-projects')||'[]');if(!Array.isArray(projects))projects=[];}catch(e){}
+const allApps=()=>catalog.concat(customApps);
+const findApp=(id)=>allApps().find(a=>a.id===id);
+let currentView='home',activeTab='organisation',selectedAgent='commander';
+const byId=(id)=>`[data-route="${id}"]`;
+let toastTimer;
+function toast(msg){let e=$('toast');e.textContent=msg;e.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>e.classList.remove('show'),3000);}
+function applySettings(){
+ document.body.dataset.theme=settings.theme==='light'?'light':'dark';
+ document.body.dataset.wallpaper=['cosmos','aurora','ember','midnight'].includes(settings.wallpaper)?settings.wallpaper:'cosmos';
+ document.body.dataset.reducedMotion=settings.motion?'true':'false';
+ const hex=/^#[0-9a-f]{6}$/i.test(settings.accent)?settings.accent:defaults.accent;
+ document.documentElement.style.setProperty('--accent',hex);
+ document.documentElement.style.setProperty('--glass',(Math.max(15,Math.min(98,+settings.glass||69))/100).toFixed(2));
+ document.documentElement.style.setProperty('--radius',Math.max(4,Math.min(42,+settings.radius||24))+'px');
+ document.documentElement.style.setProperty('--dock-size',Math.max(38,Math.min(66,+settings.dock||50))+'px');
+ $('orbitFloat').classList.toggle('hidden-orbit',!settings.showOrbit);
+ if(!settings.showOrbit)$('orbitPanel').hidden=true;
+ for(const [id,v] of [['glassSlider',settings.glass],['radiusSlider',settings.radius],['dockSlider',settings.dock]])$(id).value=v;
+ $('glassValue').textContent=settings.glass+'%';$('radiusValue').textContent=settings.radius+'px';$('dockValue').textContent=settings.dock+'px';
+ $('motionToggle').checked=!!settings.motion;$('orbitToggle').checked=!!settings.showOrbit;
+ $('customAccent').value=hex;
+ document.querySelectorAll('#themeChoices button').forEach(b=>b.classList.toggle('selected',b.dataset.value===settings.theme));
+ document.querySelectorAll('#wallpaperChoices button').forEach(b=>b.classList.toggle('selected',b.dataset.value===settings.wallpaper));
+ document.querySelectorAll('#accentSwatches button').forEach(b=>b.classList.toggle('selected',b.dataset.value===hex));
+}
+function navigate(page){if(!['home','entertain','create','work'].includes(page))return;
+ currentView=page;document.querySelectorAll('.view').forEach(v=>v.hidden=(v.id!=='view-'+page));
+ history.replaceState(null,'','#'+page);renderDock();closeOverlay();window.scrollTo({top:0,behavior:'instant'});
+}
+function launch(id){const app=findApp(id);if(!app){toast('App not found');return;}if(app.type==='route')navigate(app.target);else if(app.type==='url'){
+  try{let url=new URL(app.url);if(!['https:','http:'].includes(url.protocol))throw new Error('Unsupported URL');let win=window.open(url.href,'_blank','noopener,noreferrer');if(!win)toast('Browser blocked the new tab. Allow pop-ups for this file.');}catch(e){toast('Invalid or unsupported app URL');}
+ }}
+function renderDock(){let list=settings.favorites.filter(id=>!!findApp(id));let core=list.filter(id=>['home','entertain','create','work'].includes(id));let apps=list.filter(id=>!['home','entertain','create','work'].includes(id));
+ const mk=a=>`<button data-launch="${escapeHTML(a.id)}" title="${escapeHTML(a.name)}" aria-label="Open ${escapeHTML(a.name)}" class="${a.type==='route'&&a.target===currentView?'active':''}">${a.symbol?`<span style="font-size:23px;font-weight:900;color:${escapeHTML(a.color||'currentColor')}">${escapeHTML(a.symbol)}</span>`:icon(a.icon||'globe')}<span class="dock-label">${escapeHTML(a.name)}</span></button>`;
+ $('dock').innerHTML=core.map(id=>mk(findApp(id))).join('')+'<span class="divider"></span>'+apps.map(id=>mk(findApp(id))).join('')+`<button class="dock-add" data-open="apps" aria-label="Edit favourites" title="Edit favourites">${icon('plus')}<span class="dock-label">Edit favourites</span></button>`;
+}
+function appCard(a){let pinned=settings.favorites.includes(a.id),color=a.color||'#9ac9e8';return `<div class="app-card" data-app-card="${escapeHTML(a.id)}"><button class="pin-btn ${pinned?'is-pinned':''}" data-pin="${escapeHTML(a.id)}" title="${pinned?'Unpin':'Pin'} ${escapeHTML(a.name)}" aria-label="${pinned?'Unpin':'Pin'} ${escapeHTML(a.name)}">${icon('pin','sm')}</button><button style="all:unset;cursor:pointer;display:block;width:100%" data-launch="${escapeHTML(a.id)}" aria-label="Open ${escapeHTML(a.name)}"><div class="app-logo" style="--logo-bg:color-mix(in srgb,${escapeHTML(color)} 17%,transparent);--logo-color:${escapeHTML(color)}">${a.symbol?escapeHTML(a.symbol):icon(a.icon||'globe','lg')}</div><h3>${escapeHTML(a.name)} ${icon('external','xs')}</h3><p>${escapeHTML(a.desc||'Custom web application')}</p></button></div>`;}
+function renderApps(){ $('entertainApps').innerHTML=allApps().filter(a=>a.group==='entertain').map(appCard).join('');$('createApps').innerHTML=allApps().filter(a=>a.group==='create').map(appCard).join('');}
+function pinApp(id){let set=new Set(settings.favorites);if(set.has(id))set.delete(id);else set.add(id);settings.favorites=Array.from(set);persist();renderDock();renderApps();}
+function renderProjects(){let list=defaultProjects.concat(projects);$('projectGrid').innerHTML=list.map(p=>`<div class="project-card" data-project="${escapeHTML(p.id)}" role="button" tabindex="0" style="--project-glow:${escapeHTML(p.glow||'#5695b5')};--project-color:${escapeHTML(p.color||'#7bdcff')}"><div class="project-top"><div class="project-icon">${icon(p.icon||'folder','lg')}</div><span class="chip">${escapeHTML(p.type)}</span></div><div><h3>${escapeHTML(p.name)}</h3><p>${escapeHTML(p.desc)}</p></div><div class="project-bottom"><span>Project workspace · visual placeholder</span><span>${icon('arrow','sm')}</span></div></div>`).join('');}
+function renderQuick(){let tiles=[['SEVERANCE','Film production','film','create'],['Open projects','Creative workspace','folder','create'],['AI organisation','Work and oversight','network','work'],['Ask Orbit','AI companion','bot','orbit']];$('recentList').innerHTML=tiles.map(([name,sub,ico,target])=>`<button class="recent-tile" data-action="${target}"><span class="small-icon">${icon(ico)}</span><span style="min-width:0"><b>${name}</b><small>${sub}</small></span></button>`).join('');}
+function openProject(id){const p=defaultProjects.concat(projects).find(x=>x.id===id);if(!p)return;
+ openModal(p.name,`<p><strong>${escapeHTML(p.type)}</strong> — ${escapeHTML(p.desc)}</p><div style="background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:15px"><strong style="font-size:12px">Project home — layout preview</strong><p style="margin-bottom:0">A production build would connect this page to the project folder, files, linked Windows apps, version history and Commander/Orbit work queue. No files have been opened or indexed in this HTML sample.</p></div><div class="modal-footer"><button class="ghost-btn" data-close-overlay>Close</button><button class="primary-btn" data-project-command="${escapeHTML(p.name)}">Ask Orbit about project</button></div>`);
+}
+function newProject(){openModal('Create a project',`<p>Custom projects are saved to this browser for the visual prototype.</p><form id="newProjectForm"><div class="field"><label for="projectName">Project name</label><input id="projectName" required maxlength="60" placeholder="My new project"/></div><div class="field"><label for="projectType">Type</label><select id="projectType"><option>Creative Project</option><option>Film & Animation</option><option>Game Development</option><option>Music Production</option><option>Software Engineering</option></select></div><div class="modal-footer"><button type="button" class="ghost-btn" data-close-overlay>Cancel</button><button type="submit" class="primary-btn">Create preview</button></div></form>`);setTimeout(()=>$('projectName')?.focus(),30);}
+function addAppModal(){let appRows=allApps().filter(a=>a.type==='url').map(a=>`<div class="app-list-row"><span>${icon(a.icon||'globe','sm')}</span><strong>${escapeHTML(a.name)}</strong><button class="mini-btn" data-pin="${escapeHTML(a.id)}">${settings.favorites.includes(a.id)?'Unpin':'Pin'}</button>${a.id.startsWith('custom-')?`<button class="icon-button" data-remove-app="${escapeHTML(a.id)}" title="Remove custom app">${icon('x','sm')}</button>`:''}</div>`).join('');
+ openModal('Edit apps & favourites',`<p>Pin favourites to the dock. Add web services by URL; launching installed Windows applications will require the future desktop shell.</p><div class="app-list" id="appManagerList">${appRows}</div><form id="newAppForm"><div class="field"><label for="appName">Custom app name</label><input id="appName" placeholder="My app" maxlength="45" required/></div><div class="field"><label for="appURL">Website URL (HTTPS recommended)</label><input id="appURL" placeholder="https://example.com" maxlength="400" type="url" required/></div><div class="field"><label for="appGroup">Section</label><select id="appGroup"><option value="entertain">Entertain</option><option value="create">Create</option></select></div><div class="modal-footer"><button type="button" class="ghost-btn" data-close-overlay>Done</button><button type="submit" class="primary-btn">Add and pin</button></div></form>`);
+}
+// This tree represents 2 senior officers + 3 directors + 9 leads + 18 specialists = 32 roles.
+const directors=[
+{name:'Operations Director',leads:[['Planning Lead',['Scheduling Specialist','Resource Specialist']],['Production Lead',['Execution Specialist','Delivery Specialist']],['Projects Lead',['Software Specialist','Media Specialist']]]},
+{name:'Intelligence Director',leads:[['Research Lead',['Information Specialist','Verification Specialist']],['Knowledge Lead',['Library Specialist','Indexing Specialist']],['Analysis Lead',['Data Specialist','Reporting Specialist']]]},
+{name:'Systems Director',leads:[['Engineering Lead',['Automation Specialist','Integration Specialist']],['Infrastructure Lead',['Storage Specialist','Runtime Specialist']],['Quality Lead',['Testing Specialist','Reliability Specialist']]]}
+];
+const statusList=['active','standby','queued','standby','active','standby'];
+let agents=[{id:'commander',name:'Commander',role:'Senior Officer · Operations',status:'standby',task:'Receives operational requests and delegates execution.'},{id:'orbit',name:'Orbit',role:'Senior Officer · Establishment',status:'standby',task:'Maintains independent oversight, audits and quality control.'}];
+directors.forEach((d,i)=>{agents.push({id:'dir-'+i,name:d.name,role:'Director',status:statusList[i],task:['Reviewing current priorities (sample)','Coordinating research (sample)','Checking system stability (sample)'][i]});d.leads.forEach(([lead,specs],j)=>{agents.push({id:'lead-'+i+'-'+j,name:lead,role:'Lead · '+d.name,status:statusList[(i+j+2)%statusList.length],task:'Preparing department work (sample)'});specs.forEach((s,k)=>agents.push({id:'specialist-'+i+'-'+j+'-'+k,name:s,role:'Specialist · '+lead,status:statusList[(i*3+j+k)%statusList.length],task:'Example work assignment; not executing.'}));});});
+const agentMap=new Map(agents.map(a=>[a.id,a]));let expandedDirectors=new Set([0]);let expandedLeads=new Set(['0-0']);
+function agentRow(a,hasToggle,open,depth=0){return `<div style="display:flex;align-items:center"><button class="agent-row ${selectedAgent===a.id?'selected':''}" data-agent="${escapeHTML(a.id)}" title="${escapeHTML(a.name)} — ${escapeHTML(a.task)}"><span class="status-dot ${escapeHTML(a.status)}"></span><span class="name">${escapeHTML(a.name)}</span><span style="font-size:9px;color:var(--muted)">${a.status}</span></button>${hasToggle?`<button class="tree-toggle" data-expand="${escapeHTML(hasToggle)}" aria-label="${open?'Collapse':'Expand'} ${escapeHTML(a.name)}">${icon('chevron','xs')}</button>`:''}</div>`;}
+function renderOrg(){let nodes=directors.map((d,i)=>{let dir=agentMap.get('dir-'+i),open=expandedDirectors.has(i);return `<div class="tree-director">${agentRow(dir,'dir-'+i,open)}${open?`<div class="tree-branch">${d.leads.map(([lead,specs],j)=>{let lid='lead-'+i+'-'+j,opened=expandedLeads.has(i+'-'+j);return `<div class="tree-lead">${agentRow(agentMap.get(lid),'lead-'+i+'-'+j,opened)}${opened?`<div class="tree-branch">${specs.map((s,k)=>agentRow(agentMap.get('specialist-'+i+'-'+j+'-'+k))).join('')}</div>`:''}</div>`}).join('')}</div>`:''}</div>`;}).join('');
+ $('workPanel').innerHTML=`<div class="org-layout"><div class="org-tree"><div class="org-title"><h3>Organisation hierarchy</h3><span class="chip demo">32 sample roles</span></div><div class="tree-root"><span>YOU · Supreme authority</span><span>Policies & approvals</span></div><div class="tree-lines"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:7px 0">${agentRow(agents[0])}${agentRow(agents[1])}</div>${nodes}</div><p style="font-size:10px;color:var(--muted);line-height:1.6;margin:15px 0 0">Hover to preview assignment; select for detail. These statuses and jobs are sample data, not background agents.</p></div><aside class="agent-detail" id="agentInspector"></aside></div>`;
+ renderAgentInspector(selectedAgent);
+}
+function renderAgentInspector(id){let a=agentMap.get(id)||agents[0];let e=$('agentInspector');if(!e)return;e.innerHTML=`<span class="eyebrow">AGENT INSPECTOR · DEMO</span><h3>${escapeHTML(a.name)}</h3><p>${escapeHTML(a.role)}</p><div class="detail-status"><span class="status-dot ${escapeHTML(a.status)}" style="height:8px;width:8px;border-radius:50%;background:${a.status==='active'?'#5ce4bc':a.status==='queued'?'#f1c178':'#8793a7'}"></span><span>Sample status: <strong>${escapeHTML(a.status)}</strong></span></div><div class="detail-kv"><span>Current activity</span><span>${escapeHTML(a.task)}</span></div><div class="detail-kv"><span>Live model job</span><span>Not connected</span></div><div class="detail-kv"><span>Task history</span><span>Unavailable in prototype</span></div><div class="detail-kv"><span>Parent authority</span><span>${a.id==='orbit'||a.id==='commander'?'You':'Commander via delegated hierarchy'}</span></div>`;}
+function workCards(tab){const sets={archives:[['Connected Archive','Central indexed documents, projects and assets.','archive','Offline database required'],['ATLAS','Existing document application and collection system.','folder','Integration pending'],['Activity & Reports','History of real jobs, completed outputs and changes.','clipboard','Audit logging required']],training:[['AI Training Library','Validated instruction sets and reference materials.','book','Architecture preview'],['Knowledge Sources','Definitions, language, technical references and provenance.','search','Source controls required'],['Improvement Proposals','Orbit can recommend agent improvements for your review.','spark','Approval process required']],policies:[['Supreme Governing Policy','Protected manually supplied master policies and codes.','lock','Read-only preview'],['Policy Versions','Authorised revisions and immutable change history.','clipboard','Secure versioning required'],['Permissions & Approvals','Access controls, agent scopes and user authorisation.','shield','Enforcement required']]};return `<div class="org-title"><h3>${({archives:'Archives & records',training:'Training & reference',policies:'Protected policies'}[tab])}</h3><span class="chip demo">Design only · no real files</span></div><div class="vault-grid">${sets[tab].map(([name,desc,ico,meta])=>`<div class="vault-card"><div>${icon(ico,'lg')}</div><h3>${escapeHTML(name)}</h3><p>${escapeHTML(desc)}</p><div class="vault-footer"><span>${escapeHTML(meta)}</span><button class="mini-btn" data-preview="${escapeHTML(name)}">Preview</button></div></div>`).join('')}</div><p style="font-size:11px;color:var(--muted);line-height:1.6;margin-top:18px">Security note: this static HTML does not enforce policy immutability, protect local files, or implement an AI training pipeline. These will need authenticated desktop services and a real permissions model.</p>`;}
+function selectTab(t){if(!['organisation','archives','training','policies'].includes(t))return;activeTab=t;document.querySelectorAll('#workTabs button').forEach(b=>{let on=b.dataset.tab===t;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on));});if(t==='organisation')renderOrg();else $('workPanel').innerHTML=workCards(t);}
+function openOrbit(prompt,summon=true){settings.showOrbit=true;applySettings();if(summon){$('orbitFloat').style.left=Math.max(5,window.innerWidth-178)+'px';$('orbitFloat').style.top=(window.innerWidth<850?92:135)+'px';}$('orbitPanel').hidden=false;closeOverlay();if(prompt){$('chatMessage').value=prompt;}setTimeout(()=>$('chatMessage').focus(),50);}
+function sendChat(msg){const body=$('chatBody');let b=document.createElement('div');b.className='bubble user';b.textContent=msg;body.appendChild(b);
+ const operations=/\b(build|create|make|write|produce|code|develop|schedule|generate|execute|edit|animate|organis[e|z]|project|commander|severance|music|game|design)\b/i.test(msg),oversight=/\b(audit|compliance|policy|review|inspect|verify|complaint|train|quality|orbit|standards)\b/i.test(msg);
+ const recipient=oversight?'Orbit':operations?'Commander':'Orbit';const out=document.createElement('div');out.className='bubble';const label=document.createElement('span');label.className='route-label';label.textContent='Suggested destination: '+recipient;const text=document.createElement('span');text.textContent=recipient==='Commander'?'This appears to be an operational request. In the completed system I would forward it to Commander for planning and execution.':'I would handle this as an oversight or general routing request, or clarify the required action.';out.append(label,text);const foot=document.createElement('div');foot.style.cssText='font-size:10px;color:var(--muted);margin-top:8px';foot.textContent='Visual routing demonstration only — not sent to an AI.';out.appendChild(foot);body.appendChild(out);body.scrollTop=body.scrollHeight;
+}
+function openModal(title,html){closeOverlay();$('modalTitle').textContent=title;$('modalBody').innerHTML=html;$('scrim').hidden=false;$('genericModal').hidden=false;}
+function closeOverlay(){$('settingsDrawer').hidden=true;$('genericModal').hidden=true;$('searchModal').hidden=true;$('scrim').hidden=true;}
+function openSettings(){closeOverlay();$('scrim').hidden=false;$('settingsDrawer').hidden=false;applySettings();}
+function openSearch(){closeOverlay();$('scrim').hidden=false;$('searchModal').hidden=false;$('searchInput').value='';renderSearch('');setTimeout(()=>$('searchInput').focus(),20);}
+function renderSearch(q){let arr=[...allApps().map(a=>({id:a.id,label:a.name,desc:a.type==='route'?'Desktop section':'Web application',icon:a.icon||'globe',action:'app'})),...defaultProjects.concat(projects).map(p=>({id:p.id,label:p.name,desc:p.type,icon:p.icon,action:'project'})),...agents.map(a=>({id:a.id,label:a.name,desc:a.role,icon:'network',action:'agent'}))];q=q.toLowerCase().trim();let list=arr.filter(x=>!q||[x.label,x.desc].join(' ').toLowerCase().includes(q)).slice(0,18);$('searchResults').innerHTML=list.map(a=>`<button class="search-result" data-search-action="${a.action}" data-search-id="${escapeHTML(a.id)}">${icon(a.icon||'globe')}<span>${escapeHTML(a.label)}</span><small>${escapeHTML(a.desc)}</small></button>`).join('')||'<p style="font-size:13px;color:var(--muted);padding:13px">No matches found.</p>';}
+function updateClock(){const now=new Date();$('clockTime').textContent=now.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});$('clockDate').textContent=now.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});}
+function updateNetwork(){const online=navigator.onLine;$('networkState').textContent=online?'Online':'Offline';$('netIcon').setAttribute('href',online?'#i-wifi':'#i-wifi-off');}
+function saveCustom(){try{localStorage.setItem(key+'-apps',JSON.stringify(customApps));localStorage.setItem(key+'-projects',JSON.stringify(projects));}catch(e){toast('Browser storage full or disabled.');}}
+function showPreview(name){openModal(name,`<p><strong>Preview only.</strong> This area will become functional when Framework Home is rebuilt as a Windows desktop application and connected to the real data, permissions and AI services.</p><div class="modal-footer"><button class="primary-btn" data-close-overlay>Close</button></div>`);}
+// Navigation and actions via a single event handler. No remote or native app privileges.
+document.addEventListener('click',event=>{
+ let el=event.target.closest('[data-route],[data-launch],[data-pin],[data-open],[data-action],[data-tab],[data-agent],[data-expand],[data-project],[data-preview],[data-search-action],[data-close-overlay],[data-project-command],[data-remove-app]');
+ if(!el)return;
+ if(el.hasAttribute('data-close-overlay')){closeOverlay();return;}
+ if(el.dataset.route){navigate(el.dataset.route);return;}
+ if(el.dataset.launch){launch(el.dataset.launch);return;}
+ if(el.dataset.pin){pinApp(el.dataset.pin);if(!$('genericModal').hidden&&$('modalTitle').textContent==='Edit apps & favourites')addAppModal();return;}
+ if(el.dataset.open==='apps'){addAppModal();return;}
+ if(el.dataset.action){if(el.dataset.action==='orbit')openOrbit();else navigate(el.dataset.action);return;}
+ if(el.dataset.tab){selectTab(el.dataset.tab);return;}
+ if(el.dataset.agent){selectedAgent=el.dataset.agent;renderOrg();return;}
+ if(el.dataset.expand){let t=el.dataset.expand;if(t.startsWith('dir-')){let d=+t.slice(4);expandedDirectors.has(d)?expandedDirectors.delete(d):expandedDirectors.add(d);}else if(t.startsWith('lead-')){let l=t.slice(5);expandedLeads.has(l)?expandedLeads.delete(l):expandedLeads.add(l);}renderOrg();return;}
+ if(el.dataset.project){openProject(el.dataset.project);return;}
+ if(el.dataset.preview){showPreview(el.dataset.preview);return;}
+ if(el.dataset.projectCommand){let name=el.dataset.projectCommand;openOrbit('Show me the status of '+name);return;}
+ if(el.dataset.removeApp){let id=el.dataset.removeApp;customApps=customApps.filter(a=>a.id!==id);settings.favorites=settings.favorites.filter(a=>a!==id);saveCustom();persist();renderDock();renderApps();addAppModal();return;}
+ if(el.dataset.searchAction){let id=el.dataset.searchId,act=el.dataset.searchAction;closeOverlay();if(act==='app')launch(id);if(act==='project'){navigate('create');openProject(id);}if(act==='agent'){navigate('work');selectTab('organisation');selectedAgent=id;renderOrg();}return;}
+});
+$('scrim').addEventListener('click',closeOverlay);
+$('searchOpen').addEventListener('click',openSearch);
+$('settingsOpen').addEventListener('click',openSettings);
+$('newProjectBtn').addEventListener('click',newProject);
+$('commanderBtn').addEventListener('click',()=>openOrbit('Commander, '));
+$('orbitClose').addEventListener('click',()=>{$('orbitPanel').hidden=true;});
+$('chatForm').addEventListener('submit',e=>{e.preventDefault();let msg=$('chatMessage').value.trim();if(!msg)return;sendChat(msg);$('chatMessage').value='';$('chatMessage').focus();});
+$('searchInput').addEventListener('input',e=>renderSearch(e.target.value));
+$('modalBody').addEventListener('submit',e=>{
+ if(e.target.id==='newProjectForm'){e.preventDefault();let name=$('projectName').value.trim(),type=$('projectType').value;if(!name)return;projects.push({id:'p-'+Date.now(),name:safeText(name,60),type:type,desc:'New creative workspace — connect files and applications in the future desktop shell.',icon:'folder',color:'#9fd9d5',glow:'#648f99'});saveCustom();renderProjects();closeOverlay();toast('Project added to visual prototype');}
+ if(e.target.id==='newAppForm'){e.preventDefault();let name=$('appName').value.trim(),url=$('appURL').value.trim(),group=$('appGroup').value;try{let parsed=new URL(url);if(!['https:','http:'].includes(parsed.protocol))throw 0;if(!name)throw 0;let id='custom-'+Date.now();customApps.push({id,name:safeText(name,45),url:parsed.href,type:'url',icon:'globe',group:group==='create'?'create':'entertain',desc:'Custom web application',color:'#9acde7'});settings.favorites.push(id);saveCustom();persist();renderApps();renderDock();addAppModal();toast('App added to dock');}catch(x){toast('Please enter a valid HTTP/HTTPS website URL.');}}
+});
+$('themeChoices').addEventListener('click',e=>{let v=e.target.closest('[data-value]')?.dataset.value;if(v){settings.theme=v;persist();applySettings();}});
+$('wallpaperChoices').addEventListener('click',e=>{let v=e.target.closest('[data-value]')?.dataset.value;if(v){settings.wallpaper=v;persist();applySettings();}});
+$('accentSwatches').addEventListener('click',e=>{let v=e.target.closest('button[data-value]')?.dataset.value;if(v){settings.accent=v;persist();applySettings();}});
+$('customAccent').addEventListener('input',e=>{settings.accent=e.target.value;persist();applySettings();});
+[['glassSlider','glass'],['radiusSlider','radius'],['dockSlider','dock']].forEach(([id,k])=>$(id).addEventListener('input',e=>{settings[k]=+e.target.value;persist();applySettings();}));
+$('motionToggle').addEventListener('change',e=>{settings.motion=e.target.checked;persist();applySettings();});
+$('orbitToggle').addEventListener('change',e=>{settings.showOrbit=e.target.checked;persist();applySettings();});
+$('exportDesign').addEventListener('click',()=>{const data=JSON.stringify({format:'Framework Home Design Lab v1',settings,customApps,projects},null,2);const blob=new Blob([data],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='framework-home-design.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Design exported');});
+$('importDesign').addEventListener('click',()=>$('designFile').click());
+$('designFile').addEventListener('change',async e=>{let file=e.target.files?.[0];if(!file)return;try{let data=JSON.parse(await file.text());if(!data.settings||typeof data.settings!=='object'||!Array.isArray(data.settings.favorites))throw Error('Invalid design file');settings={...defaults,...data.settings};customApps=Array.isArray(data.customApps)?data.customApps.filter(a=>a&&typeof a.id==='string'&&a.type==='url'&&/^https?:\/\//i.test(a.url||'')):[];projects=Array.isArray(data.projects)?data.projects.filter(p=>p&&typeof p.name==='string'):[];persist();saveCustom();applySettings();renderDock();renderApps();renderProjects();toast('Design imported');}catch(err){toast('Invalid design JSON.');}e.target.value='';});
+$('resetDesign').addEventListener('click',()=>{if(!confirm('Reset all visual settings to their original values? Custom apps and projects will be kept.'))return;settings={...defaults,favorites:settings.favorites};persist();applySettings();renderDock();toast('Visual design reset');});
+// Keyboard commands work while this HTML page has focus; a real global shortcut requires desktop integration.
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay();$('orbitPanel').hidden=true;return;}
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openSearch();}
+ if(e.ctrlKey&&e.altKey&&e.key.toLowerCase()==='o'){e.preventDefault();openOrbit();}
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='1'&&!e.altKey){e.preventDefault();navigate('home');}
+});
+// Draggable Orbit: pointer capture to avoid sticking to the mouse, click on release to chat.
+let drag=null;
+$('orbitFloat').addEventListener('pointerdown',e=>{if(e.button!==0)return;const b=$('orbitFloat').getBoundingClientRect();drag={x:e.clientX,y:e.clientY,left:b.left,top:b.top,moved:false};$('orbitFloat').setPointerCapture(e.pointerId);});
+$('orbitFloat').addEventListener('pointermove',e=>{if(!drag)return;let dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>5)drag.moved=true;if(drag.moved){const el=$('orbitFloat');el.style.left=Math.max(0,Math.min(window.innerWidth-el.offsetWidth,drag.left+dx))+'px';el.style.top=Math.max(78,Math.min(window.innerHeight-el.offsetHeight-20,drag.top+dy))+'px';}});
+$('orbitFloat').addEventListener('pointerup',e=>{if(!drag)return;const moved=drag.moved;drag=null;if(!moved){if($('orbitPanel').hidden)openOrbit(undefined,false);else $('orbitPanel').hidden=true;}});
+$('orbitFloat').addEventListener('pointercancel',()=>drag=null);
+$('orbitFloat').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openOrbit();}});
+// Agent hover updates the separate inspector without forcing the user to click.
+$('workPanel').addEventListener('pointerover',e=>{let node=e.target.closest('[data-agent]');if(node&&agentMap.has(node.dataset.agent))renderAgentInspector(node.dataset.agent);});
+$('workPanel').addEventListener('focusin',e=>{let node=e.target.closest('[data-agent]');if(node&&agentMap.has(node.dataset.agent))renderAgentInspector(node.dataset.agent);});
+$('projectGrid').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){let x=e.target.closest('[data-project]');if(x){e.preventDefault();openProject(x.dataset.project);}}});
+load();applySettings();renderDock();renderApps();renderProjects();renderQuick();selectTab('organisation');let route=location.hash.replace('#','');navigate(['home','entertain','create','work'].includes(route)?route:'home');updateClock();updateNetwork();setInterval(updateClock,15000);window.addEventListener('online',updateNetwork);window.addEventListener('offline',updateNetwork);
+})();
+</script>
+</body>
+</html>
