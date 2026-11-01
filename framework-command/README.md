@@ -65,3 +65,16 @@ backups/elite-system-pro-index-2026-11-01.html
 ## Validation
 
 All JavaScript files parsed successfully. The homepage initialized in an isolated DOM stand-in and 71 individual studio-tab and project-detail views rendered without exceptions. This is not a substitute for real-browser visual inspection or Windows-native integration testing.
+
+
+## Minimal interface update — 2026-11-02
+
+- Framework Home remains the uncluttered Work / Create / Entertain entry screen.
+- Removed the persistent sidebar from division, studio and project screens.
+- Each interior page now provides a small top-left Back control and a consistent floating navigation dock.
+- The dock includes Home, all three divisions, personal favourite studios and personalisation.
+- Customisation is accessible anywhere. Browser-saved options include five colour themes, dock size/placement, Orbit size/visibility, animations, ambient lighting and dock favourites.
+- The default Orbit illustration is smaller and is built in-browser using the approved four-part character PNGs from orbit/fluid/assets instead of displaying the background-bearing reference sheet.
+- All studio-specific layout and production pages remain independent.
+- Cached CSS/JS files are refreshed via the root index query version.
+- No Windows-local apps, AI models or external creative APIs were connected by this visual change.
