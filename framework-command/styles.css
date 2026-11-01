@@ -177,3 +177,43 @@ body:has(.min-home)>.float-orbit{display:none}
 .fc-org-intro h2{font-size:21px;margin:0 0 6px}
 .fc-org-slot{width:100%;min-width:0;min-height:660px}
 @media(max-width:750px){.fc-content .ws-reliable:has(.fc-org-slot)>.view{padding-left:12px;padding-right:12px}.fc-org-slot{min-height:550px}}
+
+
+/* V1.4: all nine studio menus are in the floating bottom dock, never in a sidebar. */
+.fc-bare-header.fc-studio-header{height:52px;background:#090f18f0;border-bottom:1px solid #ffffff16;padding-inline:clamp(15px,3.5vw,55px)}
+.fc-bare-header .fc-location-root{font-size:10px!important}
+.fc-demo-status{font-size:9px;letter-spacing:.13em;color:#8b9eb6;font-weight:700}
+.fc-content .workspace>.view{padding-bottom:138px}
+.fc-content .ws-header{padding:16px 0 18px;border-bottom:1px solid #ffffff19;margin-bottom:18px}
+.fc-content .ws-header h1{font-size:clamp(30px,3.2vw,47px);margin:7px 0}
+.fc-content .ws-header p{font-size:12px;color:#b2bfd0;max-width:700px}
+.fc-content .ws-header .pill{font-size:9px;opacity:.6}
+.fc-content .ws-banner:after,.fc-content .promo-tile:after{display:none}
+.fc-content .ws-banner{padding:24px}
+.fc-app-dock.fc-global-dock{z-index:70;border:1px solid #9bafcb64;box-shadow:0 17px 42px #000b;background:#101c2af3;max-width:calc(100vw - 26px);border-radius:18px;gap:4px;display:flex;align-items:center}
+.fc-app-dock .fc-dock-entry{position:relative;flex:0 0 auto}
+.fc-app-dock .fc-dock-entry.home-active{color:#081521;background:#a3cbff}
+.fc-app-dock .fc-dock-entry:hover{background:#ffffff21;color:white}
+.fc-app-dock .fc-dock-entry[data-tooltip]:hover::after,.fc-app-dock .fc-dock-entry[data-tooltip]:focus-visible::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 14px);left:50%;transform:translateX(-50%);white-space:nowrap;background:#eaf2fc;color:#13233a;font-size:10px;font-weight:750;padding:7px 9px;border-radius:7px;pointer-events:none;box-shadow:0 8px 20px #0009}
+.fc-dock-pos-left .fc-app-dock{left:16px;right:auto;transform:none}
+.fc-dock-pos-right .fc-app-dock{left:auto;right:16px;transform:none}
+.fc-launcher-backdrop{position:fixed;inset:0;z-index:60;background:#0209158f}
+.fc-launcher-popover{position:fixed;z-index:68;bottom:91px;left:50%;transform:translateX(-50%);width:min(620px,calc(100vw - 26px));max-height:73svh;overflow:auto;padding:18px;border:1px solid #4e6986;border-radius:17px;background:#101e30fc;box-shadow:0 22px 65px #000b}
+.fc-launcher-popover strong{font-size:15px}
+.fc-launcher-division{margin-top:15px}
+.fc-launcher-division .label{margin:0 0 8px;color:#adc6df}
+.fc-launcher-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fc-launcher-app{display:flex;align-items:center;text-align:left;gap:9px;color:#eef5ff;border:1px solid #ffffff29;background:#ffffff0b;padding:11px;border-radius:11px;font-size:11px;font-weight:700;min-width:0}
+.fc-launcher-app:hover{border-color:#9bccff;background:#ffffff1d}
+.fc-launcher-app .project-mark{width:30px;height:30px;flex:0 0 30px}
+.fc-launcher-app span:last-child{overflow:hidden;text-overflow:ellipsis}
+@media(max-width:750px){
+ .fc-bare-header .fc-location-root,.fc-bare-header .fc-location-chevron{display:none}
+ .fc-bare-header .fc-demo-status{font-size:8px}
+ .fc-app-dock.fc-global-dock{bottom:12px;max-width:calc(100vw - 16px);padding:6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+ .fc-app-dock .fc-dock-entry{width:34px;height:34px;flex-basis:34px}
+ .fc-app-dock .fc-dock-entry .icon{width:18px;height:18px}
+ .fc-dock-pos-left .fc-app-dock{left:8px}.fc-dock-pos-right .fc-app-dock{right:8px}
+ .fc-launcher-popover{bottom:78px;padding:12px}
+ .fc-launcher-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

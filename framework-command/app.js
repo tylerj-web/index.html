@@ -8,7 +8,7 @@ const orbitSrc=ORBIT_ROOT+'/orbit/assets/approved-orbit-reference.png';
 const defaults={notes:{},extraProjects:{},extraApps:{},appUrls:{},favourites:['reliable','html','severance','music'],orbitHistory:[],appearance:'blue',dockSize:'normal',dockPosition:'center',orbitVisible:true,orbitSize:'small',motion:true,ambient:true};
 let state;
 try{state=Object.assign({},defaults,JSON.parse(localStorage.getItem('framework-command-prototype-v1')||'{}'))}catch(e){state=structuredClone(defaults)}
-let modal='',orbitOpen=false,appearanceOpen=false,toastTimer=null,mediaUrl=null;
+let modal='',orbitOpen=false,appearanceOpen=false,dockMenuOpen=false,toastTimer=null,mediaUrl=null;
 const esc=s=>String(s===undefined||s===null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const paths={
 home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
@@ -82,16 +82,44 @@ return '<article class="project-card" data-go="studio:'+w.id+'" tabindex="0" rol
 const themeOptions=[['blue','#93bdff','Midnight'],['silver','#b9c9dd','Silver'],['ocean','#60d5ea','Ocean'],['evergreen','#83d8ae','Evergreen'],['amber','#eac392','Amber']];
 const pref=(key,defaultValue)=>state[key]===undefined?defaultValue:state[key];
 const orbitMarkup=(kind='normal')=>'<canvas class="orbit-cutout orbit-'+kind+'" width="589" height="760" role="img" aria-label="Orbit, the approved four-part robot character"></canvas>';
+
+const STUDIO_DOCK_ICONS={
+reliable:['grid','command','spark','users','file','shield'],
+archives:['grid','archive','layers','search','settings'],
+html:['grid','file','code','git','archive'],
+marketing:['grid','megaphone','palette','layers','git'],
+video:['grid','film','archive','spark','git'],
+severance:['grid','file','shield','film','spark','play'],
+music:['grid','music','file','code','film'],
+reallife:['grid','globe','spark','layers','git'],
+entertain:['grid','play','film','music','grid']};
+function dockItem(label,iconName,action,active=false){
+ const title=esc(label);
+ return '<button class="min-dock-btn fc-dock-entry '+(active?'home-active':'')+'" title="'+title+'" aria-label="'+title+'" data-tooltip="'+title+'" '+action+'>'+icon(iconName)+'</button>';
+}
 function dockHTML(r){
- const fav=(state.favourites||[]).filter(id=>D.workspaces.some(w=>w.id===id));
- const btn=(id,title,ico,selected)=>'<button class="min-dock-btn '+(selected?'home-active':'')+'" title="'+esc(title)+'" aria-label="'+esc(title)+'" data-go="'+id+'">'+icon(ico)+'</button>';
- return '<nav class="min-dock fc-global-dock" aria-label="Framework Command navigation dock">'+
- btn('home','Framework Home','home',r.type==='home')+
- '<div class="min-dock-divider"></div>'+
- divs.map(d=>btn('division:'+d.id,d.name,d.icon,r.type==='division'&&r.id===d.id)).join('')+
- (fav.length?'<div class="min-dock-divider"></div>':'')+
- fav.map(id=>{const w=D.workspaces.find(x=>x.id===id);return btn('studio:'+id,w.name,w.icon,r.id===id)}).join('')+
- '<div class="min-dock-divider"></div><button class="min-dock-btn" data-action="home-appearance" title="Personalise Framework Command" aria-label="Personalise Framework Command">'+icon('settings')+'</button></nav>';
+ const w=['studio','project'].includes(r.type)?D.workspaces.find(x=>x.id===r.id):null;
+ const active=r.type==='studio'?(r.tab||w.tabs[0]):'';
+ let out=dockItem('Home','home','data-go="home"',r.type==='home')+
+ dockItem('All apps','grid','data-action="dock-launcher"',dockMenuOpen);
+ if(r.type==='division'){
+ out+='<span class="min-dock-divider"></span>'+divs.map(d=>dockItem(d.name,d.icon,'data-go="division:'+d.id+'"',r.id===d.id)).join('');
+ }
+ if(w){
+ out+='<span class="min-dock-divider"></span>';
+ if(r.type==='project')out+=dockItem('Return to '+w.name,w.icon,'data-go="studio:'+w.id+'"');
+ out+=w.tabs.map((tab,i)=>dockItem(w.name+' · '+tab,STUDIO_DOCK_ICONS[w.id][i]||'grid','data-tab="'+w.id+':'+esc(tab)+'"',active===tab)).join('');
+ }
+ out+='<span class="min-dock-divider"></span>'+
+ dockItem('Search','search','data-action="open-search"')+
+ dockItem('Orbit','spark','data-action="orbit-toggle"',orbitOpen)+
+ dockItem('Customise dock','settings','data-action="home-appearance"',appearanceOpen);
+ return '<nav class="min-dock fc-global-dock fc-app-dock" aria-label="Floating application dock">'+out+'</nav>';
+}
+function dockLauncherUI(r){
+ if(!dockMenuOpen)return '';
+ return '<div class="fc-launcher-backdrop" data-action="dock-dismiss"></div><div class="fc-launcher-popover" role="dialog" aria-label="Switch applications"><div class="between"><strong>All Framework Command applications</strong><button class="fc-header-tool" data-action="dock-dismiss" aria-label="Close">'+icon('close')+'</button></div>'+
+ divs.map(d=>'<section class="fc-launcher-division"><div class="label">'+d.name.toUpperCase()+'</div><div class="fc-launcher-grid">'+D.workspaces.filter(w=>w.division===d.id).map(w=>'<button class="fc-launcher-app" data-go="studio:'+w.id+'"><span class="project-mark">'+icon(w.icon)+'</span><span>'+esc(w.name)+'</span></button>').join('')+'</div></section>').join('')+'</div>';
 }
 function appearanceUI(){
  if(!appearanceOpen)return '';
@@ -103,7 +131,7 @@ function appearanceUI(){
  '<div class="label">COLOUR THEME</div>'+
  '<div class="min-swatch-row">'+themeOptions.map(t=>'<button class="min-swatch '+(theme===t[0]?'chosen':'')+'" style="--swatch:'+t[1]+'" title="'+t[2]+'" aria-label="'+t[2]+' colour theme" data-action="home-theme:'+t[0]+'"></button>').join('')+'</div>'+
  '<div class="fc-preference"><label for="fc-dock-size">Dock size</label><select id="fc-dock-size" class="fc-choice-field" data-setting="dockSize"><option value="compact" '+(pref('dockSize','normal')==='compact'?'selected':'')+'>Compact</option><option value="normal" '+(pref('dockSize','normal')==='normal'?'selected':'')+'>Standard</option><option value="large" '+(pref('dockSize','normal')==='large'?'selected':'')+'>Large</option></select></div>'+
- '<div class="fc-preference"><label for="fc-dock-position">Dock placement</label><select id="fc-dock-position" class="fc-choice-field" data-setting="dockPosition"><option value="center" '+(pref('dockPosition','center')==='center'?'selected':'')+'>Centre</option><option value="left" '+(pref('dockPosition','center')==='left'?'selected':'')+'>Left</option></select></div>'+
+ '<div class="fc-preference"><label for="fc-dock-position">Dock placement</label><select id="fc-dock-position" class="fc-choice-field" data-setting="dockPosition"><option value="center" '+(pref('dockPosition','center')==='center'?'selected':'')+'>Bottom centre</option><option value="left" '+(pref('dockPosition','center')==='left'?'selected':'')+'>Bottom left</option><option value="right" '+(pref('dockPosition','center')==='right'?'selected':'')+'>Bottom right</option></select></div>'+
  '<div class="fc-preference"><label for="fc-orbit-size">Orbit size</label><select id="fc-orbit-size" class="fc-choice-field" data-setting="orbitSize"><option value="small" '+(pref('orbitSize','small')==='small'?'selected':'')+'>Small</option><option value="medium" '+(pref('orbitSize','small')==='medium'?'selected':'')+'>Medium</option></select></div>'+
  '<div class="fc-pref-toggle"><label><input type="checkbox" data-setting="orbitVisible" '+(pref('orbitVisible',true)?'checked':'')+'> Show Orbit</label></div>'+
  '<div class="fc-pref-toggle"><label><input type="checkbox" data-setting="motion" '+(pref('motion',true)?'checked':'')+'> Gentle animations</label></div>'+
@@ -120,19 +148,9 @@ function home(){
  '</main><footer class="min-footer"><div class="min-footer-status"><span>FRAMEWORK COMMAND</span><i></i><span>LOCAL-FIRST DESKTOP VISION</span></div><span>INTERACTIVE CONCEPT · AI NOT CONNECTED</span></footer></div>';
 }
 function studioChrome(r){
- const w=D.workspaces.find(x=>x.id===r.id);
- const division=w?w.division:r.id;
- const divisionName=division.charAt(0).toUpperCase()+division.slice(1);
- const current=r.type==='division'?divisionName:r.type==='project'?(allProjects(r.id).find(p=>p.id===r.project)?.name||'Project'):(w?.name||'Studio');
- return '<header class="fc-studio-header">'+
- '<button class="fc-back" data-action="go-back" title="Back to '+(r.type==='project'?'studio':r.type==='studio'?'division':'home')+'" aria-label="Go back">'+icon('arrowleft')+'</button>'+
- '<div class="fc-location"><button data-go="home" class="fc-location-root">FRAMEWORK COMMAND</button><span class="fc-location-chevron">/</span><button data-go="division:'+division+'" class="fc-location-division">'+divisionName+'</button>'+
- (r.type==='division'?'':'<span class="fc-location-chevron">/</span><span class="fc-location-current">'+esc(current)+'</span>')+
- '</div><div class="fc-header-spacer"></div>'+
- '<button class="fc-header-tool" data-action="open-search" aria-label="Search all projects" title="Search (Ctrl/⌘ K)">'+icon('search')+'</button>'+
- '<button class="fc-header-tool" data-action="home-appearance" aria-label="Personalise Framework Command" title="Personalise">'+icon('settings')+'</button>'+
- '<button class="fc-header-tool fc-orbit-shortcut" data-action="orbit-toggle" aria-label="Open Orbit" title="Orbit">'+icon('spark')+'</button>'+
- '</header>';
+const w=D.workspaces.find(x=>x.id===r.id);
+const title=r.type==='division'?r.id:r.type==='project'?(allProjects(r.id).find(p=>p.id===r.project)?.name||'Project'):(w?.name||'Studio');
+return '<header class="fc-studio-header fc-bare-header"><button class="fc-back" data-action="go-back" aria-label="Go back" title="Back">'+icon('arrowleft')+'</button><div class="fc-location"><span class="fc-location-root">FRAMEWORK COMMAND</span><span class="fc-location-chevron">/</span><span class="fc-location-current">'+esc(title)+'</span></div><div class="fc-header-spacer"></div><span class="fc-demo-status">VISUAL PROTOTYPE</span></header>';
 }
 function division(id){
 const d=divs.find(x=>x.id===id)||divs[0],w=D.workspaces.filter(x=>x.division===d.id);
@@ -165,7 +183,7 @@ function render(){
  const body=r.type==='home'?home():r.type==='division'?division(r.id):r.type==='studio'?window.FC_SCREENS.renderStudio(r.id,r.tab||D.workspaces.find(w=>w.id===r.id)?.tabs[0]):window.FC_SCREENS.renderProject(r.id,r.project);
  const main=r.type==='home'?body:'<div class="fc-studio-shell">'+studioChrome(r)+'<main class="fc-content">'+body+'</main></div>';
  el.innerHTML='<div class="fc-root fc-theme-'+theme+' '+(pref('motion',true)?'':'fc-no-motion')+' '+(pref('ambient',true)?'':'fc-no-ambient')+' fc-dock-'+pref('dockSize','normal')+' fc-dock-pos-'+pref('dockPosition','center')+' fc-orbit-'+pref('orbitSize','small')+'">'+
- main+dockHTML(r)+appearanceUI()+orbDrawer()+modalUI()+'</div>';
+ main+dockHTML(r)+dockLauncherUI(r)+appearanceUI()+orbDrawer()+modalUI()+'</div>';
  document.title=(r.type==='home'?'Framework Command':(D.workspaces.find(w=>w.id===r.id)?.name||'Framework Command'))+' — Framework Command';
  if(r.type==='studio'&&r.id==='html'&&r.tab==='Workshop')refreshPreview();
  if(r.type==='studio'&&r.id==='reliable'&&(r.tab||'Overview')==='Organisation')window.FC_ORG?.mount?.(document.getElementById('fc-org-slot'));
@@ -226,7 +244,9 @@ if(s==='go-back'){
 if(s.startsWith('setting:'))return;
 if(s==='orbit-toggle'){orbitOpen=!orbitOpen;render();return}
 if(s==='close-modal'||s==='dismiss-modal'){modal='';render();return}
-if(s==='home-appearance'){appearanceOpen=!appearanceOpen;render();return}
+if(s==='home-appearance'){dockMenuOpen=false;appearanceOpen=!appearanceOpen;render();return}
+if(s==='dock-launcher'){appearanceOpen=false;dockMenuOpen=!dockMenuOpen;render();return}
+if(s==='dock-dismiss'){dockMenuOpen=false;render();return}
 if(s.startsWith('home-theme:')){const candidate=s.split(':')[1];if(themeOptions.some(t=>t[0]===candidate)){state.appearance=candidate;save();render()}return}
 if(s.startsWith('home-fav:')){const id=s.split(':')[1];const favs=new Set(state.favourites||[]);if(favs.has(id))favs.delete(id);else favs.add(id);state.favourites=[...favs];save();render();return}
 if(s==='settings'){modal='settings';render();return}
@@ -245,9 +265,9 @@ document.addEventListener('click',e=>{
 const t=e.target.closest('[data-go],[data-action],[data-project],[data-tab],[data-app]');
 if(!t)return;
 if(t.hasAttribute('data-action')&&t.getAttribute('data-action')==='dismiss-modal'&&e.target.closest('[data-modal-inner]'))return;
-if(t.dataset.go){modal='';go(t.dataset.go);return}
+if(t.dataset.go){modal='';dockMenuOpen=false;appearanceOpen=false;go(t.dataset.go);return}
 if(t.dataset.project){modal='';go('project:'+t.dataset.project);return}
-if(t.dataset.tab){go('tab:'+t.dataset.tab);return}
+if(t.dataset.tab){dockMenuOpen=false;appearanceOpen=false;go('tab:'+t.dataset.tab);return}
 if(t.dataset.app){let p=t.dataset.app.split(':');launchApp(p[0],Number(p[1]));return}
 if(t.dataset.action){handleAction(t.dataset.action,t);return}
 });
@@ -284,10 +304,10 @@ if(dest){let tag=file.type.startsWith('audio/')?'audio':'video';dest.innerHTML='
 });
 document.addEventListener('keydown',e=>{
 if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();handleAction('open-search');return}
-if(e.key==='Escape'&&modal){modal='';render();return}
+if(e.key==='Escape'&&(modal||dockMenuOpen||appearanceOpen)){modal='';dockMenuOpen=false;appearanceOpen=false;render();return}
 if(e.key==='Enter'&&e.target.matches('[data-project],[data-go]'))e.target.click()
 });
-window.addEventListener('hashchange',()=>{modal='';render();window.scrollTo(0,0)});
+window.addEventListener('hashchange',()=>{modal='';dockMenuOpen=false;appearanceOpen=false;render();window.scrollTo(0,0)});
 window.FC={icon,esc,orbitSrc,orbitMarkup,getNote:note,allProjects,allApps,go,save,toast};
 render();setInterval(setClock,60000);
 })();

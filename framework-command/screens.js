@@ -92,7 +92,7 @@ renderStudio:function(ws,tab){
 const w=F.workspaces.find(x=>x.id===ws);
 if(!w)return '<div class="view">Workspace not found</div>';
 const content={reliable,archives,html:htmlStudio,marketing,video,severance,music,reallife:realLife,entertain}[ws](tab);
-return '<div class="workspace ws-'+ws+'"><div class="view"><div class="ws-header"><div><div class="ws-number">SECTION '+String(w.n).padStart(2,'0')+' · '+w.division.toUpperCase()+'</div><h1>'+w.name+'</h1><p>'+w.subtitle+'</p></div><span class="pill"><i></i> Interactive design example</span></div><div class="ws-tabs">'+w.tabs.map(t=>'<button class="ws-tab '+(tab===t?'active':'')+'" data-tab="'+ws+':'+t+'">'+t+'</button>').join('')+'</div>'+content+'</div></div>';
+return '<div class="workspace ws-'+ws+'"><div class="view"><div class="ws-header"><div><div class="ws-number">SECTION '+String(w.n).padStart(2,'0')+' · '+w.division.toUpperCase()+'</div><h1>'+w.name+'</h1><p>'+w.subtitle+'</p></div><span class="pill"><i></i> Interactive design example</span></div>'+content+'</div></div>';
 },
 renderProject:function(ws,pid){
 const w=F.workspaces.find(x=>x.id===ws);const p=window.FC.allProjects(ws).find(x=>x.id===pid);
