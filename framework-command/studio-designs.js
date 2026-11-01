@@ -14,7 +14,7 @@ const badge=s=>'<span class="fd-badge">'+esc(s)+'</span>';
 const menu=(ws,entries)=>'<div class="fd-action-grid">'+entries.map(x=>'<button class="fd-action" data-tab="'+ws+':'+x[0]+'"><span class="fd-action-icon">'+icon(x[2])+'</span><strong>'+esc(x[1])+'</strong><small>'+esc(x[3]||'Open workspace')+'</small></button>').join('')+'</div>';
 const card=(body,cls='')=>'<section class="fd-card '+cls+'">'+body+'</section>';
 const smallHeading=(t)=>'<h3 class="fd-card-heading">'+t+'</h3>';
-const assets=(ws)=>'<div class="fd-files">'+(F.projects[ws]||[]).slice(0,5).map(p=>project(ws,p.id,p.name,p.note||'Project',p.icon||'file')).join('')+'</div>';
+const assets=(ws)=>'<div class="fd-files">'+window.FC.allProjects(ws).slice(0,7).map(p=>project(ws,p.id,p.name,p.note||'Project',p.icon||'file')).join('')+'</div>';
 const appLauncher=(ws)=>'<div class="fd-app-grid">'+(F.apps[ws]||[]).map((a,i)=>'<button class="fd-app" data-app="'+ws+':'+i+'"><span>'+icon(a.icon||'grid')+'</span><strong>'+esc(a.name)+'</strong><small>'+esc(a.short||'External program')+'</small></button>').join('')+'</div>';
 function reliable(){
 return head('reliable','WORK / 01','Reliable <em>Friends</em>','Commander and Orbit. Two equal-rank officers, each with a distinct responsibility.')+
