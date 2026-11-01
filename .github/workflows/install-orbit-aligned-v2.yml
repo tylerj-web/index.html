@@ -1,0 +1,77 @@
+name: Install Orbit Aligned Sprite Atlas V2
+on:
+  push:
+    paths:
+      - ".github/workflows/install-orbit-aligned-v2.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: orbit-aligned-production
+  cancel-in-progress: false
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout latest committed Orbit sources
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Prepare production image dependencies
+        run: |
+          python3 -m pip install --disable-pip-version-check --quiet Pillow numpy scipy
+      - name: Verify the fourteen approved source images are unchanged
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          root=Path("orbit/sprite-studio-v4")
+          approved=json.loads((root/"approved_sources.json").read_text())
+          assert len(approved["actions"])==14
+          for item in approved["actions"]:
+              f=root/"assets/approved/source"/(item["id"]+".png")
+              assert f.is_file(), str(f)
+              digest=hashlib.sha256(f.read_bytes()).hexdigest()
+              assert digest==item["sha256"], item["id"]+" original changed!"
+          print("Original image source checks: 14/14 PASS")
+          PY
+      - name: Detect irregular frame geometry and rebuild aligned RGBA atlases
+        run: |
+          set -euo pipefail
+          cd orbit/sprite-studio-v4
+          python3 normalize_sprites.py --source assets/approved/source --output assets/approved/aligned --qa qa/aligned
+      - name: Reject any atlas with adjacent-frame bleed or missing outputs
+        run: |
+          set -euo pipefail
+          cd orbit/sprite-studio-v4
+          python3 - <<'PY'
+          import json,subprocess,sys
+          from pathlib import Path
+          root=Path('assets/approved/aligned')
+          meta=json.loads((root/'manifest-aligned.json').read_text())
+          assert meta['total']==14
+          assert meta['framesWithBorderWarnings']==0, 'Visible pixels touch frame boundaries.'
+          assert meta['heldSourceFrames']<=18, 'Source became more incomplete than approved audit.'
+          for a in meta['actions']:
+              id=a['id']
+              assert len(a['frameQA'])==60
+              for ext in ('.png','.webp','.thumb.webp'):
+                  assert (root/(id+ext)).stat().st_size>1200,id+ext
+              subprocess.run([sys.executable,'validate_future_atlas.py',str(root/(id+'.png')),
+                 '--cols','10','--rows','6','--cell','320','--frames','60'],check=True,
+                 stdout=subprocess.DEVNULL)
+          print('All fourteen 320px atlas sheets: 840/840 frames PASS edge-boundary validation.')
+          PY
+      - name: Publish only the repaired assets and QA records
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A orbit/sprite-studio-v4/assets/approved/aligned orbit/sprite-studio-v4/qa/aligned
+          if ! git diff --cached --quiet; then
+            git commit -m "Orbit V2: install 14 aligned 320px transparent atlases with zero frame bleed"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
