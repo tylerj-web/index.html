@@ -37,14 +37,14 @@ footer{text-align:center;padding:24px;font-size:12px;color:#7ea7bd}
 </style></head><body>
 <header><div><div class="kicker">The Fixer / Original Character</div><h1>ORBIT <em>SPRITE STUDIO</em> <span style="color:#a8bed3;font-size:14px">V4</span></h1><small>Source-preserving animation review · 30 FPS screen prototypes · existing 24 FPS atlases</small></div><div class="legend"><span class="tag"><span class="dot legacy"></span>Existing atlas</span><span class="tag"><span class="dot prototype"></span>Screen prototype</span><a class="tag" href="../">Original 3D studio</a><a class="tag" href="../5x/">Original motion library</a></div></header>
 <div class="wrap">
-<section class="panel"><div class="phead"><strong>Action catalogue</strong><span class="tiny" id="total">0 states</span></div><div class="pbody"><input id="find" placeholder="Search emotes, actions, states" aria-label="Search actions"><div id="groups"></div></div><div id="catalog" class="catalog"></div></section>
+<section class="panel"><div class="phead"><strong>Action catalogue</strong><span class="tiny" id="total">0 states</span></div><div class="pbody"><input id="find" placeholder="Search emotes, actions, states" aria-label="Search actions"><div id="groups"></div><p class="note" style="font-size:11px;margin-top:-5px">Only real atlases appear in Emotes and Transitions. Select Planned to inspect missing requirements.</p></div><div id="catalog" class="catalog"></div></section>
 <section class="panel"><div class="phead"><strong id="stateTitle">Orbit — Idle</strong><span class="tag" id="kind">Loading</span></div><div class="pbody"><p class="subline" id="desc">Original Orbit · screen-driven behaviour prototype</p>
-<div id="visual" class="visual"><canvas id="stage" width="900" height="900" aria-label="Orbit animation viewer"></canvas><div id="stagehint">Move your mouse here — Orbit will look toward it</div></div>
+<div id="visual" class="visual"><canvas id="stage" width="900" height="900" aria-label="Orbit animation viewer"></canvas><div id="stagehint">Playing original Orbit sprite animation</div></div>
 <div class="control"><button id="play">Pause</button><button id="prev" title="Previous frame">◀</button><button id="next" title="Next frame">▶</button><label for="timeline">Frame</label><input type="range" id="timeline" min="0" max="59" value="0"><span class="tiny" id="counter">000 / 060</span></div>
-<div class="control"><label for="mode">Renderer</label><select id="mode"><option value="hi">High-resolution face screen (live)</option><option value="atlas">Existing motion atlas (24 FPS)</option></select><label for="fps">Playback</label><select id="fps"><option value="30">30 FPS</option><option value="24">24 FPS</option><option value="12">12 FPS</option></select><label for="bg">Background</label><select id="bg"><option value="check">Checker</option><option value="dark">Dark</option><option value="light">Light</option></select></div>
+<div class="control"><label for="mode">Renderer</label><select id="mode"><option value="atlas">Actual 24 FPS animation frames</option><option value="hi">Original Orbit still — unanimated</option></select><label for="fps">Playback</label><select id="fps"><option value="30">30 FPS</option><option value="24">24 FPS</option><option value="12">12 FPS</option></select><label for="bg">Background</label><select id="bg"><option value="check">Checker</option><option value="dark">Dark</option><option value="light">Light</option></select></div>
 <div class="statrow"><div class="stat"><b id="framenum">60</b><span>Timed frames / preview</span></div><div class="stat"><b id="duration">2.0s</b><span>Preview duration</span></div><div class="stat"><b id="source">Original hero</b><span>Visual source</span></div></div>
 <p class="note" id="explain"></p>
-<div class="hint">Screen preview uses Orbit's original high-resolution artwork and browser-driven animation at the chosen playback rate. <b>It is not a pre-rendered 30 FPS sprite sheet.</b> Existing atlases are genuine source-derived 60-frame, 24 FPS review assets and may contain interpolation defects. Exported 1024px pilot frames are provided in the separate production package.</div>
+<div class="hint">The default player shows actual frames from the existing 28-emote, 31-transition source-derived 24 FPS sprite library. Planned actions are listed separately and <b>do not play fake emotes</b>. This library is still under artistic review; it is not a completed 30 FPS production library.</div>
 </div></section>
 <section class="panel review"><div class="phead"><strong>Art direction & review</strong><span class="tiny">Saved in this browser</span></div><div class="pbody"><div class="kicker">Character fidelity</div><p class="note">The original glossy black and gold-reflective Orbit is the only approved character. The black glass face serves as an OLED screen for status graphics.</p>
 <div class="reviewBtns"><button data-status="approved">Approve</button><button data-status="refine">Refine</button><button data-status="reject">Reject</button></div>
@@ -67,7 +67,7 @@ Composites:"Happy wave speaking|Curious inspect|Thinking idea|Processing complet
 const alias={
 "Neutral happy":"idle","Excited":"happy","Curious":"curious","Thinking":"thinking","Focused":"focused","Concerned":"concerned","Sad":"sad","Surprised":"surprised","Sleepy":"sleepy","Sleeping":"sleepy","Wake":"greeting","Celebrating":"celebrate","Hello greet":"greeting","Listening":"listening","Speaking":"speaking","Nod yes":"nod","Idle":"idle","Processing":"processing","Scanning":"scanning","Complete":"complete","Success":"complete","Warning":"caution","Error":"error","Idle float":"hover","Fly left":"fly_left","Fly right":"fly_right","Look around":"look_around","Look up":"look_up","Blink":"blink","Look left":"look_around","Look right":"look_around"};
 const categoryKeys=Object.keys(CATS);const states=categoryKeys.flatMap((cat,ci)=>CATS[cat].map((name,i)=>({id:cat[0]+String(i+1).padStart(2,"0"),name,category:cat,legacy:alias[name]||name.toLowerCase().replace(/[^a-z0-9]+/g,"_")})));
-let manifest=null,emoteImage=null,hero=null,selected=states[0],filteredCat="All",playing=true,frame=0,loop=true,time=performance.now(),pointer={x:0,y:0},atlasImage=null,frameRate=30,lastDraw=performance.now(),reviews={};
+let manifest=null,emoteImage=null,hero=null,selected=null,filteredCat="All",playing=true,frame=0,loop=true,time=performance.now(),pointer={x:0,y:0},atlasImage=null,frameRate=24,lastDraw=performance.now(),reviews={},assetError="";
 const $=s=>document.querySelector(s),stage=$("#stage"),ctx=stage.getContext("2d"),cat=$("#catalog"),groups=$("#groups"),timeline=$("#timeline");
 try{reviews=JSON.parse(localStorage.getItem("orbitV4Reviews")||"{}")}catch(e){}
 async function load(){
@@ -75,27 +75,63 @@ async function load(){
  const img=new Image();img.src="../assets/approved-orbit-reference.png";await img.decode();hero=document.createElement("canvas");hero.width=img.naturalWidth;hero.height=img.naturalHeight;
  const c=hero.getContext("2d",{willReadFrequently:true});c.drawImage(img,0,0);const pixels=c.getImageData(0,0,hero.width,hero.height),p=pixels.data;
  for(let i=0;i<p.length;i+=4){const r=p[i],g=p[i+1],b=p[i+2];let key=Math.max(0,Math.min(1,Math.min((r-128)/60,(b-138)/60,(r+b-2*g-125)/75)));let alpha=Math.round((1-key)*255);p[i+3]=alpha;if(alpha===0)p[i]=p[i+1]=p[i+2]=0}
- c.putImageData(pixels,0,0);selectState(selected);requestAnimationFrame(tick);
+ c.putImageData(pixels,0,0);const wave=(manifest?.emotes?.wave)?{id:"A18",name:"Wave",category:"Emotes",legacy:"wave"}:states[0];selectState(wave);requestAnimationFrame(tick);
 }
-function availableLegacy(s){return !!(manifest&&manifest.emotes&&manifest.emotes[s.legacy])}
+
+function actualCatalog(){
+ if(!manifest)return [];
+ const emotes=Object.entries(manifest.emotes||{}).map(([legacy,a],i)=>({id:"A"+String(i+1).padStart(2,"0"),name:a.label||legacy.replaceAll("_"," "),category:"Emotes",legacy}));
+ const transitions=Object.entries(manifest.transitions||{}).map(([legacy,a],i)=>({id:"T"+String(i+1).padStart(2,"0"),name:(a.from||"")+" → "+(a.to||""),category:"Transitions",legacy,transition:true}));
+ return [...emotes,...transitions];
+}
+function availableLegacy(s){return !!(manifest && (s.transition ? manifest.transitions?.[s.legacy] : manifest.emotes?.[s.legacy]))}
+function descriptor(s){return s.transition?manifest?.transitions?.[s.legacy]:manifest?.emotes?.[s.legacy]}
 function renderCatalog(){
  const q=$("#find").value.trim().toLowerCase();cat.replaceChildren();
- const arr=states.filter(s=>(filteredCat==="All"||s.category===filteredCat)&&(s.name+" "+s.id).toLowerCase().includes(q));
- for(const s of arr){const b=document.createElement("button");b.type="button";b.className="state"+(s===selected?" active":"");b.innerHTML='<span class="name">'+s.id+" · "+s.name+'</span><span class="tiny">'+(availableLegacy(s)?"24 FPS atlas":"Screen demo")+"</span>";b.onclick=()=>selectState(s);cat.append(b)}
- $("#total").textContent=states.length+" states";$("#progress").textContent=(manifest?Object.keys(manifest.emotes).length:"0")+" pre-existing motion atlases; "+states.length+" catalogue entries. Screen-only entries are prototypes, not completed sprite sheets.";
+ let actual=actualCatalog();
+ let all=filteredCat==="Planned"?states.filter(s=>!manifest?.emotes?.[s.legacy]):actual;
+ if(filteredCat!=="All"&&filteredCat!=="Planned")all=all.filter(s=>s.category===filteredCat);
+ all=all.filter(s=>(s.name+" "+s.id).toLowerCase().includes(q));
+ for(const x of all){
+  const b=document.createElement("button");b.type="button";
+  b.className="state"+(selected?.id===x.id&&selected?.category===x.category?" active":"");
+  const stateLabel=x.category==="Planned"?"NOT ANIMATED":x.transition?"24F • 24 FPS":"60F • 24 FPS";
+  const lhs=document.createElement("span");lhs.className="name";lhs.textContent=x.id+" · "+x.name;
+  const rhs=document.createElement("span");rhs.className="tiny";rhs.textContent=stateLabel;
+  b.append(lhs,rhs);b.onclick=()=>selectState(x);cat.append(b)
+ }
+ $("#total").textContent=actual.length+" motion clips";
+ $("#progress").textContent=(manifest?Object.keys(manifest.emotes).length:"0")+" existing emote atlases + "+(manifest?Object.keys(manifest.transitions||{}).length:"0")+" existing transition atlases. Of the 141 planned actions, many still require bespoke animation.";
 }
-function createGroups(){for(const name of ["All",...categoryKeys]){const b=document.createElement("button");b.className="groupbtn"+(name==="All"?" active":"");b.textContent=name;b.onclick=()=>{filteredCat=name;[...groups.children].forEach(x=>x.classList.toggle("active",x===b));renderCatalog()};groups.append(b)}}
-function selectState(s){
- selected=s;frame=0;time=performance.now();lastDraw=time;$("#stateTitle").textContent=s.id+" — "+s.name;
- let has=availableLegacy(s);$("#kind").textContent=has?"Existing atlas + OLED test":"OLED prototype only";
- $("#desc").textContent=s.category+" · "+(has?"Existing source-derived motion may be reviewed at its native 24 FPS.":"Face display and subtle motion preview generated live; bespoke frames pending.");
- $("#mode").querySelector('option[value="atlas"]').disabled=!has;
- if(!has)$("#mode").value="hi";
- $("#explain").textContent=has?"Existing motion uses the 5× frame-interpolated Orbit library, which is source-derived and not fully artist-approved.":"This state is present for behavioural design and review, but no independently rendered 30 FPS atlas has been certified for it.";
- $("#source").textContent=has?"Original / atlas":"Original hero";
- if(has){const info=manifest.emotes[s.legacy];const im=new Image();im.src="../5x/"+info.atlas;atlasImage=im}else atlasImage=null;
+function createGroups(){
+ for(const name of ["All","Emotes","Transitions","Planned"]){
+  const b=document.createElement("button");b.className="groupbtn"+(name==="All"?" active":"");b.textContent=name;
+  b.onclick=()=>{filteredCat=name;[...groups.children].forEach(x=>x.classList.toggle("active",x===b));renderCatalog()};
+  groups.append(b)
+ }
+}
+function selectState(x){
+ selected=x;frame=0;time=performance.now();lastDraw=time;assetError="";
+ const item=descriptor(x),has=!!item;
+ $("#stateTitle").textContent=x.id+" — "+x.name;
+ $("#mode").value=has?"atlas":"hi";$("#mode").querySelector('option[value="atlas"]').disabled=!has;
+ $("#fps").value=has?"24":"30";
+ $("#kind").textContent=x.category==="Planned"?"Not animated":x.transition?"Existing transition — 24 FPS":"Existing animation — 24 FPS";
+ $("#desc").textContent=has?(x.transition?"24-frame transition captured as a source-derived animation":"60-frame source-derived Orbit motion; visually review for interpolation defects"):"This requested behaviour has not been animated or exported. No stand-in animation is presented.";
+ $("#explain").textContent=has?"These are real, distinct frame files stored in the already-existing Orbit 5× atlases, at 352×448 per sprite. Some frame interpolation and limb movement require artistic refinement.":"NOT COMPLETED: this action has no production sprite sequence. Original still artwork is shown only to preserve character reference.";
+ $("#source").textContent=has?"5× actual atlas":"Original still";
+ atlasImage=null;
+ if(has){
+   const im=new Image();im.src="../5x/"+item.atlas;
+   im.onerror=()=>{assetError="Could not load "+item.atlas;$("#explain").textContent=assetError};
+   im.onload=()=>{assetError="";};
+   atlasImage=im
+ }
+ $("#stagehint").textContent=has?"ACTUAL "+(item.frames||0)+"-FRAME SPRITE MOTION":"MISSING ANIMATION — STATIC CHARACTER REFERENCE";
+ playing=has;$("#play").textContent=playing?"Pause":"Play";
  loadReview();renderCatalog()
 }
+
 function saveReview(status){reviews[selected.id]={status:status||reviews[selected.id]?.status||"note",notes:$("#notes").value.trim(),name:selected.name,category:selected.category,updated:new Date().toISOString()};localStorage.setItem("orbitV4Reviews",JSON.stringify(reviews));loadReview()}
 function loadReview(){let a=reviews[selected.id];$("#notes").value=a?.notes||"";$("#reviewState").textContent=a?"Review: "+a.status+" · "+new Date(a.updated).toLocaleString():"No review recorded.";document.querySelectorAll("[data-status]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.status===a?.status)))}
 function drawPanelText(g,s,x,y,color="#6de5ff"){g.font="bold 45px system-ui";g.textAlign="center";g.fillStyle=color;g.shadowColor=color;g.shadowBlur=14;g.fillText(s,x,y);g.shadowBlur=0}
@@ -112,35 +148,53 @@ function oled(g,t){
  else drawPanelText(g,text,625,508,color);
  g.restore()
 }
+
 function paint(timeMs){
  ctx.clearRect(0,0,stage.width,stage.height);
- const mode=$("#mode").value;const fps=+$("#fps").value;let n=mode==="atlas"&&availableLegacy(selected)?manifest.emotes[selected.legacy].frames:60;
- if(playing){frame+=Math.max(0,(timeMs-lastDraw)/1000*fps);if(frame>=n)frame%=n}
- lastDraw=timeMs;let index=Math.min(n-1,Math.floor(frame));timeline.max=n-1;timeline.value=index;
- $("#counter").textContent=String(index+1).padStart(3,"0")+" / "+String(n).padStart(3,"0");
- $("#framenum").textContent=n;$("#duration").textContent=(n/fps).toFixed(2)+"s";
- if(mode==="atlas"&&atlasImage&&atlasImage.complete&&atlasImage.naturalWidth){
- const info=manifest.emotes[selected.legacy],w=manifest.frame_width,h=manifest.frame_height,cols=info.atlas_columns||10,sx=(index%cols)*w,sy=Math.floor(index/cols)*h;
- const ratio=Math.min((stage.width*.73)/w,(stage.height*.8)/h),dw=w*ratio,dh=h*ratio;
- ctx.drawImage(atlasImage,sx,sy,w,h,(stage.width-dw)/2,(stage.height-dh)/2,dw,dh);
- return
+ if(!selected)return;
+ const item=descriptor(selected),has=!!item,mode=$("#mode").value;
+ const fps=+$("#fps").value;
+ const frames=mode==="atlas"&&has?item.frames:1;
+ if(playing && frames>1){
+   frame+=Math.max(0,(timeMs-lastDraw)/1000*fps);
+   if(frame>=frames){
+      if(selected.transition){frame=frames-1;playing=false;$("#play").textContent="Play"}
+      else frame%=frames;
+   }
+ }
+ lastDraw=timeMs;
+ const index=Math.min(frames-1,Math.floor(frame));
+ timeline.max=Math.max(0,frames-1);timeline.value=index;
+ $("#counter").textContent=String(index+1).padStart(3,"0")+" / "+String(frames).padStart(3,"0");
+ $("#framenum").textContent=frames;$("#duration").textContent=(frames/fps).toFixed(2)+"s";
+ if(mode==="atlas"&&has && atlasImage?.complete && atlasImage?.naturalWidth){
+   const cols=item.atlas_columns||10;
+   const w=manifest.frame_width,h=manifest.frame_height;
+   const sx=(index%cols)*w,sy=Math.floor(index/cols)*h;
+   const r=Math.min((stage.width*.79)/w,(stage.height*.83)/h);
+   const dw=w*r,dh=h*r;
+   ctx.drawImage(atlasImage,sx,sy,w,h,(stage.width-dw)/2,(stage.height-dh)/2,dw,dh);
+   return
+ }
+ if(mode==="atlas"&&has){
+   ctx.fillStyle="#d1edff";ctx.textAlign="center";ctx.font="20px system-ui";
+   ctx.fillText(assetError||"Loading original sprite atlas…",stage.width/2,stage.height/2);return
  }
  if(!hero)return;
- // Face-screen coordinate system remains locked to Orbit's original source artwork.
- const scale=Math.min(stage.width/1254,stage.height/1254)*.93;
- const bob=7*Math.sin(2*Math.PI*frame/n),tx=(stage.width-1254*scale)/2,ty=(stage.height-1254*scale)/2+bob;
- ctx.save();ctx.translate(tx+627*scale,ty+627*scale);ctx.rotate(pointer.x*.018);ctx.translate(-627*scale,-627*scale);ctx.scale(scale,scale);
- ctx.drawImage(hero,0,0);oled(ctx,frame/fps);ctx.restore();
+ const scale=Math.min(stage.width/1254,stage.height/1254)*.92;
+ const tx=(stage.width-1254*scale)/2,ty=(stage.height-1254*scale)/2;
+ ctx.drawImage(hero,tx,ty,1254*scale,1254*scale);
 }
+
 function tick(now){paint(now);requestAnimationFrame(tick)}
 $("#stage").addEventListener("pointermove",e=>{const r=stage.getBoundingClientRect();pointer.x=(e.clientX-r.left)/r.width*2-1;pointer.y=(e.clientY-r.top)/r.height*2-1});
 $("#stage").addEventListener("pointerleave",()=>{pointer={x:0,y:0}});
-$("#stage").addEventListener("click",()=>{const s=states.find(a=>a.name==="Hello greet");if(s)selectState(s)});
+$("#stage").addEventListener("click",()=>{$("#play").click()});
 $("#play").onclick=()=>{playing=!playing;$("#play").textContent=playing?"Pause":"Play"};
 $("#next").onclick=()=>{playing=false;$("#play").textContent="Play";frame=Math.floor(frame)+1};
 $("#prev").onclick=()=>{playing=false;$("#play").textContent="Play";frame=Math.max(0,Math.floor(frame)-1)};
 timeline.oninput=e=>{frame=+e.target.value;playing=false;$("#play").textContent="Play"};
-$("#mode").onchange=()=>{frame=0;lastDraw=performance.now();$("#fps").value=$("#mode").value==="atlas"?"24":"30"};
+$("#mode").onchange=()=>{frame=0;lastDraw=performance.now();const actual=$("#mode").value==="atlas";$("#fps").value=actual?"24":"30";playing=actual;$("#play").textContent=actual?"Pause":"Play";$("#stagehint").textContent=actual?"ACTUAL SPRITE ANIMATION":"STATIC CHARACTER REFERENCE — NOT A COMPLETED EMOTE"};
 $("#bg").onchange=e=>{$("#visual").className="visual "+(e.target.value==="check"?"":e.target.value)};
 $("#find").oninput=renderCatalog;
 $("#original").onclick=()=>{$("#sourceImg").style.display=$("#sourceImg").style.display==="block"?"none":"block"};
