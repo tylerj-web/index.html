@@ -78,7 +78,7 @@ kbd{font-size:11px;padding:2px 5px;border-radius:4px;background:#1e3445;border:1
 <hr class="divider"><div class="kicker">Description</div><p class="note" id="description">Orbit's approved animation strip, played in original frame order.</p>
 <hr class="divider"><div class="kicker">Original artwork</div><p class="note">The large curved helmet, glossy near-black metal, gold reflective edging, glowing cyan eyes and central power core remain unchanged.</p>
 <div class="links"><a id="downloadWebp" href="#" download>Download sheet</a><a id="downloadPng" href="#" download>Original PNG</a></div>
-<hr class="divider"><div class="kicker">Library installation</div><p class="note">These are the 14 approved animations, now resegmented by their actual horizontal and vertical frame positions. Orbit stays anchored on his chest core; every 320×320 cell has transparent padding. Original approved sheets remain preserved. Eighteen partially missing source poses use explicit prior-frame holds.</p>
+<hr class="divider"><div class="kicker">Library installation</div><p class="note">These are the 14 approved animations, resegmented by their actual frame locations, then precisely registered frame by frame. Orbit stays anchored on his chest core; every 416×416 cell has transparent padding and a fixed head anchor. Original approved sheets remain preserved. Eighteen partially missing source poses use explicit prior-frame holds.</p>
 <div class="progress-label"><span>Visual asset set</span><strong>14 / 14 approved</strong></div><div class="progress"><div></div></div>
 <p class="statusnote">This site previews approved sprite-sheet art. It does not yet provide native desktop cursor control, AI functions, or a physically rigged 3D animation system.</p>
 </div></aside>
@@ -139,7 +139,7 @@ function select(i){
  selectedIndex=i;selected=actions[i];if(!selected)return;
  frame=0;lastFrameTime=null;playing=true;$("#play").textContent="Pause";$("#category").textContent="Approved motion "+String(i+1).padStart(2,"0")+" / 14";
  assign("#name",selected.name);assign("#subtitle",selected.description);
- assign("#description",selected.description+". This version is rebuilt from independently detected source poses, aligned to Orbit's chest core, with 320px transparent cells and a 9px safety margin."+(selected.sourceHeldFrames?" The source was missing "+selected.sourceHeldFrames+" right-edge pose(s); these are documented held frames rather than broken crops.":""));
+ assign("#description",selected.description+". This version is rebuilt from independently detected source poses, aligned to Orbit's chest core, with pixel-registered 416px transparent cells and a 12px edge margin."+(selected.sourceHeldFrames?" The source was missing "+selected.sourceHeldFrames+" right-edge pose(s); these are documented held frames rather than broken crops.":""));
  assign("#frameCount",selected.frames||60);assign("#dimensions",selected.width+" × "+selected.height);
  $("#seek").max=(selected.frames||60)-1;$("#seek").value=0;
  $("#downloadWebp").href=selected.url;$("#downloadWebp").download=selected.id+".webp";
@@ -204,16 +204,16 @@ window.addEventListener("keydown",e=>{
 });
 async function boot(){
  try{
- const r=await fetch("./manifest-approved-aligned.json?assets=aligned-v2",{cache:"no-store"});
+ const r=await fetch("./manifest-approved-stabilized.json?assets=stabilized-v3",{cache:"no-store"});
  if(!r.ok)throw new Error("The verified asset import has not completed (HTTP "+r.status+").");
  const m=await r.json();
- if(m.version!=="2.0.0" || m.count!==14 || !Array.isArray(m.actions)||m.actions.length!==14)throw new Error("Wrong aligned manifest version or count.");
+ if(m.version!=="3.0.0" || m.count!==14 || !Array.isArray(m.actions)||m.actions.length!==14)throw new Error("Wrong aligned manifest version or count.");
  const expected=sourceFallback.map(x=>x[0]);
  for(let i=0;i<14;i++){
-   if(m.actions[i].id!==expected[i]||m.actions[i].frames!==60||m.actions[i].frameWidth!==320||m.actions[i].frameHeight!==320)throw new Error("Mismatched aligned action "+(i+1));
+   if(m.actions[i].id!==expected[i]||m.actions[i].frames!==60||m.actions[i].frameWidth!==416||m.actions[i].frameHeight!==416)throw new Error("Mismatched aligned action "+(i+1));
  }
  actions=m.actions;ready=true;
- setStatus("14 aligned animations installed · 840 frames · transparent edge QA passed · 18 source frames held for incomplete originals","ok");
+ setStatus("14 STABILIZED animations · 840 frames · helmet registration ≤1px · 12px transparent guards verified","ok");
  assign("#count","14 approved");select(0);requestAnimationFrame(loop);
  }catch(e){setStatus("Import pending or failed: "+e.message,"error");busy("Approved assets not installed yet. "+e.message);console.error(e)}
 }
