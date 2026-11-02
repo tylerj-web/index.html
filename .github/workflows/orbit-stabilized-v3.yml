@@ -1,0 +1,77 @@
+name: Orbit V3 Pixel-Stable Sprite Atlas Release
+on:
+  push:
+    paths:
+      - ".github/workflows/orbit-stabilized-v3.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: orbit-v3-stabilization
+  cancel-in-progress: false
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - name: Checkout approved Orbit production sources
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Set up image tooling
+        run: python3 -m pip install --disable-pip-version-check --quiet pillow numpy
+      - name: Check source alignment inputs exist and preserve originals
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          root=Path('orbit/sprite-studio-v4')
+          src=json.loads((root/'approved_sources.json').read_text())
+          assert len(src['actions'])==14
+          for a in src['actions']:
+            img=root/'assets/approved/source'/f"{a['id']}.png"
+            assert img.exists() and hashlib.sha256(img.read_bytes()).hexdigest()==a['sha256'],a['id']
+            assert (root/'assets/approved/aligned'/f"{a['id']}.png").exists(),a['id']
+          print('All fourteen original approved sheets preserved')
+          PY
+      - name: Re-align 840 frames against their physical helmet reference
+        run: |
+          set -euo pipefail
+          cd orbit/sprite-studio-v4
+          python3 stabilize_atlases_v3.py \
+            --input assets/approved/aligned \
+            --output assets/approved/stabilized \
+            --source-manifest manifest-approved-aligned.json \
+            --manifest-output manifest-approved-stabilized.json
+      - name: Fail build on drift, clipped pixels, missing images or altered framing
+        run: |
+          python3 - <<'PY'
+          from PIL import Image
+          import json
+          from pathlib import Path
+          p=Path('orbit/sprite-studio-v4')
+          m=json.loads((p/'manifest-approved-stabilized.json').read_text())
+          assert m['version']=='3.0.0' and len(m['actions'])==14
+          for a in m['actions']:
+            assert a['frames']==60
+            assert a['afterXRange']<=1.5 and a['afterYRange']<=1.5, a['id']
+            assert a['borderPixels']==0, a['id']
+            for f in [a['url'],a['original'],a['thumb']]:
+              assert (p/f).stat().st_size>1000,f
+            with Image.open(p/a['url']) as im:
+              assert im.size==(4160,2496) and im.mode=='RGBA', a['id']
+            print(a['id'], 'stable, no edge clipping', flush=True)
+          print('PASS: 14 sheets, 840 frames, <=1.5px head drift, no edge bleed')
+          PY
+      - name: Commit only new stabilized atlases, thumbnails and metadata
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A orbit/sprite-studio-v4/assets/approved/stabilized orbit/sprite-studio-v4/manifest-approved-stabilized.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Orbit V3: fix genuine 55-90 pixel character drift in 14 approved animations"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
