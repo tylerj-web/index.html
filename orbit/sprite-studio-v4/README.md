@@ -1,3 +1,20 @@
+# V3 positional alignment correction — 2 November 2026
+
+The V2 version still visibly shifted Orbit between animation frames because its check only looked for opaque atlas edge pixels. A direct head-centre audit found 55–90.5 px of motion in nominally stationary emotes.
+
+**V3 is now the production runtime source.** Each original approved pose was translated (without reshaping it) into a padded 416×416 transparent cell, registered to the helmet's visual centre and top. This reduced the measured head-position variation to 0–1px across every 60-frame animation. All 840 frames also passed the 12px fully transparent margin test. The exact original approved sources, V2 atlases and 18 documented source-missing frame holds remain preserved.
+
+- Runtime manifest: `manifest-approved-stabilized.json`
+- Runtime atlases: `assets/approved/stabilized/<action>.webp`
+- PNG atlases: `assets/approved/stabilized/<action>.png`
+- Rebuilder / QA: `stabilize_atlases_v3.py`
+- GitHub Actions: `.github/workflows/orbit-stabilized-v3.yml`
+- Mandatory future requirements: `FUTURE_SPRITES_V3_ALIGNMENT.md`
+
+The live browser was tested against all fourteen repaired actions: frames displayed, playback changed, original-download links pointed at the stabilized images and there were no JavaScript page errors. These checks verify registration and functional playback, not perfection of every generated pose transition.
+
+---
+
 # Orbit — Approved Sprite Animation Studio (14 motions)
 
 **Published:** 2 November 2026  
